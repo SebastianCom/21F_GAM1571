@@ -10,9 +10,11 @@
 #include "CoreHeaders.h"
 
 #include "FWCore.h"
+#include "GameCore.h"
 #include "GL/GLExtensions.h"
 #include "GL/WGLExtensions.h"
 #include "GL/MyGLContext.h"
+#include "Utility/Utility.h"
 
 namespace fw {
 
@@ -76,11 +78,13 @@ bool FWCore::Init(int width, int height)
     return true;
 }
 
-int FWCore::Run()
+int FWCore::Run(GameCore& gameCore)
 {
     // Main loop.
     MSG message;
     bool done = false;
+
+    double lastTime = GetSystemTimeSinceGameStart();
 
     while( !done )
     {
@@ -98,8 +102,13 @@ int FWCore::Run()
         }
         else
         {
-            glClearColor(0, 255, 0, 255);
-            glClear(GL_COLOR_BUFFER_BIT);
+            double currentTime = GetSystemTimeSinceGameStart();
+            float deltaTime = static_cast<float>(currentTime - lastTime);
+            lastTime = currentTime;
+
+            gameCore.Update( deltaTime );
+            gameCore.Draw();
+
 
             SwapBuffers();
 
