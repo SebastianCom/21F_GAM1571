@@ -6,11 +6,17 @@ Game::Game()
 {
 	m_Greeness = 1.0f;
 	m_TimePassed = 0.0f;
+	m_pTestMesh = nullptr;
 
 }
 
 Game::~Game()
 {
+	if (m_pTestMesh != nullptr)
+	{
+		delete m_pTestMesh;
+		m_pTestMesh = nullptr;
+	}
 }
 
 void Game::Update(float deltaTime)
@@ -22,7 +28,7 @@ void Game::Update(float deltaTime)
 
 	
 	
-	m_Greeness = static_cast<float>( abs(sin( time )) ); //faster than the way below
+	//m_Greeness = static_cast<float>( abs(sin( time )) ); //faster than the way below
 	//m_Greeness = static_cast<float>( sin(time)*0.5 +.5 );
 
 
@@ -30,6 +36,12 @@ void Game::Update(float deltaTime)
 
 void Game::Draw()
 {
-	glClearColor(0, m_Greeness, 0, 255);
+	glClearColor(0, 0, 0.2, 255);
 	glClear(GL_COLOR_BUFFER_BIT);
+    m_pTestMesh->Draw();
+}
+
+void Game::Init()
+{
+    m_pTestMesh = new fw::Mesh;
 }

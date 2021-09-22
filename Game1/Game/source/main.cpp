@@ -9,6 +9,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Game game;
 
 	fwcore.Init( 600, 600 );
+	game.Init();
 	fwcore.Run( game );
 
 	fwcore.Shutdown();

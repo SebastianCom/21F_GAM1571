@@ -10,4 +10,6 @@
 #include "FWCore.h"
 #include "GameCore.h"
 
+#include "Objects/Mesh.h"
+
 #include "Utility/Utility.h"
