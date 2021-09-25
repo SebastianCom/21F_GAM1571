@@ -4,7 +4,7 @@
 class Game : public fw::GameCore
 {
 public:
-	Game();
+	Game(fw::FWCore& fwCore);
 	virtual ~Game();
 
 	void Update(float deltaTime) override;
@@ -14,8 +14,15 @@ public:
 
 
 protected:
+	
+	fw::FWCore& m_FWCore;
+
 	float m_TimePassed;
 	float m_Greeness;
 	fw::Mesh* m_pTestMesh;
+	fw::ShaderProgram* m_pBasicShader;
+
+	float m_X;
+	float m_Y;
 
 };

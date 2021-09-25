@@ -8,10 +8,11 @@ namespace fw {
 
 	Mesh::Mesh()
 	{
+		m_VBO = 0;
 		const int numVerts = 3;
 		const int numAttributeComponentsPerVertex = 2; // x & y for each vertex.
 		float verts[numVerts * numAttributeComponentsPerVertex] = { 0.0f,0.0f,   0.5f,0.5f,   -0.5f,0.5f, };
-		m_VBO = 0;
+		
 		// Create the mesh.
 		{
 			// Generate a buffer for our vertex attributes.

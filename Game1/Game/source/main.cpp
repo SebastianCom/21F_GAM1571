@@ -6,7 +6,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 {
 	fw::FWCore fwcore;
 
-	Game game;
+	Game game( fwcore);
 
 	fwcore.Init( 600, 600 );
 	game.Init();

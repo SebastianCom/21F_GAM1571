@@ -12,4 +12,6 @@
 
 #include "Objects/Mesh.h"
 
+#include "Objects/ShaderProgram.h"
+
 #include "Utility/Utility.h"

@@ -7,15 +7,20 @@ workspace "GameSolution"
   
  project "Game"
    kind "WindowedApp"
- 
+   debugdir "Game"
+
    files {
+		"Game/Data/Shaders/**.vert",
+		"Game/Data/Shaders/**.frag",
 		"Game/Source/**.cpp",
 		"Game/Source/**.h",
 		"BuildProjectFiles.bat",
 		"premake5.lua",
+
    }
       includedirs {
 		  "Framework/Source"
+		 
    }
 
    links{

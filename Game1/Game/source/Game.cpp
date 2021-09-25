@@ -2,21 +2,24 @@
 #include "Framework.h"
 #include "Game.h"
 
-Game::Game()
+Game::Game(fw::FWCore& fwCore)
+	:m_FWCore( fwCore)
 {
+	
 	m_Greeness = 1.0f;
 	m_TimePassed = 0.0f;
 	m_pTestMesh = nullptr;
+	m_pBasicShader = nullptr;
+	m_X = 0;
+	m_Y = 0;
 
 }
 
 Game::~Game()
 {
-	if (m_pTestMesh != nullptr)
-	{
-		delete m_pTestMesh;
-		m_pTestMesh = nullptr;
-	}
+	delete m_pTestMesh;
+	delete m_pBasicShader;
+
 }
 
 void Game::Update(float deltaTime)
@@ -26,7 +29,12 @@ void Game::Update(float deltaTime)
 	m_TimePassed += deltaTime;
 	double time = m_TimePassed;
 
-	
+	float speed = 0.5f;
+
+	if (m_FWCore.IsKeyDown(VK_RIGHT))
+	{
+		m_X += speed * deltaTime;
+	}
 	
 	//m_Greeness = static_cast<float>( abs(sin( time )) ); //faster than the way below
 	//m_Greeness = static_cast<float>( sin(time)*0.5 +.5 );
@@ -38,10 +46,19 @@ void Game::Draw()
 {
 	glClearColor(0, 0, 0.2, 255);
 	glClear(GL_COLOR_BUFFER_BIT);
-    m_pTestMesh->Draw();
+    
+	glUseProgram(m_pBasicShader->GetProgram());
+
+	glUniform2f(0, m_X, m_Y);
+	
+	m_pTestMesh->Draw();
 }
 
 void Game::Init()
 {
     m_pTestMesh = new fw::Mesh;
+	m_pBasicShader = new fw::ShaderProgram("Data/Shaders/Basic.vert","Data/Shaders/Basic.frag");
+	
+	
+	
 }
