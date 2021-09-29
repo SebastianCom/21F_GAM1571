@@ -44,20 +44,39 @@ void Game::Update(float deltaTime)
 
 void Game::Draw()
 {
-	glClearColor(0, 0, 0.2, 255);
+	glClearColor(0, 0, 0.2f, 255);
 	glClear(GL_COLOR_BUFFER_BIT);
     
 	glUseProgram(m_pBasicShader->GetProgram());
 
-	glUniform2f(0, m_X, m_Y);
+
+	GLint u_Offset = glGetUniformLocation(m_pBasicShader->GetProgram(), "u_Offset");
+	glUniform2f(u_Offset, m_X, m_Y);
+
+	GLint u_Time = glGetUniformLocation(m_pBasicShader->GetProgram(), "u_Time");
+	glUniform1f(u_Time, m_TimePassed);
 	
-	m_pTestMesh->Draw();
+	m_pTestMesh->Draw(m_pBasicShader);
+
+	GLint iResolution = glGetUniformLocation(m_pBasicShader->GetProgram(), "iResolution");
+	glUniform3f(iResolution, m_FWCore.GetWindowWidth(), m_FWCore.GetWindowHeight(), 0);
+
+	GLint iDate = glGetUniformLocation(m_pBasicShader->GetProgram(), "iDate");
+	glUniform1f(iDate, fw::GetSystemTime());
+
+	GLint iGlobalTime = glGetUniformLocation(m_pBasicShader->GetProgram(), "iGlobalTime");
+	glUniform1f(iGlobalTime, fw::GetSystemTimeSinceGameStart());
+
+
+	m_pTestMesh->Draw(m_pBasicShader);
+
+
 }
 
 void Game::Init()
 {
     m_pTestMesh = new fw::Mesh;
-	m_pBasicShader = new fw::ShaderProgram("Data/Shaders/Basic.vert","Data/Shaders/Basic.frag");
+	m_pBasicShader = new fw::ShaderProgram("Data/Shaders/Basic.vert","Data/Shaders/FluxCore.frag");
 	
 	
 	
