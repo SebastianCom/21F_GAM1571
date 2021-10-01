@@ -12,8 +12,8 @@ namespace fw {
 		m_VBO = 0;
 		const int numVerts = 3;
 		const int numAttributeComponentsPerVertex = 3; // x & y & a for each vertex.
-		//float verts[numVerts * numAttributeComponentsPerVertex] = { 0.0f,0.0f,0.2f,   0.5f,0.5f,0.5f,   -0.5f,0.5f,0.9f };
-		float verts[numVerts * numAttributeComponentsPerVertex] = { 0.0f,-3.5f,0.2f,   2.5f,2.5f,0.5f,   -2.5f,2.5f,0.9f };
+		float verts[numVerts * numAttributeComponentsPerVertex] = { 0.0f,0.0f,0.2f,   0.5f,0.5f,0.5f,   -0.5f,0.5f,0.9f };
+		//float verts[numVerts * numAttributeComponentsPerVertex] = { 0.0f,-3.5f,0.2f,   2.5f,2.5f,0.5f,   -2.5f,2.5f,0.9f };
 
 		// Create the mesh.
 		{

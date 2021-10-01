@@ -22,6 +22,8 @@ protected:
 	fw::Mesh* m_pTestMesh;
 	fw::ShaderProgram* m_pBasicShader;
 
+	fw::ImGuiManager* m_pImGuiManager;
+
 	float m_X;
 	float m_Y;
 

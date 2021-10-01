@@ -7,11 +7,17 @@
 
 #include "CoreHeaders.h"
 
+#include"../Libraries/imgui/imgui.h"
+
+
 #include "FWCore.h"
 #include "GameCore.h"
+
+
 
 #include "Objects/Mesh.h"
 
 #include "Objects/ShaderProgram.h"
 
+#include "UI/ImGuiManager.h"
 #include "Utility/Utility.h"
