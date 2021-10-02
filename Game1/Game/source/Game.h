@@ -18,11 +18,15 @@ protected:
 	fw::FWCore& m_FWCore;
 
 	float m_TimePassed;
-	float m_Greeness;
 	fw::Mesh* m_pTestMesh;
-	fw::ShaderProgram* m_pBasicShader;
+	fw::Mesh* m_pPlayerMesh;
+	fw::Mesh* m_pEnemyMesh;
+	//fw::Mesh* m_pTestMesh;
+	fw::ShaderProgram* m_pPlayerShader;
 
 	fw::ImGuiManager* m_pImGuiManager;
+
+	fw::Player* m_pPlayer;
 
 	float m_X;
 	float m_Y;

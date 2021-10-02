@@ -12,10 +12,12 @@
 
 #include "FWCore.h"
 #include "GameCore.h"
-
+#include "Objects/GameObject.h"
+#include "Objects/Player.h"
 
 
 #include "Objects/Mesh.h"
+
 
 #include "Objects/ShaderProgram.h"
 

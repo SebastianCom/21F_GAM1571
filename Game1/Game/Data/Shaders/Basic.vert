@@ -1,8 +1,8 @@
 #version 120
 
 attribute vec2 a_Position;
-attribute float a_Alpha;
 attribute vec4 a_iResolution;
+attribute vec4 a_Color;
 
 uniform vec2 u_Offset;
 uniform float u_Time;
@@ -17,5 +17,5 @@ void main()
 
 	gl_Position = vec4( pos, 0.0, 1.0);
 
-	v_Color = vec4 ( a_iResolution);
+	v_Color = a_Color;
 }
