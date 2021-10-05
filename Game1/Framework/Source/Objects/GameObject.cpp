@@ -3,6 +3,10 @@
 #include "Mesh.h"
 #include "ShaderProgram.h"
 
+
+std::random_device seed;
+std::mt19937 mersenneTwister(seed());
+
 namespace fw {
 
 	GameObject::GameObject()
@@ -10,6 +14,9 @@ namespace fw {
 		m_X = 0;
 		m_Y = 0;
 		m_Speed = 0;
+		m_Radius = 0;
+
+
 	}
 
 	GameObject::~GameObject()
@@ -53,6 +60,38 @@ namespace fw {
 	float GameObject::GetSpeed()
 	{
 		return m_Speed;
+	}
+
+	void GameObject::SetObjectType(ObjectType a)
+	{
+		m_ObjectType = a;
+	}
+
+	ObjectType GameObject::GetObjectType()
+	{
+		return m_ObjectType;
+	}
+
+	float GameObject::RandomFloat(float min, float max)
+	{
+		std::uniform_real_distribution<float> distribution(min, max);
+		return distribution(mersenneTwister);
+	}
+
+	float GameObject::GetRadius(ObjectType a)
+	{ 
+		return m_Radius;
+	}
+
+
+	bool GameObject::CheckCollision( const GameObject* object, float x, float y)
+	{
+		if (object != nullptr)
+		{
+			float distanceSquared = ((x - object->m_X) * (x - object->m_X) + (y - object->m_Y) * (y - object->m_Y));
+			float radiiSquared = (m_Radius + object->m_Radius) * (m_Radius + object->m_Radius);
+			return distanceSquared <= radiiSquared;
+		}
 	}
 
 } // namespace fw

@@ -14,6 +14,8 @@
 #include "GameCore.h"
 #include "Objects/GameObject.h"
 #include "Objects/Player.h"
+#include "Objects/Enemy.h"
+#include "Objects/PickUp.h"
 
 
 #include "Objects/Mesh.h"

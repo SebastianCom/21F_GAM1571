@@ -1,5 +1,8 @@
 #pragma once
 #include "Framework.h"
+#include <random>
+#include <iostream>
+
 
 namespace fw {
 	enum class ObjectType
@@ -8,6 +11,8 @@ namespace fw {
 		Enemny = 2,
 		PickUp = 3,
 	};
+
+	class Enemy;
 
 	class GameObject : public GameCore
 	{
@@ -29,12 +34,22 @@ namespace fw {
 		void SetSpeed(float s);
 		float GetSpeed();
 
+		void SetObjectType(ObjectType a);
+		ObjectType GetObjectType();
+
+		float RandomFloat(float min, float max);
+
+		float virtual GetRadius(ObjectType a);
+		bool  virtual CheckCollision( const GameObject* object, float x, float y);
+
 	protected:
 		
 		float m_X;
 		float m_Y;
 		float m_Speed;
-
+		float m_Radius;
+		ObjectType m_ObjectType;
+		
 	};
 
 } // namespace fw

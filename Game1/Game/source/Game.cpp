@@ -3,16 +3,18 @@
 #include "Game.h"
 
 Game::Game(fw::FWCore& fwCore)
-	:m_FWCore( fwCore)
+	:m_FWCore(fwCore)
 {
-	
+
 	m_TimePassed = 0.0f;
-	m_pTestMesh = nullptr;
+	m_pPickUpMesh = nullptr;
 	m_pPlayerMesh = nullptr;
 	m_pEnemyMesh = nullptr;
 	m_pPlayerShader = nullptr;
 	m_pImGuiManager = nullptr;
 	m_pPlayer = nullptr;
+	m_vecEnemies = {nullptr};
+	m_vecPickUps = { nullptr };
 	m_X = 0;
 	m_Y = 0;
 
@@ -22,12 +24,24 @@ Game::Game(fw::FWCore& fwCore)
 
 Game::~Game()
 {
-	delete m_pTestMesh;
+	delete m_pPickUpMesh;
 	delete m_pPlayerShader;
 	delete m_pImGuiManager;
 	delete m_pPlayerMesh;
 	delete m_pEnemyMesh;
 	delete m_pPlayer;
+	
+	for (int i = 0; i < m_vecEnemies.size(); i++)
+	{
+		delete m_vecEnemies.at(i);
+	}
+	m_vecEnemies.clear();
+	
+	for (int i = 0; i < m_vecPickUps.size(); i++)
+	{
+		delete m_vecPickUps.at(i);
+	}
+	m_vecPickUps.clear();
 }
 
 void Game::Update(float deltaTime)
@@ -52,11 +66,29 @@ void Game::Update(float deltaTime)
 	//{
 	//	m_X += speed * deltaTime;
 	//}
-	//
-	//m_Greeness = static_cast<float>( abs(sin( time )) ); //faster than the way below
-	//m_Greeness = static_cast<float>( sin(time)*0.5 +.5 );
-	
-	
+
+	for (int i = 0; i < m_vecEnemies.size(); i++)
+	{
+		if (m_pPlayer->CheckCollision(m_vecEnemies.at(i), m_pPlayer->GetX(), m_pPlayer->GetY()) == true)
+		{
+			m_pPlayer->SetX(m_pPlayer->RandomFloat(0.0f, 10.0f));
+			m_pPlayer->SetY(m_pPlayer->RandomFloat(0.0f, 10.0f));
+			delete m_vecEnemies.at(i);
+			m_vecEnemies.erase(m_vecEnemies.begin() + i);
+			i--;
+		}
+
+	}
+	for (int i = 0; i < m_vecPickUps.size(); i++)
+	{
+		if (m_pPlayer->CheckCollision(m_vecPickUps.at(i), m_pPlayer->GetX(), m_pPlayer->GetY()) == true)
+		{
+			delete m_vecPickUps.at(i);
+			m_vecPickUps.erase(m_vecPickUps.begin() + i);
+			i--;
+		}
+	}
+
 	
 	
 
@@ -74,9 +106,23 @@ void Game::Draw()
 	
 		glUniform2f(u_Offset, m_pPlayer->GetX(), m_pPlayer->GetY());
 		m_pPlayerMesh->Draw(m_pPlayerShader);
-	
-		glUniform2f(u_Offset, m_X, m_Y);
-		m_pEnemyMesh->Draw(m_pPlayerShader);
+		
+		for (int i = 0; i < m_vecEnemies.size(); i++)
+		{
+			if (m_vecEnemies.at(i) != nullptr)
+			{
+				glUniform2f(u_Offset, m_vecEnemies.at(i)->GetX(), m_vecEnemies.at(i)->GetY());
+				m_pEnemyMesh->Draw(m_pPlayerShader);
+			}
+		}
+		for (int i = 0; i < m_vecPickUps.size(); i++)
+		{
+			if (m_vecPickUps.at(i) != nullptr)
+			{
+				glUniform2f(u_Offset, m_vecPickUps.at(i)->GetX(), m_vecPickUps.at(i)->GetY());
+				m_pPickUpMesh->Draw(m_pPlayerShader);
+			}
+		}
 	
 	GLint u_Time = glGetUniformLocation(m_pPlayerShader->GetProgram(), "u_Time");
 		glUniform1f(u_Time, m_TimePassed);
@@ -102,10 +148,22 @@ void Game::Init()
 	m_pImGuiManager = new fw::ImGuiManager(&m_FWCore);
 	m_pImGuiManager->Init();
 
-    //m_pTestMesh = new fw::Mesh(fw::ObjectType::PickUp);
+	m_pPickUpMesh = new fw::Mesh(fw::ObjectType::PickUp);
 	m_pPlayerMesh = new fw::Mesh(fw::ObjectType::Player);
 	m_pEnemyMesh = new fw::Mesh(fw::ObjectType::Enemny);
 	m_pPlayerShader = new fw::ShaderProgram("Data/Shaders/Basic.vert","Data/Shaders/Basic.frag");
 	m_pPlayer = new fw::Player(m_FWCore);
+
+
+	for (int i = 0; i < static_cast<int>(m_vecEnemies.at(0)->RandomFloat(1.0f, 15.0f) + 3); i++)
+	{
+		m_vecEnemies.push_back(new fw::Enemy(m_vecEnemies.at(i)->RandomFloat(-10.0f, 10.0f), m_vecEnemies.at(i)->RandomFloat(-10.0f, 10.0f)));
+	}
+	m_vecEnemies.erase(m_vecEnemies.begin()); m_vecEnemies.erase(m_vecEnemies.begin()); m_vecEnemies.erase(m_vecEnemies.begin());
+	
+	for (int i = 0; i < static_cast<int>(m_vecPickUps.at(0)->RandomFloat(1.0f, 5.0f)); i++)
+	{
+		m_vecPickUps.push_back(new fw::PickUp(m_vecPickUps.at(i)->RandomFloat(-10.0f, 10.0f), m_vecPickUps.at(i)->RandomFloat(-10.0f, 10.0f)));
+	}
 
 }

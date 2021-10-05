@@ -3,17 +3,16 @@
 
 namespace fw {
 
-	class Player : public GameObject
+	class Enemy : public GameObject
 	{
 	public:
 
-		Player(fw::FWCore& fwCore);
-		~Player();
+		Enemy(float X, float Y);
+		~Enemy();
 
 		void OnUpdate(float deltaTime)override;
 		void Draw()override;
-
-
+	
 	private:
 		
 		fw::FWCore& m_FWCore;

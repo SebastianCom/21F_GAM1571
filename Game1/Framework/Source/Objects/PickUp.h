@@ -3,16 +3,15 @@
 
 namespace fw {
 
-	class Player : public GameObject
+	class PickUp : public GameObject
 	{
 	public:
 
-		Player(fw::FWCore& fwCore);
-		~Player();
+		PickUp(float X, float Y);
+		~PickUp();
 
 		void OnUpdate(float deltaTime)override;
 		void Draw()override;
-
 
 	private:
 		

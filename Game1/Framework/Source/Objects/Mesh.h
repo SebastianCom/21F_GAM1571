@@ -18,6 +18,7 @@ public:
 
 protected:
 	GLuint m_VBO;
+	ObjectType m_eCurrentObject;
 
 };
 

@@ -18,15 +18,17 @@ protected:
 	fw::FWCore& m_FWCore;
 
 	float m_TimePassed;
-	fw::Mesh* m_pTestMesh;
+	fw::Mesh* m_pPickUpMesh;
 	fw::Mesh* m_pPlayerMesh;
 	fw::Mesh* m_pEnemyMesh;
-	//fw::Mesh* m_pTestMesh;
 	fw::ShaderProgram* m_pPlayerShader;
 
 	fw::ImGuiManager* m_pImGuiManager;
 
 	fw::Player* m_pPlayer;
+
+	std::vector<fw::Enemy*> m_vecEnemies;
+	std::vector<fw::PickUp*> m_vecPickUps;
 
 	float m_X;
 	float m_Y;
