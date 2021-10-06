@@ -15,6 +15,7 @@
 #include "GL/WGLExtensions.h"
 #include "GL/MyGLContext.h"
 #include "Utility/Utility.h"
+#include "Math/Vector.h"
 
 namespace fw {
 
@@ -52,6 +53,8 @@ FWCore::FWCore()
 
     m_WindowIsActive = false;
     m_FullscreenMode = false;
+
+    vec2::Test();
 }
 
 FWCore::~FWCore()
