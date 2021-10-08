@@ -22,6 +22,7 @@ protected:
 	fw::Mesh* m_pPlayerMesh;
 	fw::Mesh* m_pEnemyMesh;
 	fw::ShaderProgram* m_pPlayerShader;
+	fw::ShaderProgram* m_pEnemyShader;
 
 	fw::ImGuiManager* m_pImGuiManager;
 
@@ -32,5 +33,9 @@ protected:
 
 	float m_X;
 	float m_Y;
-
+	
+	int m_Lives;
+	int m_Score;
+	
+	float m_Shrinkage; //yes it can be funny but because its funny i remeber what it does
 };

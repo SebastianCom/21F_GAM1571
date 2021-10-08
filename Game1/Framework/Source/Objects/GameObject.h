@@ -31,6 +31,9 @@ namespace fw {
 		void SetY(float y);
 		float GetY();
 		
+		void SetReadyToDie(bool a);
+		bool GetReadyToDie();
+
 		void SetSpeed(float s);
 		float GetSpeed();
 
@@ -42,6 +45,9 @@ namespace fw {
 		float virtual GetRadius(ObjectType a);
 		bool  virtual CheckCollision( const GameObject* object, float x, float y);
 
+		void SetActive(bool a);
+		bool GetActive();
+
 	protected:
 		
 		float m_X;
@@ -49,6 +55,8 @@ namespace fw {
 		float m_Speed;
 		float m_Radius;
 		ObjectType m_ObjectType;
+		bool m_ReadyToDie;
+		bool m_IsActive;
 		
 	};
 

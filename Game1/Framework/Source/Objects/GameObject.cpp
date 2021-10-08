@@ -15,8 +15,9 @@ namespace fw {
 		m_Y = 0;
 		m_Speed = 0;
 		m_Radius = 0;
-
-
+		m_ReadyToDie = false;
+		m_ObjectType = ObjectType::Enemny;
+		m_IsActive = false;
 	}
 
 	GameObject::~GameObject()
@@ -50,6 +51,16 @@ namespace fw {
 	float GameObject::GetY()
 	{
 		return m_Y;
+	}
+
+	void GameObject::SetReadyToDie(bool a)
+	{
+		m_ReadyToDie = a;
+	}
+
+	bool GameObject::GetReadyToDie()
+	{
+		return m_ReadyToDie;
 	}
 
 	void GameObject::SetSpeed(float s)
@@ -92,6 +103,16 @@ namespace fw {
 			float radiiSquared = (m_Radius + object->m_Radius) * (m_Radius + object->m_Radius);
 			return distanceSquared <= radiiSquared;
 		}
+	}
+
+	void GameObject::SetActive(bool a)
+	{
+		m_IsActive = a;
+	}
+
+	bool GameObject::GetActive()
+	{
+		return m_IsActive;
 	}
 
 } // namespace fw
