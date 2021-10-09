@@ -21,8 +21,7 @@ protected:
 	fw::Mesh* m_pPickUpMesh;
 	fw::Mesh* m_pPlayerMesh;
 	fw::Mesh* m_pEnemyMesh;
-	fw::ShaderProgram* m_pPlayerShader;
-	fw::ShaderProgram* m_pEnemyShader;
+	fw::ShaderProgram* m_pGameObjectShader;
 
 	fw::ImGuiManager* m_pImGuiManager;
 
@@ -37,5 +36,9 @@ protected:
 	int m_Lives;
 	int m_Score;
 	
-	float m_Shrinkage; //yes it can be funny but because its funny i remeber what it does
+
+
+	//Maps school-class
+	std::map<std::string, fw::Mesh*> m_Meshes;
+
 };

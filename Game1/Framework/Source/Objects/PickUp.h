@@ -15,7 +15,6 @@ namespace fw {
 
 	private:
 		
-		fw::FWCore& m_FWCore;
 	};
 
 } // namespace fw

@@ -16,8 +16,10 @@ namespace fw {
 		m_Speed = 0;
 		m_Radius = 0;
 		m_ReadyToDie = false;
-		m_ObjectType = ObjectType::Enemny;
 		m_IsActive = false;
+		m_ObjectType = ObjectType::Enemny;
+		m_Shrinkage = 1.0f;
+		
 	}
 
 	GameObject::~GameObject()
@@ -113,6 +115,21 @@ namespace fw {
 	bool GameObject::GetActive()
 	{
 		return m_IsActive;
+	}
+
+	void GameObject::SetShrinkageTimer(float a)
+	{
+		m_Shrinkage = a;
+	}
+
+	void GameObject::DecrementShrinkageTimer(float a)
+	{
+		m_Shrinkage -= a;
+	}
+
+	float GameObject::GetShrinkageTimer()
+	{
+		return m_Shrinkage;
 	}
 
 } // namespace fw

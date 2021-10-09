@@ -14,7 +14,7 @@ namespace fw {
 
 	class Enemy;
 
-	class GameObject : public GameCore
+	class GameObject 
 	{
 	public:
 
@@ -48,6 +48,10 @@ namespace fw {
 		void SetActive(bool a);
 		bool GetActive();
 
+		void SetShrinkageTimer(float a);
+		void DecrementShrinkageTimer(float a);
+		float GetShrinkageTimer();
+
 	protected:
 		
 		float m_X;
@@ -57,6 +61,7 @@ namespace fw {
 		ObjectType m_ObjectType;
 		bool m_ReadyToDie;
 		bool m_IsActive;
+		float m_Shrinkage;
 		
 	};
 

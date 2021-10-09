@@ -4,6 +4,9 @@ workspace "GameSolution"
   location		 "build"
   characterset   "MBCS"
   startproject "Game"
+
+  filter "configurations:Debug"
+	symbols "on"
   
  project "Game"
    kind "WindowedApp"

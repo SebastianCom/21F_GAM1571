@@ -5,7 +5,7 @@
 #include "PickUp.h"
 
 namespace fw {
-	PickUp::PickUp(float X, float Y) :m_FWCore(m_FWCore)
+	PickUp::PickUp(float X, float Y)
 	{
 		m_Speed = 5;
 		SetX(X);

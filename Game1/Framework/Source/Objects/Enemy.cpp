@@ -5,12 +5,12 @@
 #include "Enemy.h"
 
 namespace fw {
-	Enemy::Enemy(float X, float Y) :m_FWCore(m_FWCore)
+	Enemy::Enemy(float X, float Y) 
 	{
 		m_Speed = 5;
 		SetX(X);
 		SetY(Y);
-		m_Radius = 0.60;
+		m_Radius = 0.60f;
 	}
 	Enemy::~Enemy()
 	{

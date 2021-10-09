@@ -7,10 +7,10 @@
 namespace fw {
 	Player::Player(fw::FWCore& fwCore) :m_FWCore(fwCore)
 	{
-		m_Speed = 5;
+		m_Speed = 10;
 		SetX(0);
 		SetY(0);
-		m_Radius = 0.80;
+		m_Radius = 0.80f;
 	}
 	Player::~Player()
 	{
