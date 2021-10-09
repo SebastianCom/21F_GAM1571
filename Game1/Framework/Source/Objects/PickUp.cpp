@@ -10,7 +10,7 @@ namespace fw {
 		m_Speed = 5;
 		SetX(X);
 		SetY(Y);
-		m_Radius = 0.80f;
+		m_Radius = 0.60f;
 	}
 	PickUp::~PickUp()
 	{

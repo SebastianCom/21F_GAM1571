@@ -12,6 +12,8 @@ public:
 
 	void Init();
 
+	void HandleCollision(float deltaTime);
+	void SpawnGameObjects();
 
 protected:
 	
@@ -37,8 +39,5 @@ protected:
 	int m_Score;
 	
 
-
-	//Maps school-class
-	std::map<std::string, fw::Mesh*> m_Meshes;
 
 };

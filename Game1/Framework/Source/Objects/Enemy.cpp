@@ -10,7 +10,7 @@ namespace fw {
 		m_Speed = 5;
 		SetX(X);
 		SetY(Y);
-		m_Radius = 0.60f;
+		m_Radius = 0.80f;
 	}
 	Enemy::~Enemy()
 	{
