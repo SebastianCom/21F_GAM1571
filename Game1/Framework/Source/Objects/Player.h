@@ -1,5 +1,6 @@
 #pragma once
 #include "Framework.h"
+#include "PlayerController.h"
 
 namespace fw {
 
@@ -7,7 +8,7 @@ namespace fw {
 	{
 	public:
 
-		Player(fw::FWCore& fwCore);
+		Player(PlayerController* playerController);
 		~Player();
 
 		void OnUpdate(float deltaTime)override;
@@ -16,7 +17,7 @@ namespace fw {
 
 	private:
 		
-		fw::FWCore& m_FWCore;
+		PlayerController* m_pPlayerController;
 	};
 
 } // namespace fw

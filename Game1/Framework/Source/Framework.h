@@ -16,6 +16,10 @@
 #include "Objects/Player.h"
 #include "Objects/Enemy.h"
 #include "Objects/PickUp.h"
+#include "Objects/PlayerController.h"
+#include "Events/EventManager.h"
+#include "Events/Event.h"
+
 
 #include "Math/Vector.h"
 #include "Objects/Mesh.h"

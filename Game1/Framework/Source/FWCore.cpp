@@ -16,6 +16,8 @@
 #include "GL/MyGLContext.h"
 #include "Utility/Utility.h"
 #include "Math/Vector.h"
+#include "Events/EventManager.h"
+#include "Events/Event.h"
 
 namespace fw {
 
@@ -39,6 +41,8 @@ FWCore::FWCore()
     m_hInstance = nullptr;
     m_pMyGLContext = nullptr;
 
+    m_pEventManager = new EventManager();
+
     for( int i=0; i<256; i++ )
     {
         m_KeyStates[i] = false;
@@ -59,6 +63,8 @@ FWCore::FWCore()
 
 FWCore::~FWCore()
 {
+    delete m_pEventManager;
+
     delete m_pMyGLContext;
 }
 
@@ -89,6 +95,8 @@ int FWCore::Run(GameCore& gameCore)
 
     double lastTime = GetSystemTimeSinceGameStart();
 
+    m_pEventManager->SetGameCore(&gameCore);
+
     while( !done )
     {
         if( PeekMessage( &message, nullptr, 0, 0, PM_REMOVE ) )
@@ -109,6 +117,7 @@ int FWCore::Run(GameCore& gameCore)
             float deltaTime = static_cast<float>(currentTime - lastTime);
             lastTime = currentTime;
 
+            m_pEventManager->ProcessEvents();
             gameCore.Update( deltaTime );
             gameCore.Draw();
 
@@ -451,6 +460,10 @@ LRESULT CALLBACK FWCore::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
                     PostQuitMessage( 0 );
 
                 pFWCore->m_KeyStates[wParam] = true;
+
+                InputEvent* pInput = new InputEvent(DeviceType::Keyboard, InputState::Pressed, (int)wParam);
+                pFWCore->m_pEventManager->AddEvent(pInput);
+
             }
         }
         return 0;
@@ -458,6 +471,8 @@ LRESULT CALLBACK FWCore::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
     case WM_KEYUP:
         {
             pFWCore->m_KeyStates[wParam] = false;
+            InputEvent* pInput = new InputEvent(DeviceType::Keyboard, InputState::Released, (int)wParam);
+            pFWCore->m_pEventManager->AddEvent(pInput);
         }
         return 0;
 

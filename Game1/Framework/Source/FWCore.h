@@ -4,6 +4,7 @@ namespace fw {
 
 class MyGLContext;
 class GameCore;
+class EventManager;
 
 class FWCore
 {
@@ -18,6 +19,8 @@ protected:
     HDC m_hDeviceContext;
     HINSTANCE m_hInstance;
     MyGLContext* m_pMyGLContext;
+
+    EventManager* m_pEventManager;
 
     bool m_KeyStates[256];
     bool m_MouseButtonStates[3];

@@ -7,8 +7,11 @@ public:
 	Game(fw::FWCore& fwCore);
 	virtual ~Game();
 
+	void OnEvent(fw::Event* pEvent) override;
 	void Update(float deltaTime) override;
 	void Draw()override;
+	
+
 
 	void Init();
 
@@ -37,6 +40,7 @@ protected:
 	
 	int m_Lives;
 	int m_Score;
+	fw::PlayerController* m_pPlayerController;
 	
 
 

@@ -13,6 +13,7 @@ Game::Game(fw::FWCore& fwCore)
 	m_pGameObjectShader = nullptr;
 	m_pImGuiManager = nullptr;
 	m_pPlayer = nullptr;
+	m_pPlayerController = nullptr;
 	m_X = 0;
 	m_Y = 0;
 	m_Lives = 3;
@@ -54,8 +55,9 @@ void Game::Init()
 	m_pPlayerMesh = new fw::Mesh(fw::ObjectType::Player);
 	m_pEnemyMesh = new fw::Mesh(fw::ObjectType::Enemny);
 	m_pGameObjectShader = new fw::ShaderProgram("Data/Shaders/Basic.vert", "Data/Shaders/Basic.frag");
-	m_pPlayer = new fw::Player(m_FWCore);
-
+	m_pPlayerController = new fw::PlayerController();
+	m_pPlayer = new fw::Player(m_pPlayerController);
+	
 	SpawnGameObjects();
 }
 
@@ -79,7 +81,8 @@ void Game::Update(float deltaTime)
 	double time = m_TimePassed;
 
 	m_pPlayer->OnUpdate(deltaTime);
-
+	//if (m_pPlayerController->IsRightHeld())
+	//	m_pPlayer->SetX(5 * deltaTime);
 	HandleCollision(deltaTime);
 }
 
@@ -140,6 +143,11 @@ void Game::Draw()
 		glUniform1f(iGlobalTime, static_cast<GLfloat>(fw::GetSystemTimeSinceGameStart()));
 
 	m_pImGuiManager->EndFrame();
+}
+
+void Game::OnEvent(fw::Event* pEvent)
+{
+	m_pPlayerController->OnEvent(pEvent);
 }
 
 
