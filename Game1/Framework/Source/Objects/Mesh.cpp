@@ -5,22 +5,22 @@
 
 namespace fw {
 
-	Mesh::Mesh(ObjectType a)
+	Mesh::Mesh(GLenum primitiveType, const std::vector<float>& verts)
+		: m_VBO(0)
 	{
-		m_VBO = 0;
-		if (a == ObjectType::Player)
-		{
-			CreateMesh(ObjectType::Player);
-		}
-		if (a == ObjectType::Enemny)
-		{
-			CreateMesh(ObjectType::Enemny);
-		}
-		if (a == ObjectType::PickUp)
-		{
-			CreateMesh(ObjectType::PickUp);
-		}
-		m_eCurrentObject = a;
+		const int numAttributeComponentsPerVertex = 6; // x,y & a for each vertex.
+
+		m_PrimitiveType = primitiveType;
+		m_NumVerts = (int)verts.size() / numAttributeComponentsPerVertex;
+		
+		// Generate a buffer for our vertex attributes.
+		glGenBuffers(1, &m_VBO);
+
+		// Set this VBO to be the currently active one.
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+
+		// Copy our attribute data into the VBO.
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponentsPerVertex * m_NumVerts, &verts[0], GL_STATIC_DRAW);
 	}
 
 	Mesh::~Mesh()
@@ -28,10 +28,24 @@ namespace fw {
 		glDeleteBuffers(1, &m_VBO);
 	}
 
-	void Mesh::Draw(ShaderProgram* pShader)
+	void Mesh::Draw(ShaderProgram* pShader, vec2 pos, float time, float scale)
 	{
 		// Draw the mesh.
 		{
+			glUseProgram(pShader->GetProgram());
+
+			GLint u_Offset = glGetUniformLocation(pShader->GetProgram(), "u_Offset");
+			glUniform2f(u_Offset, pos.x, pos.y);
+
+			GLint u_Time = glGetUniformLocation(pShader->GetProgram(), "u_Time");
+			glUniform1f(u_Time, time);
+			
+			GLint u_Scale = glGetUniformLocation(pShader->GetProgram(), "u_Scale");
+			glUniform1f(u_Scale, scale);
+
+			// Set this VBO to be the currently active one.
+			glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+
 			// Set this VBO to be the currently active one.
 			glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
@@ -50,176 +64,12 @@ namespace fw {
 				glVertexAttribPointer(a_Color, 4, GL_FLOAT, GL_FALSE, 24, (void*)8);
 			}
 
-
 			// Draw the primitive.
-
-			if (m_eCurrentObject == ObjectType::Player)
-			{
-
-				glDrawArrays(GL_TRIANGLES, 0, 72);
-			}
-			else if (m_eCurrentObject == ObjectType::Enemny)
-			{
-				glDrawArrays(GL_TRIANGLES, 0, 54);
-			}
-			else if (m_eCurrentObject == ObjectType::PickUp)
-			{
-				glDrawArrays(GL_TRIANGLES, 0, 30);
-			}
+			glDrawArrays(m_PrimitiveType, 0, m_NumVerts);
+			
 		}
 	}
 
-	void Mesh::CreateMesh(ObjectType a)
-	{
-		if (a == ObjectType::Player)
-		{
-			const int numVerts = 72;
-			const int numAttributeComponentsPerVertex = 6;
-			float playerVerts[numVerts * numAttributeComponentsPerVertex] = {
-				-0.20f, 0.40f, 0.81f, 0.61f, 0.48f, 1.0f,0.20f, 0.40f, 0.81f, 0.61f, 0.48f, 1.0f,-0.20f, 0.40f, 0.81f, 0.61f, 0.48f, 1.0f,-0.20f, 0.40f, 0.81f, 0.61f, 0.48f, 1.0f,-0.60f, 0.0f, 0.81f, 0.61f, 0.48f, 1.0f,-0.20f, 0.20f, 0.81f, 0.61f, 0.48f, 1.0f,
-				-0.60f, 0.0f, 0.81f, 0.61f, 0.48f, 1.0f,-0.40f, 0.0f, 0.81f, 0.61f, 0.48f, 1.0f,-0.20f, 0.20f, 0.81f, 0.61f, 0.48f, 1.0f,0.20f, 0.20f, 0.81f, 0.61f, 0.48f, 1.0f,0.40f, 0.0f, 0.81f, 0.61f, 0.48f, 1.0f,0.20f, 0.40f, 0.81f, 0.61f, 0.48f, 1.0f,
-				0.20f, 0.40f, 0.81f, 0.61f, 0.48f, 1.0f,0.60f, 0.0f, 0.81f, 0.61f, 0.48f, 1.0f,0.40f, 0.0f, 0.81f, 0.61f, 0.48f, 1.0f,0.0f, 0.61f, 0.81f, 0.61f, 0.48f, 1.0f,0.00f, 0.39f, 0.81f, 0.61f, 0.48f, 1.0f,-0.06f, 0.41f, 0.81f, 0.61f, 0.48f, 1.0f,
-				-0.06f, 0.41f, 0.81f, 0.61f, 0.48f, 1.0f,-0.12f, 0.44f, 0.81f, 0.61f, 0.48f, 1.0f,0.0f, 0.61f, 0.81f, 0.61f, 0.48f, 1.0f,-0.12f, 0.44f, 0.81f, 0.61f, 0.48f, 1.0f,-0.15f, 0.51f, 0.81f, 0.61f, 0.48f, 1.0f,0.0f, 0.61f, 0.81f, 0.61f, 0.48f, 1.0f,
-				-0.15f, 0.51f, 0.81f, 0.61f, 0.48f, 1.0f,-0.17f, 0.60f, 0.81f, 0.61f, 0.48f, 1.0f,0.0f, 0.61f, 0.81f, 0.61f, 0.48f, 1.0f,-0.17f, 0.60f, 0.81f, 0.61f, 0.48f, 1.0f,-0.15f, 0.68f, 0.81f, 0.61f, 0.48f, 1.0f,0.0f, 0.61f, 0.81f, 0.61f, 0.48f, 1.0f,
-				-0.15f, 0.68f, 0.81f, 0.61f, 0.48f, 1.0f,-0.08f, 0.73f, 0.81f, 0.61f, 0.48f, 1.0f,0.0f, 0.61f, 0.81f, 0.61f, 0.48f, 1.0f,-0.08f, 0.73f, 0.81f, 0.61f, 0.48f, 1.0f,-0.02f, 0.74f, 0.81f, 0.61f, 0.48f, 1.0f,0.0f, 0.61f, 0.81f, 0.61f, 0.48f, 1.0f,
-				-0.02f, 0.74f, 0.81f, 0.61f, 0.48f, 1.0f,0.04f, 0.72f, 0.81f, 0.61f, 0.48f, 1.0f,0.0f, 0.61f, 0.81f, 0.61f, 0.48f, 1.0f,0.04f, 0.72f, 0.81f, 0.61f, 0.48f, 1.0f,0.11f, 0.66f, 0.81f, 0.61f, 0.48f, 1.0f,0.0f, 0.61f, 0.81f, 0.61f, 0.48f, 1.0f,
-				0.11f, 0.66f, 0.81f, 0.61f, 0.48f, 1.0f,0.12f, 0.58f, 0.81f, 0.61f, 0.48f, 1.0f,0.0f, 0.61f, 0.81f, 0.61f, 0.48f, 1.0f,0.12f, 0.58f, 0.81f, 0.61f, 0.48f, 1.0f,0.11f, 0.50f, 0.81f, 0.61f, 0.48f, 1.0f,0.0f, 0.61f, 0.81f, 0.61f, 0.48f, 1.0f,
-				0.11f, 0.50f, 0.81f, 0.61f, 0.48f, 1.0f,0.09f, 0.44f, 0.81f, 0.61f, 0.48f, 1.0f,0.0f, 0.61f, 0.81f, 0.61f, 0.48f, 1.0f,0.09f, 0.44f, 0.81f, 0.61f, 0.48f, 1.0f,0.00f, 0.39f, 0.81f, 0.61f, 0.48f, 1.0f,0.0f, 0.61f, 0.81f, 0.61f, 0.48f, 1.0f,
-				-0.20f, 0.40f, 1.0f, 0.0f, 0.0f, 1.0f,0.20f, -0.20f, 1.0f, 0.0f, 0.0f, 1.0f,-0.20f, -0.20f, 1.0f, 0.0f, 0.0f, 1.0f,0.20f, -0.20f, 1.0f, 0.0f, 0.0f, 1.0f,0.20f, 0.40f, 1.0f, 0.0f, 0.0f, 1.0f,-0.20f, 0.40f, 1.0f, 0.0f, 0.0f, 1.0f,
-				-0.20f, -0.20f, 0.0f, 0.0f, 1.0f, 1.0f,-0.40f, -0.80f, 0.0f, 0.0f, 1.0f, 1.0f,-0.20f, -0.80f, 0.0f, 0.0f, 1.0f, 1.0f,-0.20f, -0.80f, 0.0f, 0.0f, 1.0f, 1.0f,0.0f, -0.20f, 0.0f, 0.0f, 1.0f, 1.0f,-0.20f, -0.20f, 0.0f, 0.0f, 1.0f, 1.0f,
-				0.20f, -0.80f, 0.0f, 0.0f, 1.0f, 1.0f,0.0f, -0.20f, 0.0f, 0.0f, 1.0f, 1.0f,0.20f, -0.20f, 0.0f, 0.0f, 1.0f, 1.0f,0.20f, -0.20f, 0.0f, 0.0f, 1.0f, 1.0f,0.40f, -0.80f, 0.0f, 0.0f, 1.0f, 1.0f,0.20f, -0.80f, 0.0f, 0.0f, 1.0f, 1.0f
-			};
-
-			// Create the mesh.
-			{
-				// Generate a buffer for our vertex attributes.
-				glGenBuffers(1, &m_VBO); // m_VBO is a GLuint.
-
-				// Set this VBO to be the currently active one.
-				glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-
-				// Copy our attribute data into the VBO.
-				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponentsPerVertex * numVerts, playerVerts, GL_STATIC_DRAW);
-			}
-		}
-		if (a == ObjectType::Enemny)
-		{
-			const int numVerts = 60;
-			const int numAttributeComponentsPerVertex = 6;
-			float enemyverts[numVerts * numAttributeComponentsPerVertex] = {
-					0.0f, 0.00f, 1.0f, 0.09f, 0.0f, 1.0f,
-					0.20f, 0.20f, 1.0f, 0.09f, 0.0f, 1.0f,
-				   -0.20f, 0.20f, 1.0f, 0.09f, 0.0f, 1.0f,
-					0.0f, 0.00f, 0.45f, 0.0f, 0.55f, 1.0f,
-					0.0f, -0.40f, 0.45f, 0.0f, 0.55f, 1.0f,
-				   -0.20f, 0.20f, 0.45f, 0.0f, 0.55f, 1.0f,
-					0.0f, 0.00f, 0.45f, 0.0f, 0.55f, 1.0f,
-					0.0f, -0.40f, 0.45f, 0.0f, 0.55f, 1.0f,
-					0.20f, 0.20f, 0.45f, 0.0f, 0.55f, 1.0f,
-					0.20f, 0.20f, 1.0f, 0.0f, 0.0f, 1.0f,
-					0.40f, 0.00f, 1.0f, 0.0f, 0.0f, 1.0f,
-					0.0f, -0.40f, 1.0f, 0.0f, 0.0f, 1.0f,
-				   -0.20f, 0.20f, 1.0f, 0.0f, 0.0f, 1.0f,
-				   -0.40f, 0.00f, 1.0f, 0.0f, 0.0f, 1.0f,
-					0.0f, -0.40f, 1.0f, 0.0f, 0.0f, 1.0f,
-					0.40f, 0.00f, 0.45f, 0.0f, 0.55f, 1.0f,
-					0.60f, -0.40f, 0.45f, 0.0f, 0.55f, 1.0f,
-					0.0f, -0.40f, 0.45f, 0.0f, 0.55f, 1.0f,
-				   -0.40f, 0.00f, 0.45f, 0.0f, 0.55f, 1.0f,
-			       -0.60f, -0.40f, 0.45f, 0.0f, 0.55f, 1.0f,
-					0.0f, -0.40f, 0.45f, 0.0f, 0.55f, 1.0f,
-				   -0.60f, -0.40f, 1.0f, 0.0f, 0.0f, 1.0f,
-				   -0.60f, -0.60f, 1.0f, 0.0f, 0.0f, 1.0f,
-					0.0f, -0.40f, 1.0f, 0.0f, 0.0f, 1.0f,
-					0.0f, -0.40f, 1.0f, 0.0f, 0.0f, 1.0f,
-					0.60f, -0.60f, 1.0f, 0.0f, 0.0f, 1.0f,
-					0.60f, -0.40f, 1.0f, 0.0f, 0.0f, 1.0f,
-					0.60f, -0.60f, 1.0f, 0.0f, 0.0f, 1.0f,
-					0.0f, -0.40f, 1.0f, 0.0f, 0.0f, 1.0f,
-				   -0.60f, -0.60f, 1.0f, 0.0f, 0.0f, 1.0f,
-				   -0.60f, -0.60f, 0.0f, 1.0f, 0.0f, 1.0f,
-				   -0.40f, -0.80f, 0.0f, 1.0f, 0.0f, 1.0f,
-				   -0.20f, -0.60f, 0.0f, 1.0f, 0.0f, 1.0f,
-					0.0f, -0.80f, 0.0f, 1.0f, 0.0f, 1.0f,
-					0.20f, -0.60f, 0.0f, 1.0f, 0.0f, 1.0f,
-				   -0.20f, -0.60f, 0.0f, 1.0f, 0.0f, 1.0f,
-					0.20f, -0.60f, 0.0f, 1.0f, 0.0f, 1.0f,
-					0.40f, -0.80f, 0.0f, 1.0f, 0.0f, 1.0f,
-					0.60f, -0.60f, 0.0f, 1.0f, 0.0f, 1.0f,
-				   -0.20f, 0.20f, 0.75f, 0.75f, 0.75f, 1.0f,
-					0.0f, 0.20f, 0.75f, 0.75f, 0.75f, 1.0f,
-				   -0.20f, 0.40f, 0.75f, 0.75f, 0.75f, 1.0f,
-				   -0.20f, 0.40f, 0.75f, 0.75f, 0.75f, 1.0f,
-					0.0f, 0.60f, 0.75f, 0.75f, 0.75f, 1.0f,
-					0.0f, 0.20f, 0.75f, 0.75f, 0.75f, 1.0f,
-					0.0f, 0.60f, 0.75f, 0.75f, 0.75f, 1.0f,
-					0.20f, 0.40f, 0.75f, 0.75f, 0.75f, 1.0f,
-					0.0f, 0.40f, 0.75f, 0.75f, 0.75f, 1.0f,
-					0.20f, 0.40f, 0.75f, 0.75f, 0.75f, 1.0f,
-					0.20f, 0.20f, 0.75f, 0.75f, 0.75f, 1.0f,
-					0.0f, 0.20f, 0.75f, 0.75f, 0.75f, 1.0f,
-					0.0f, 0.40f, 0.75f, 0.75f, 0.75f, 1.0f,
-					0.20f, 0.40f, 0.75f, 0.75f, 0.75f, 1.0f,
-					0.0f, 0.20f, 0.75f, 0.75f, 0.75f, 1.0f,
-					0.0f, 0.31f, 0.0f, 0.0f, 0.0f, 1.0f,
-					0.08f, 0.40f, 0.0f, 0.0f, 0.0f, 1.0f,
-					0.0f, 0.50f, 0.0f, 0.0f, 0.0f, 1.0f,
-					0.0f, 0.50f, 0.0f, 0.0f, 0.0f, 1.0f,
-				    -0.07f, 0.39f, 0.0f, 0.0f, 0.0f, 1.0f,
-					0.0f, 0.31f, 0.0f, 0.0f, 0.0f, 1.0f
-			};
-
-			//Uncentered enemy
-			//float enemyverts[numVerts * numAttributeComponentsPerVertex] = 
-			//{
-			//-0.40f, -0.80f, 0.0f, 1.0f, 0.0f, 1.0f,-0.20f, -0.80f, 0.0f, 1.0f, 0.0f, 1.0f,-0.40f, -0.60f, 0.0f, 1.0f, 0.0f, 1.0f,-0.20f, -0.40f, 0.0f, 1.0f, 0.0f, 1.0f,0.0f, -0.60f, 0.0f, 1.0f, 0.0f, 1.0f,0.0f, -0.40f, 0.0f, 1.0f, 0.0f, 1.0f,0.0f, -0.40f, 0.0f, 1.0f, 0.0f, 1.0f,0.0f, -0.60f, 0.0f, 1.0f, 0.0f, 1.0f,
-			//0.20f, -0.40f, 0.0f, 1.0f, 0.0f, 1.0f,0.20f, -0.40f, 0.0f, 1.0f, 0.0f, 1.0f,0.40f, -0.60f, 0.0f, 1.0f, 0.0f, 1.0f,0.40f, -0.40f, 0.0f, 1.0f, 0.0f, 1.0f,0.40f, -0.40f, 1.0f, 0.0f, 0.0f, 1.0f,0.40f, -0.20f, 1.0f, 0.0f, 0.0f, 1.0f,-0.40f, -0.20f, 1.0f, 0.0f, 0.0f, 1.0f,-0.40f, -0.40f, 1.0f, 0.0f, 0.0f, 1.0f,
-			//0.40f, -0.40f, 1.0f, 0.0f, 0.0f, 1.0f,-0.40f, -0.20f, 1.0f, 0.0f, 0.0f, 1.0f,0.40f, -0.20f, 0.45f, 0.0f, 0.55f, 1.0f,0.40f, 0.0f, 0.45f, 0.0f, 0.55f, 1.0f,0.20f, -0.20f, 0.45f, 0.0f, 0.55f, 1.0f,0.40f, 0.0f, 0.45f, 0.0f, 0.55f, 1.0f,0.20f, 0.20f, 0.45f, 0.0f, 0.55f, 1.0f,0.20f, -0.20f, 0.45f, 0.0f, 0.55f, 1.0f,
-			//0.20f, 0.20f, 0.45f, 0.0f, 0.55f, 1.0f,-0.20f, 0.20f, 0.45f, 0.0f, 0.55f, 1.0f,-0.20f, -0.20f, 0.45f, 0.0f, 0.55f, 1.0f,-0.20f, -0.20f, 0.45f, 0.0f, 0.55f, 1.0f,0.20f, 0.20f, 0.45f, 0.0f, 0.55f, 1.0f,0.20f, -0.20f, 0.45f, 0.0f, 0.55f, 1.0f,-0.20f, 0.20f, 0.45f, 0.0f, 0.55f, 1.0f,-0.40f, 0.0f, 0.45f, 0.0f, 0.55f, 1.0f,
-			//-0.20f, 0.0f, 0.45f, 0.0f, 0.55f, 1.0f,-0.40f, 0.0f, 0.45f, 0.0f, 0.55f, 1.0f,-0.40f, -0.20f, 0.45f, 0.0f, 0.55f, 1.0f,-0.20f, 0.0f, 0.45f, 0.0f, 0.55f, 1.0f,-0.20f, 0.0f, 0.45f, 0.0f, 0.55f, 1.0f,-0.20f, -0.20f, 0.45f, 0.0f, 0.55f, 1.0f,-0.40f, -0.20f, 0.45f, 0.0f, 0.55f, 1.0f,-0.20f, 0.20f, 0.50f, 0.50f, 0.50f, 1.0f,
-			//-0.20f, 0.40f, 0.50f, 0.50f, 0.50f, 1.0f,0.0f, 0.60f, 0.50f, 0.50f, 0.50f, 1.0f,0.20f, 0.40f, 0.50f, 0.50f, 0.50f, 1.0f,0.20f, 0.20f, 0.50f, 0.50f, 0.50f, 1.0f,0.0f, 0.60f, 0.50f, 0.50f, 0.50f, 1.0f,-0.20f, 0.20f, 0.50f, 0.50f, 0.50f, 1.0f,0.20f, 0.20f, 0.50f, 0.50f, 0.50f, 1.0f,0.0f, 0.60f, 0.50f, 0.50f, 0.50f, 1.0f,
-			//-0.00f, 0.45f, 0.0f, 0.0f, 0.0f, 1.0f,0.05f, 0.39f, 0.0f, 0.0f, 0.0f, 1.0f,0.00f, 0.31f, 0.0f, 0.0f, 0.0f, 1.0f,-0.00f, 0.45f, 0.0f, 0.0f, 0.0f, 1.0f,0.00f, 0.31f, 0.0f, 0.0f, 0.0f, 1.0f,-0.04f, 0.40f, 0.0f, 0.0f, 0.0f, 1.0f
-			//};
-
-
-			// Create the mesh.
-			{
-				// Generate a buffer for our vertex attributes.
-				glGenBuffers(1, &m_VBO); // m_VBO is a GLuint.
-
-				// Set this VBO to be the currently active one.
-				glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-
-				// Copy our attribute data into the VBO.
-				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponentsPerVertex * numVerts, enemyverts, GL_STATIC_DRAW);
-			}
-		}
-		if (a == ObjectType::PickUp)
-		{
-
-			const int numVerts = 30;
-			const int numAttributeComponentsPerVertex = 6;
-			float pickUpverts[numVerts * numAttributeComponentsPerVertex] = {
-				0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,-0.20f, -0.40f, 1.0f, 0.0f, 1.0f, 1.0f,-0.40f, -0.20f, 1.0f, 0.0f, 1.0f, 1.0f,0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,-0.40f, 0.20f, 1.0f, 0.0f, 1.0f, 1.0f,-0.20f, 0.40f, 1.0f, 0.0f, 1.0f, 1.0f,0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,0.20f, 0.40f, 1.0f, 0.0f, 1.0f, 1.0f,
-				0.40f, 0.20f, 1.0f, 0.0f, 1.0f, 1.0f,0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,0.40f, -0.20f, 1.0f, 0.0f, 1.0f, 1.0f,0.20f, -0.40f, 1.0f, 0.0f, 1.0f, 1.0f,0.20f, -0.40f, 0.50f, 0.50f, 0.50f, 1.0f,-0.20f, -0.40f, 0.50f, 0.50f, 0.50f, 1.0f,0.0f, 0.0f, 0.50f, 0.50f, 0.50f, 1.0f,0.40f, -0.20f, 0.50f, 0.50f, 0.50f, 1.0f,
-				0.0f, 0.0f, 0.50f, 0.50f, 0.50f, 1.0f,0.40f, 0.20f, 0.50f, 0.50f, 0.50f, 1.0f,0.20f, 0.40f, 0.50f, 0.50f, 0.50f, 1.0f,-0.20f, 0.40f, 0.50f, 0.50f, 0.50f, 1.0f,0.0f, 0.0f, 0.50f, 0.50f, 0.50f, 1.0f,-0.40f, 0.20f, 0.50f, 0.50f, 0.50f, 1.0f,0.0f, 0.0f, 0.50f, 0.50f, 0.50f, 1.0f,-0.40f, -0.20f, 0.50f, 0.50f, 0.50f, 1.0f,
-				0.40f, -0.20f, 1.0f, 1.0f, 0.0f, 1.0f,0.60f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,0.40f, 0.20f, 1.0f, 1.0f, 0.0f, 1.0f,-0.40f, 0.20f, 1.0f, 1.0f, 0.0f, 1.0f,-0.60f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,-0.40f, -0.20f, 1.0f, 1.0f, 0.0f, 1.0f
-			};
-
-			// Create the mesh.
-			{
-				// Generate a buffer for our vertex attributes.
-				glGenBuffers(1, &m_VBO); // m_VBO is a GLuint.
-
-				// Set this VBO to be the currently active one.
-				glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-
-				// Copy our attribute data into the VBO.
-				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numAttributeComponentsPerVertex * numVerts, pickUpverts, GL_STATIC_DRAW);
-			}
-		}
-
-	}
 
 
 

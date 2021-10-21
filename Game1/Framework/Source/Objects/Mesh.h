@@ -9,16 +9,18 @@ namespace fw {
 class Mesh
 {
 public:
-	Mesh(ObjectType);
+	Mesh(GLenum primitiveType, const std::vector<float>& verts);
 	virtual ~Mesh();
 
-	virtual void Draw(ShaderProgram* pShader);
+	virtual void Draw(ShaderProgram* pShader, vec2 pos, float time, float scale);
 
-	void CreateMesh(ObjectType);
 
 protected:
 	GLuint m_VBO;
-	ObjectType m_eCurrentObject;
+	
+
+	GLenum m_PrimitiveType;
+	int m_NumVerts;
 
 };
 

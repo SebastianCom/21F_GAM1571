@@ -7,11 +7,10 @@ namespace fw {
 	{
 	public:
 
-		Enemy(float X, float Y);
+		Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, vec2 pos);
 		~Enemy();
 
 		void OnUpdate(float deltaTime)override;
-		void Draw()override;
 	
 	private:
 		

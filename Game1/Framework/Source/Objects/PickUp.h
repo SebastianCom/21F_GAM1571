@@ -7,11 +7,10 @@ namespace fw {
 	{
 	public:
 
-		PickUp(float X, float Y);
+		PickUp(fw::Mesh* pMesh, fw::ShaderProgram* pShader, vec2 pos);
 		~PickUp();
 
 		void OnUpdate(float deltaTime)override;
-		void Draw()override;
 
 	private:
 		

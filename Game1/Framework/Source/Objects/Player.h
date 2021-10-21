@@ -8,11 +8,10 @@ namespace fw {
 	{
 	public:
 
-		Player(PlayerController* playerController);
+		Player(fw::Mesh* pMesh, fw::ShaderProgram* pShader, vec2 pos, PlayerController* playerController);
 		~Player();
 
 		void OnUpdate(float deltaTime)override;
-		void Draw()override;
 
 
 	private:

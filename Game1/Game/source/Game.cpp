@@ -1,15 +1,13 @@
 
 #include "Framework.h"
 #include "Game.h"
+#include "Constants.h"
 
 Game::Game(fw::FWCore& fwCore)
 	:m_FWCore(fwCore)
 {
 
 	m_TimePassed = 0.0f;
-	m_pPickUpMesh = nullptr;
-	m_pPlayerMesh = nullptr;
-	m_pEnemyMesh = nullptr;
 	m_pGameObjectShader = nullptr;
 	m_pImGuiManager = nullptr;
 	m_pPlayer = nullptr;
@@ -23,11 +21,12 @@ Game::Game(fw::FWCore& fwCore)
 
 Game::~Game()
 {
-	delete m_pPickUpMesh;
+	for (auto& pair : m_Meshes)
+	{
+		delete pair.second;
+	}
 	delete m_pGameObjectShader;
 	delete m_pImGuiManager;
-	delete m_pPlayerMesh;
-	delete m_pEnemyMesh;
 	delete m_pPlayer;
 	
 	for (int i = 0; i < m_vecEnemies.size(); i++)
@@ -51,12 +50,12 @@ void Game::Init()
 	m_pImGuiManager->Init();
 
 	//InitList
-	m_pPickUpMesh = new fw::Mesh(fw::ObjectType::PickUp);
-	m_pPlayerMesh = new fw::Mesh(fw::ObjectType::Player);
-	m_pEnemyMesh = new fw::Mesh(fw::ObjectType::Enemny);
 	m_pGameObjectShader = new fw::ShaderProgram("Data/Shaders/Basic.vert", "Data/Shaders/Basic.frag");
+	m_Meshes["Player"] = new fw::Mesh(GL_TRIANGLES, PLAYER_VERTS);
+	m_Meshes["Enemy"] = new fw::Mesh(GL_TRIANGLES, ENEMY1_VERTS);
+	m_Meshes["PickUp"] = new fw::Mesh(GL_TRIANGLES, PICKUP_VERTS);
 	m_pPlayerController = new fw::PlayerController();
-	m_pPlayer = new fw::Player(m_pPlayerController);
+	m_pPlayer = new fw::Player(m_Meshes["Player"], m_pGameObjectShader, fw::vec2(0,0), m_pPlayerController);
 	
 	SpawnGameObjects();
 }
@@ -73,8 +72,8 @@ void Game::Update(float deltaTime)
 	ImGui::Text("Score: %d", m_Score);
 	ImGui::Text("Enemies Remaining: %d", m_vecEnemies.size());
 	ImGui::Text("Pick Ups Remaining: %d", m_vecPickUps.size());
-	ImGui::Text("Player X: %.2f", m_pPlayer->GetX());
-	ImGui::Text("Player Y: %.2f", m_pPlayer->GetY());
+	ImGui::Text("Player X: %.2f", m_pPlayer->GetPosition().x);
+	ImGui::Text("Player Y: %.2f", m_pPlayer->GetPosition().y);
 
 
 	m_TimePassed += deltaTime;
@@ -90,41 +89,37 @@ void Game::Draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
     
-	glUseProgram(m_pGameObjectShader->GetProgram());
-
-	//Unifrom Values for offset and scale
-	GLint u_Offset = glGetUniformLocation(m_pGameObjectShader->GetProgram(), "u_Offset");
-	GLint u_Scale = glGetUniformLocation(m_pGameObjectShader->GetProgram(), "u_Scale");
-	
-		//Set Player's unifrom values
-		glUniform2f(u_Offset, m_pPlayer->GetX(), m_pPlayer->GetY());
-		glUniform1f(u_Scale, 1);
-		m_pPlayerMesh->Draw(m_pGameObjectShader);
+		m_pPlayer->Draw();
 		
-		//Set Enemies Unifrom values
+		for (int i = 0; i < m_vecEnemies.size(); i++)
+		{
+			m_vecEnemies.at(i)->Draw();
+		}
+		
+		for (int i = 0; i < m_vecPickUps.size(); i++)
+		{
+			m_vecPickUps.at(i)->Draw();
+		}
+		
+		//Set Enemies Scale
 		for (int i = 0; i < m_vecEnemies.size(); i++)
 		{
 	
 			if (m_vecEnemies.at(i)->GetReadyToDie() == true)
 			{
-				glUniform1f(u_Scale, m_vecEnemies.at(i)->GetShrinkageTimer()); 
+				m_vecEnemies.at(i)->SetScale(m_vecEnemies.at(i)->GetShrinkageTimer()); 
 			}
 			else
 			{
-				glUniform1f(u_Scale, 1);
+				m_vecEnemies.at(i)->SetScale(1);
 			}
-				
-			glUniform2f(u_Offset, m_vecEnemies.at(i)->GetX(), m_vecEnemies.at(i)->GetY());	
-			m_pEnemyMesh->Draw(m_pGameObjectShader);
 		}
 
-		//Sets Pick Ups Uniform Values
+		//Sets Pick Ups Scale
 		for (int i = 0; i < m_vecPickUps.size(); i++)
 		{
-
-			glUniform2f(u_Offset, m_vecPickUps.at(i)->GetX(), m_vecPickUps.at(i)->GetY());
-			glUniform1f(u_Scale, m_vecPickUps.at(i)->GetShrinkageTimer());
-			m_pPickUpMesh->Draw(m_pGameObjectShader);
+			
+			m_vecPickUps.at(i)->SetScale(m_vecPickUps.at(i)->GetShrinkageTimer());
 			
 		}
 	
@@ -161,7 +156,7 @@ void Game::HandleCollision(float deltaTime)
 		{
 			if (m_vecEnemies.at(i)->GetActive() == true)
 			{
-				if (m_pPlayer->CheckCollision(m_vecEnemies.at(i), m_pPlayer->GetX(), m_pPlayer->GetY()) == true)
+				if (m_pPlayer->CheckCollision(m_vecEnemies.at(i), m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y) == true)
 				{
 					m_pPlayer->SetActive(false);
 					m_pPlayer->SetX(m_pPlayer->RandomFloat(-10.0f, 10.0f));
@@ -169,7 +164,7 @@ void Game::HandleCollision(float deltaTime)
 
 					for (int j = 0; j < m_vecEnemies.size(); j++)
 					{
-						if (m_pPlayer->CheckCollision(m_vecEnemies.at(j), m_pPlayer->GetX(), m_pPlayer->GetY()) == true)
+						if (m_pPlayer->CheckCollision(m_vecEnemies.at(j), m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y) == true)
 						{
 							m_pPlayer->SetX(m_pPlayer->RandomFloat(-10.0f, 10.0f));
 							m_pPlayer->SetY(m_pPlayer->RandomFloat(-10.0f, 10.0f));
@@ -207,7 +202,7 @@ void Game::HandleCollision(float deltaTime)
 		{
 			if (m_vecPickUps.at(i)->GetActive() == true)
 			{
-				if (m_pPlayer->CheckCollision(m_vecPickUps.at(i), m_pPlayer->GetX(), m_pPlayer->GetY()) == true)
+				if (m_pPlayer->CheckCollision(m_vecPickUps.at(i), m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y) == true)
 				{
 					m_vecPickUps.at(i)->SetReadyToDie(true);
 					m_Score += 10;
@@ -238,14 +233,14 @@ void Game::SpawnGameObjects()
 	for (int i = 0; i < static_cast<int>(m_pPlayer->RandomFloat(5.0f, 15.0f)); i++)
 	{
 
-		m_vecEnemies.push_back(new fw::Enemy(m_pPlayer->RandomFloat(-8.75f, 8.75f), m_pPlayer->RandomFloat(-10.0f, 10.0f)));
+		m_vecEnemies.push_back(new fw::Enemy(m_Meshes["Enemy"], m_pGameObjectShader, fw::vec2( m_pPlayer->RandomFloat(-10.0f, 10.0f), m_pPlayer->RandomFloat(-10.0f, 10.0f) )));
 
 		//If enemy is spawned on another enemy, it will be moved before being set active.
 		if (i > 0)
 		{
 			for (int j = 0; j < i; j++)
 			{
-				if (m_vecEnemies.at(i)->CheckCollision(m_vecEnemies.at(j), m_vecEnemies.at(i)->GetX(), m_vecEnemies.at(i)->GetY()) == true || m_vecEnemies.at(i)->CheckCollision(m_pPlayer, m_vecEnemies.at(i)->GetX(), m_vecEnemies.at(i)->GetY()) == true)
+				if (m_vecEnemies.at(i)->CheckCollision(m_vecEnemies.at(j), m_vecEnemies.at(i)->GetPosition().x, m_vecEnemies.at(i)->GetPosition().y) == true || m_vecEnemies.at(i)->CheckCollision(m_pPlayer, m_vecEnemies.at(i)->GetPosition().x, m_vecEnemies.at(i)->GetPosition().y) == true)
 				{
 					m_vecEnemies.at(i)->SetX(m_pPlayer->RandomFloat(-8.75f, 8.75f));
 					m_vecEnemies.at(i)->SetY(m_pPlayer->RandomFloat(-8.75f, 8.75f));
@@ -265,7 +260,7 @@ void Game::SpawnGameObjects()
 	//Spawn the pick ups
 	for (int i = 0; i < static_cast<int>(m_pPlayer->RandomFloat(1.0f, 5.0f)); i++)
 	{
-		m_vecPickUps.push_back(new fw::PickUp(m_pPlayer->RandomFloat(-10.0f, 10.0f), m_pPlayer->RandomFloat(-10.0f, 10.0f)));
+		m_vecPickUps.push_back(new fw::PickUp(m_Meshes["PickUp"], m_pGameObjectShader, fw::vec2(m_pPlayer->RandomFloat(-10.0f, 10.0f), m_pPlayer->RandomFloat(-10.0f, 10.0f))));
 		m_vecPickUps.at(i)->SetActive(true);
 
 
@@ -274,7 +269,7 @@ void Game::SpawnGameObjects()
 		{
 			for (int j = 0; j < i; j++)
 			{
-				if (m_vecPickUps.at(i)->CheckCollision(m_vecPickUps.at(j), m_vecPickUps.at(i)->GetX(), m_vecPickUps.at(i)->GetY()) == true || m_vecPickUps.at(i)->CheckCollision(m_pPlayer, m_vecPickUps.at(i)->GetX(), m_vecPickUps.at(i)->GetY()) == true)
+				if (m_vecPickUps.at(i)->CheckCollision(m_vecPickUps.at(j), m_vecPickUps.at(i)->GetPosition().x, m_vecPickUps.at(i)->GetPosition().y) == true || m_vecPickUps.at(i)->CheckCollision(m_pPlayer, m_vecPickUps.at(i)->GetPosition().x, m_vecPickUps.at(i)->GetPosition().y) == true)
 				{
 					m_vecPickUps.at(i)->SetX(m_pPlayer->RandomFloat(-8.75f, 8.75f));
 					m_vecPickUps.at(i)->SetY(m_pPlayer->RandomFloat(-8.75f, 8.75f));
@@ -286,7 +281,7 @@ void Game::SpawnGameObjects()
 		// So Pickups do not spawn on enemies
 		for (int j = 0; j < m_vecEnemies.size(); j++)
 		{
-			if (m_vecPickUps.at(i)->CheckCollision(m_vecEnemies.at(j), m_vecPickUps.at(i)->GetX(), m_vecPickUps.at(i)->GetY()) == true || m_vecPickUps.at(i)->CheckCollision(m_pPlayer, m_vecPickUps.at(i)->GetX(), m_vecPickUps.at(i)->GetY()) == true)
+			if (m_vecPickUps.at(i)->CheckCollision(m_vecEnemies.at(j), m_vecPickUps.at(i)->GetPosition().x, m_vecPickUps.at(i)->GetPosition().y) == true || m_vecPickUps.at(i)->CheckCollision(m_pPlayer, m_vecPickUps.at(i)->GetPosition().x, m_vecPickUps.at(i)->GetPosition().y) == true)
 			{
 				m_vecPickUps.at(i)->SetX(m_pPlayer->RandomFloat(-8.75f, 8.75f));
 				m_vecPickUps.at(i)->SetY(m_pPlayer->RandomFloat(-8.75f, 8.75f));

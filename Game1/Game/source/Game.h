@@ -1,4 +1,4 @@
-
+#pragma once
 #include "Framework.h"
 
 class Game : public fw::GameCore
@@ -23,9 +23,6 @@ protected:
 	fw::FWCore& m_FWCore;
 
 	float m_TimePassed;
-	fw::Mesh* m_pPickUpMesh;
-	fw::Mesh* m_pPlayerMesh;
-	fw::Mesh* m_pEnemyMesh;
 	fw::ShaderProgram* m_pGameObjectShader;
 
 	fw::ImGuiManager* m_pImGuiManager;
@@ -35,6 +32,8 @@ protected:
 	std::vector<fw::Enemy*> m_vecEnemies;
 	std::vector<fw::PickUp*> m_vecPickUps;
 
+	
+
 	float m_X;
 	float m_Y;
 	
@@ -42,6 +41,8 @@ protected:
 	int m_Score;
 	fw::PlayerController* m_pPlayerController;
 	
+	std::map<std::string, fw::Mesh*> m_Meshes;
+
 
 
 };

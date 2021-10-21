@@ -5,13 +5,13 @@
 #include "Player.h"
 
 namespace fw {
-	Player::Player(PlayerController* playerController)
+	Player::Player(fw::Mesh* pMesh, fw::ShaderProgram* pShader, vec2 pos, PlayerController* playerController) 
+		:GameObject(pMesh, pShader, pos), 
+		m_pPlayerController(playerController)
 	{
 		m_Speed = 10;
-		SetX(0);
-		SetY(0);
+		SetPosition(pos);
 		m_Radius = 0.80f;
-		m_pPlayerController = playerController;
 	}
 	Player::~Player()
 	{
@@ -21,25 +21,22 @@ namespace fw {
 
 		if (m_pPlayerController->IsRight())
 		{
-			m_X += m_Speed * deltaTime;
+			m_Position.x += m_Speed * deltaTime;
 		}
 
 		if (m_pPlayerController->IsLeft())
 		{
-			m_X -= m_Speed * deltaTime;
+			m_Position.x -= m_Speed * deltaTime;
 		}
 
 		if (m_pPlayerController->IsUp())
 		{
-			m_Y += m_Speed * deltaTime;
+			m_Position.y += m_Speed * deltaTime;
 		}
 		if (m_pPlayerController->IsDown())
 		{
-			m_Y -= m_Speed * deltaTime;
+			m_Position.y -= m_Speed * deltaTime;
 		}
 
-	}
-	void Player::Draw()
-	{
 	}
 } // namespace fw

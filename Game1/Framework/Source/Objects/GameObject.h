@@ -1,5 +1,7 @@
 #pragma once
 #include "Framework.h"
+#include "Math/Vector.h"
+#include "Objects/Mesh.h"
 #include <random>
 #include <iostream>
 
@@ -18,7 +20,7 @@ namespace fw {
 	{
 	public:
 
-		GameObject();
+		GameObject(fw::Mesh* pMesh, fw::ShaderProgram* pShader, vec2 pos);
 		~GameObject();
 
 		void virtual OnUpdate(float deltaTime);
@@ -26,11 +28,11 @@ namespace fw {
 		void virtual Draw();
 
 		void SetX(float x);
-		float GetX();
-
 		void SetY(float y);
-		float GetY();
+		void SetPosition(fw::vec2 pos);
 		
+		fw::vec2 GetPosition();
+
 		void SetReadyToDie(bool a);
 		bool GetReadyToDie();
 
@@ -48,14 +50,19 @@ namespace fw {
 		void SetActive(bool a);
 		bool GetActive();
 
+		void SetScale(float scale) { m_Scale = scale; };
+		float GetScale() { return m_Scale; };
+
 		void SetShrinkageTimer(float a);
 		void DecrementShrinkageTimer(float a);
 		float GetShrinkageTimer();
 
 	protected:
 		
-		float m_X;
-		float m_Y;
+		fw::vec2 m_Position;
+		fw::Mesh* m_pMesh;
+		fw::ShaderProgram* m_pShader;
+		float m_Scale;
 		float m_Speed;
 		float m_Radius;
 		ObjectType m_ObjectType;

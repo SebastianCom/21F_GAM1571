@@ -9,16 +9,19 @@ std::mt19937 mersenneTwister(seed());
 
 namespace fw {
 
-	GameObject::GameObject()
+	GameObject::GameObject(fw::Mesh* pMesh, fw::ShaderProgram* pShader, vec2 pos)
 	{
-		m_X = 0;
-		m_Y = 0;
+
+		m_Position = { pos };
+		m_pMesh = { pMesh };
+		m_pShader = { pShader };
 		m_Speed = 0;
 		m_Radius = 0;
 		m_ReadyToDie = false;
 		m_IsActive = false;
 		m_ObjectType = ObjectType::Enemny;
 		m_Shrinkage = 1.0f;
+		m_Scale = 1.0f;
 		
 	}
 
@@ -33,27 +36,30 @@ namespace fw {
 
 	void GameObject::Draw()
 	{
+		m_pMesh->Draw(m_pShader, m_Position, 0.0f, m_Scale);
 	}
 
 	void GameObject::SetX(float x)
 	{
-		m_X = x;
-	}
-
-	float GameObject::GetX()
-	{
-		return m_X;
+		m_Position.x = x;
 	}
 
 	void GameObject::SetY(float y)
 	{
-		m_Y = y;
+		m_Position.y = y;
 	}
 
-	float GameObject::GetY()
+	void GameObject::SetPosition(fw::vec2 pos)
 	{
-		return m_Y;
+		m_Position = pos;
 	}
+
+	fw::vec2 GameObject::GetPosition()
+	{
+		return m_Position;
+	}
+
+
 
 	void GameObject::SetReadyToDie(bool a)
 	{
@@ -101,10 +107,11 @@ namespace fw {
 	{
 		if (object != nullptr)
 		{
-			float distanceSquared = ((x - object->m_X) * (x - object->m_X) + (y - object->m_Y) * (y - object->m_Y));
+			float distanceSquared = ((x - object->m_Position.x) * (x - object->m_Position.x) + (y - object->m_Position.y) * (y - object->m_Position.y));
 			float radiiSquared = (m_Radius + object->m_Radius) * (m_Radius + object->m_Radius);
 			return distanceSquared <= radiiSquared;
 		}
+		return 0;
 	}
 
 	void GameObject::SetActive(bool a)

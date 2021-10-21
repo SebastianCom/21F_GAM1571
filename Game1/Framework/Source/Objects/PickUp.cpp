@@ -5,11 +5,11 @@
 #include "PickUp.h"
 
 namespace fw {
-	PickUp::PickUp(float X, float Y)
+	PickUp::PickUp(fw::Mesh* pMesh, fw::ShaderProgram* pShader, vec2 pos) 
+		: GameObject(pMesh, pShader, pos)
 	{
 		m_Speed = 5;
-		SetX(X);
-		SetY(Y);
+		SetPosition(pos);
 		m_Radius = 0.60f;
 	}
 	PickUp::~PickUp()
@@ -20,7 +20,5 @@ namespace fw {
 
 
 	}
-	void PickUp::Draw()
-	{
-	}
+
 } // namespace fw

@@ -5,11 +5,11 @@
 #include "Enemy.h"
 
 namespace fw {
-	Enemy::Enemy(float X, float Y) 
+	Enemy::Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, vec2 pos) 
+		: GameObject(pMesh, pShader, pos)
 	{
 		m_Speed = 5;
-		SetX(X);
-		SetY(Y);
+		SetPosition(pos);
 		m_Radius = 0.80f;
 	}
 	Enemy::~Enemy()
@@ -20,8 +20,6 @@ namespace fw {
 
 
 	}
-	void Enemy::Draw()
-	{
-	}
+
 
 } // namespace fw
