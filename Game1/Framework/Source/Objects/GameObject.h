@@ -7,6 +7,9 @@
 
 
 namespace fw {
+
+	float RandomFloat(float min, float max);
+
 	enum class ObjectType
 	{
 		Player = 1,
@@ -42,7 +45,7 @@ namespace fw {
 		void SetObjectType(ObjectType a);
 		ObjectType GetObjectType();
 
-		float RandomFloat(float min, float max);
+		
 
 		float virtual GetRadius(ObjectType a);
 		bool  virtual CheckCollision( const GameObject* object, float x, float y);

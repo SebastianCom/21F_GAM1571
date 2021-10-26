@@ -34,11 +34,10 @@ protected:
 
 	
 
-	float m_X;
-	float m_Y;
 	
 	int m_Lives;
 	int m_Score;
+
 	fw::PlayerController* m_pPlayerController;
 	
 	std::map<std::string, fw::Mesh*> m_Meshes;

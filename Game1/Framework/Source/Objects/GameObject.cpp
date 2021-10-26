@@ -9,6 +9,12 @@ std::mt19937 mersenneTwister(seed());
 
 namespace fw {
 
+	float RandomFloat(float min, float max) //move to random cpp and h
+	{
+		std::uniform_real_distribution<float> distribution(min, max);
+		return distribution(mersenneTwister);
+	}
+
 	GameObject::GameObject(fw::Mesh* pMesh, fw::ShaderProgram* pShader, vec2 pos)
 	{
 
@@ -19,10 +25,9 @@ namespace fw {
 		m_Radius = 0;
 		m_ReadyToDie = false;
 		m_IsActive = false;
-		m_ObjectType = ObjectType::Enemny;
+		m_ObjectType = ObjectType::Enemny; //spelling error
 		m_Shrinkage = 1.0f;
 		m_Scale = 1.0f;
-		
 	}
 
 	GameObject::~GameObject()
@@ -91,11 +96,7 @@ namespace fw {
 		return m_ObjectType;
 	}
 
-	float GameObject::RandomFloat(float min, float max)
-	{
-		std::uniform_real_distribution<float> distribution(min, max);
-		return distribution(mersenneTwister);
-	}
+
 
 	float GameObject::GetRadius(ObjectType a)
 	{ 
@@ -111,7 +112,7 @@ namespace fw {
 			float radiiSquared = (m_Radius + object->m_Radius) * (m_Radius + object->m_Radius);
 			return distanceSquared <= radiiSquared;
 		}
-		return 0;
+		return false;
 	}
 
 	void GameObject::SetActive(bool a)

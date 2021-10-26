@@ -46,8 +46,6 @@ namespace fw {
 			// Set this VBO to be the currently active one.
 			glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
-			// Set this VBO to be the currently active one.
-			glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
 			// Get the attribute variable’s location from the shader.
 			GLint a_Position = glGetAttribLocation(pShader->GetProgram(), "a_Position");
