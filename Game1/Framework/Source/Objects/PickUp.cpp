@@ -18,7 +18,13 @@ namespace fw {
 	void PickUp::OnUpdate(float deltaTime)
 	{
 
-
+		if (GetReadyToDie() == true)
+		{
+			SetScale(GetShrinkageTimer());
+		}
+		
 	}
+
+
 
 } // namespace fw

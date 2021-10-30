@@ -44,11 +44,11 @@ namespace fw {
 
 		void SetObjectType(ObjectType a);
 		ObjectType GetObjectType();
-
 		
 
-		float virtual GetRadius(ObjectType a);
-		bool  virtual CheckCollision( const GameObject* object, float x, float y);
+		float virtual GetRadius();
+		void SetRadius(float radius);
+		bool  virtual CheckCollision( const GameObject* object);
 
 		void SetActive(bool a);
 		bool GetActive();

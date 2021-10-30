@@ -29,6 +29,8 @@ protected:
 
 	fw::Player* m_pPlayer;
 
+	std::vector<fw::GameObject*> m_ActiveGameObjects;
+
 	std::vector<fw::Enemy*> m_vecEnemies;
 	std::vector<fw::PickUp*> m_vecPickUps;
 

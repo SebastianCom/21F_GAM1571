@@ -7,7 +7,7 @@ namespace fw {
 	public:
 
 		vec2() : x(0), y(0) {}
-		vec2(float nx, float ny) : x(nx), y(nx) {}
+		vec2(float nx, float ny) : x(nx), y(ny) {}
 
 		static void Test();
 

@@ -18,12 +18,15 @@ namespace fw {
 	void Enemy::OnUpdate(float deltaTime)
 	{
 		//If Enemies at i is ready to die set the scale value to the shrinkage timer.
-		if (GetReadyToDie() == true)
-		{
-			SetScale(GetShrinkageTimer());
-		}
+
+			if (GetReadyToDie() == true)
+			{
+				SetScale(GetShrinkageTimer());
+			}
 
 	}
+
+
 
 
 } // namespace fw

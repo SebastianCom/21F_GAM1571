@@ -41,7 +41,7 @@ namespace fw {
 
 	void GameObject::Draw()
 	{
-		m_pMesh->Draw(m_pShader, m_Position, 0.0f, m_Scale);
+			m_pMesh->Draw(m_pShader, m_Position, 0.0f, m_Scale);
 	}
 
 	void GameObject::SetX(float x)
@@ -98,17 +98,22 @@ namespace fw {
 
 
 
-	float GameObject::GetRadius(ObjectType a)
+	float GameObject::GetRadius()
 	{ 
 		return m_Radius;
 	}
 
+	void GameObject::SetRadius(float radius)
+	{
+		m_Radius = radius;
+	}
 
-	bool GameObject::CheckCollision( const GameObject* object, float x, float y)
+
+	bool GameObject::CheckCollision( const GameObject* object)
 	{
 		if (object != nullptr)
 		{
-			float distanceSquared = ((x - object->m_Position.x) * (x - object->m_Position.x) + (y - object->m_Position.y) * (y - object->m_Position.y));
+			float distanceSquared = ( ( (m_Position.x - object->m_Position.x) * (m_Position.x - object->m_Position.x) ) + ( (m_Position.y - object->m_Position.y) * (m_Position.y - object->m_Position.y) ) );
 			float radiiSquared = (m_Radius + object->m_Radius) * (m_Radius + object->m_Radius);
 			return distanceSquared <= radiiSquared;
 		}

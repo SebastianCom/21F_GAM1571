@@ -11,6 +11,7 @@ namespace fw {
 		~Enemy();
 
 		void OnUpdate(float deltaTime)override;
+
 	
 	private:
 		
