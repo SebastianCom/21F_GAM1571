@@ -1,7 +1,8 @@
 #pragma once
 #include "Framework.h"
 #include "Math/Vector.h"
-#include "Objects/Mesh.h"
+#include "Mesh.h"
+#include "ShaderProgram.h"
 #include <random>
 #include <iostream>
 

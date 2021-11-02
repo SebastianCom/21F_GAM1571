@@ -17,6 +17,8 @@ workspace "GameSolution"
 		"Game/Data/Shaders/**.frag",
 		"Game/Source/**.cpp",
 		"Game/Source/**.h",
+		"Game/Source/GameObjects/**.cpp",
+		"Game/Source/GameObjects/**.h",
 		"BuildProjectFiles.bat",
 		"premake5.lua",
 

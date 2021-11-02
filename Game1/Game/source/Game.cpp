@@ -94,15 +94,7 @@ void Game::Update(float deltaTime)
 
 	m_pPlayer->OnUpdate(deltaTime);
 
-	//Set Enemies Scale
-	//for (int i = 0; i < m_vecEnemies.size(); i++)
-	//{
-	//	m_vecEnemies.at(i)->OnUpdate(deltaTime);
-	//}
-	//for (int i = 0; i < m_vecPickUps.size(); i++)
-	//{
-	//	m_vecPickUps.at(i)->OnUpdate(deltaTime);
-	//}
+
 	for (int i = 0; i < m_ActiveGameObjects.size(); i++)
 	{
 		if (m_ActiveGameObjects.at(i) != nullptr)
@@ -111,7 +103,7 @@ void Game::Update(float deltaTime)
 		}
 	}
 
-	//HandleCollision(deltaTime);
+	HandleCollision(deltaTime);
 }
 
 void Game::Draw()
@@ -297,58 +289,6 @@ void Game::SpawnGameObjects()
 	}
 
 	m_pPlayer->SetActive(true); // when everything is in place activate the player.
-
-	
 								
-	//Keeping for one git update as i worte it today. May need it somewhere down the line					
-	////Spawn the pick ups
-	//for (int i = 0; i < static_cast<int>(fw::RandomFloat(1,5)); i++)
-	//{
-	//	//New pick up with mesh from the map, shader, random position.
-	//	m_vecPickUps.push_back(new fw::PickUp(m_Meshes["PickUp"], m_pGameObjectShader, fw::vec2()));
-	//	
-
-	//	bool colliding = true;
-	//	int loopCount = 0;
-	//	//If enemy is spawned on another enemy or the player, it will be moved before being set active. FLAWED*
-	//	while (colliding && loopCount < 1000)
-	//	{
-	//		m_vecPickUps.at(i)->SetX(fw::RandomFloat(-8.75f, 8.75f));
-	//		m_vecPickUps.at(i)->SetY(fw::RandomFloat(-8.75f, 8.75f));
-
-	//		colliding = false;
-	//		for (int j = 0; j < i; j++)
-	//		{
-	//			if (m_vecPickUps.at(i)->CheckCollision(m_vecPickUps.at(j), m_vecPickUps.at(i)->GetPosition().x, m_vecPickUps.at(i)->GetPosition().y) == true
-	//				|| m_vecPickUps.at(i)->CheckCollision(m_pPlayer, m_vecPickUps.at(i)->GetPosition().x, m_vecPickUps.at(i)->GetPosition().y) == true)
-	//			{
-
-	//				colliding = true;//***if this happens J will still increment before the next check meaning element 0 will never be checked again
-	//			}
-	//		}
-	//		for (int j = 0; j < m_vecEnemies.size(); j++)
-	//		{
-	//			if (m_vecPickUps.at(i)->CheckCollision(m_vecEnemies.at(j), m_vecPickUps.at(i)->GetPosition().x, m_vecPickUps.at(i)->GetPosition().y) == true)
-	//			{
-
-	//				colliding = true;//***if this happens J will still increment before the next check meaning element 0 will never be checked again
-	//			}
-	//		}
-
-	//		loopCount++;
-	//	}
-
-	//	if (colliding == true) //No suitable position, object is deleted
-	//	{
-	//		delete m_vecPickUps.at(i);
-	//		m_vecPickUps.pop_back();
-	//		break; //break only work on for and do while/ while
-	//	}
-	//
-	//	m_vecPickUps.at(i)->SetActive(true);
-
-	//}
-
-	
 
 }
