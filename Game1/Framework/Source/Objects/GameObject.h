@@ -30,6 +30,8 @@ namespace fw {
 		void virtual OnUpdate(float deltaTime);
 
 		void virtual Draw();
+		void virtual MoveTo(float deltaTime, fw::vec2 position);
+		void virtual SocailDistance(float deltaTime) {};
 
 		void SetX(float x);
 		void SetY(float y);
@@ -49,10 +51,14 @@ namespace fw {
 
 		float virtual GetRadius();
 		void SetRadius(float radius);
-		bool  virtual CheckCollision( const GameObject* object);
+		bool  CheckCollision( const GameObject* object);
+		bool  CheckCollision(fw::vec2 position, float radius);
 
 		void SetActive(bool a);
 		bool GetActive();
+
+		void SetChasing(bool isChasing) { m_Chasing = isChasing; }
+		bool GetChasing() { return m_Chasing; }
 
 		void SetScale(float scale) { m_Scale = scale; };
 		float GetScale() { return m_Scale; };
@@ -73,6 +79,7 @@ namespace fw {
 		bool m_ReadyToDie;
 		bool m_IsActive;
 		float m_Shrinkage;
+		bool m_Chasing;
 		
 	};
 

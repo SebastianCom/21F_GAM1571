@@ -13,9 +13,12 @@ namespace fw {
 
 		void OnUpdate(float deltaTime)override;
 
+		bool IsShooting();
+
+
 
 	private:
-		
+
 		PlayerController* m_pPlayerController;
 	};
 

@@ -12,9 +12,12 @@ namespace fw {
 
 		void OnUpdate(float deltaTime)override;
 
+		void MoveTo(float deltaTime, fw::vec2 position) override;
+		void SocailDistance(float deltaTime) override;
 	
 	private:
 		
+		fw::vec2 m_BackUpSpot;
 	};
 
 } // namespace fw

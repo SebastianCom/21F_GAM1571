@@ -12,6 +12,12 @@ namespace fw {
 		m_left = false;
 		m_up = false;
 		m_down = false;
+		m_shootup = false;
+		m_shootleft = false;
+		m_shootdown = false;
+		m_shootright = false;
+		m_Shot = false;
+
 	}
 
 	PlayerController::~PlayerController()
@@ -42,6 +48,27 @@ namespace fw {
 					if (pInputEvent->GetID() == VK_DOWN || pInputEvent->GetID() == 'S')
 					{
 						m_down = true;
+					}			
+					
+					if (pInputEvent->GetID() == 'I')
+					{
+						m_shootup = true;
+						m_Shot = true;
+					}		
+					if (pInputEvent->GetID() == 'J')
+					{
+						m_shootleft = true;
+						m_Shot = true;
+					}
+					if (pInputEvent->GetID() == 'K')
+					{
+						m_shootdown = true;
+						m_Shot = true;
+					}
+					if (pInputEvent->GetID() == 'L')
+					{
+						m_shootright = true;
+						m_Shot = true;
 					}
 				}
 			}
@@ -66,9 +93,31 @@ namespace fw {
 					{
 						m_down = false;
 					}
+
+					if (pInputEvent->GetID() == 'I')
+					{
+						m_shootup = false;
+					}
+					if (pInputEvent->GetID() == 'J')
+					{
+						m_shootleft = false;
+					}
+					if (pInputEvent->GetID() == 'K')
+					{
+						m_shootdown = false;
+					}
+					if (pInputEvent->GetID() == 'L')
+					{
+						m_shootright = false;
+					}
 				}
 			}
 		}
+	}
+
+	void PlayerController::SetShot(bool hasShot)
+	{
+		m_Shot = hasShot;
 	}
 
 } // namespace fw

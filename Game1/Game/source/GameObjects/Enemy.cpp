@@ -7,9 +7,10 @@ namespace fw {
 	Enemy::Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, vec2 pos) 
 		: GameObject(pMesh, pShader, pos)
 	{
-		m_Speed = 5;
+		m_Speed = 1;
 		SetPosition(pos);
 		m_Radius = 0.80f;
+		m_BackUpSpot = {fw::RandomFloat(-9,9),fw::RandomFloat(-9,9)};
 	}
 	Enemy::~Enemy()
 	{
@@ -23,6 +24,38 @@ namespace fw {
 				SetScale(GetShrinkageTimer());
 			}
 
+	}
+
+	void Enemy::MoveTo(float deltaTime, fw::vec2 position)
+	{
+		if (m_Position.x > position.x)
+		{
+			m_Position.x -= m_Speed * deltaTime;
+		}
+		if (m_Position.x < position.x)
+		{
+			m_Position.x += m_Speed * deltaTime;
+		}
+		if (m_Position.y > position.y)
+		{
+			m_Position.y -= m_Speed * deltaTime;
+		}
+		if (m_Position.y < position.y)
+		{
+			m_Position.y += m_Speed * deltaTime;
+		}
+	}
+
+	void Enemy::SocailDistance(float deltaTime)
+	{
+
+		MoveTo(deltaTime, fw::vec2(m_BackUpSpot));
+		
+		if (CheckCollision(m_BackUpSpot,0.80f)) //Janky but i like it for now. There seems to be a que due to the way it used the vector. 
+		{
+			m_Chasing = true;
+		}
+		
 	}
 
 

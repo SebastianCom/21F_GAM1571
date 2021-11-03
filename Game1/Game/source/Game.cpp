@@ -14,6 +14,7 @@ Game::Game(fw::FWCore& fwCore)
 	m_pPlayerController = nullptr;
 	m_Lives = 3;
 	m_Score = 0;
+	m_ShotCoolDown = 0;
 
 }
 
@@ -44,7 +45,13 @@ Game::~Game()
 	{
 		delete m_ActiveGameObjects.at(i);
 	}
-	m_ActiveGameObjects.clear();
+	m_ActiveGameObjects.clear();	
+	
+	for (int i = 0; i < m_vecBullets.size(); i++)
+	{
+		delete m_vecBullets.at(i);
+	}
+	m_vecBullets.clear();
 }
 
 void Game::Init()
@@ -60,6 +67,7 @@ void Game::Init()
 	m_Meshes["Player"] = new fw::Mesh(GL_TRIANGLES, PLAYER_VERTS);
 	m_Meshes["Enemy"] = new fw::Mesh(GL_TRIANGLES, ENEMY1_VERTS);
 	m_Meshes["PickUp"] = new fw::Mesh(GL_TRIANGLES, PICKUP_VERTS);
+	m_Meshes["Bullet"] = new fw::Mesh(GL_TRIANGLES, BULLET_VERTS);
 	
 	//Create Player controller
 	m_pPlayerController = new fw::PlayerController();
@@ -85,6 +93,7 @@ void Game::Update(float deltaTime)
 	ImGui::Text("Enemies Remaining: %d", m_vecEnemies.size());
 	ImGui::Text("Pick Ups Remaining: %d", m_vecPickUps.size());
 	ImGui::Text("Active Objects Remaining: %d", m_ActiveGameObjects.size());
+	ImGui::Text("Bullets Remaining: %d", m_vecBullets.size());
 	ImGui::Text("Player X: %.2f", m_pPlayer->GetPosition().x);
 	ImGui::Text("Player Y: %.2f", m_pPlayer->GetPosition().y);
 
@@ -92,8 +101,14 @@ void Game::Update(float deltaTime)
 	m_TimePassed += deltaTime;
 	double time = m_TimePassed;
 
+	if (m_ShotCoolDown > 0)
+	{
+		m_ShotCoolDown -= deltaTime;
+	}
+
 	m_pPlayer->OnUpdate(deltaTime);
 
+	HandleShooting();
 
 	for (int i = 0; i < m_ActiveGameObjects.size(); i++)
 	{
@@ -102,8 +117,11 @@ void Game::Update(float deltaTime)
 			m_ActiveGameObjects.at(i)->OnUpdate(deltaTime);
 		}
 	}
+	
+	
 
 	HandleCollision(deltaTime);
+	HandleAI(deltaTime);
 }
 
 void Game::Draw()
@@ -119,6 +137,65 @@ void Game::Draw()
 	}
 	
 	m_pImGuiManager->EndFrame();
+}
+
+void Game::HandleAI(float deltaTime)
+{
+	for (int i = 0; i < m_ActiveGameObjects.size(); i++)
+	{
+		fw::Enemy* pEnemy = dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.at(i));
+		if (pEnemy != nullptr)
+		{
+			if (m_ActiveGameObjects.at(i)->GetChasing())
+			{
+				if (m_ActiveGameObjects.at(i)->CheckCollision(m_pPlayer) == false)
+				{
+					if (m_ActiveGameObjects.at(i)->GetReadyToDie() == false)
+					{
+						m_ActiveGameObjects.at(i)->MoveTo(deltaTime, m_pPlayer->GetPosition());
+						//move enemy towards the player.
+					}
+				}
+			}
+			for (int j = 0; j < i; j++)
+			{
+				fw::Enemy* pEnemy2 = dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.at(j));
+				if (pEnemy2 != nullptr)
+				{
+					if (m_ActiveGameObjects.at(i)->CheckCollision(m_ActiveGameObjects.at(j)) == true 
+						&& m_ActiveGameObjects.at(i)->GetChasing() == true && m_ActiveGameObjects.at(j)->GetChasing() == true)
+					{
+						if (m_ActiveGameObjects.at(i)->GetReadyToDie() == false)
+						{
+							m_ActiveGameObjects.at(i)->SetChasing(false);
+						}
+					}
+
+					if (m_ActiveGameObjects.at(i)->GetChasing() == false && m_ActiveGameObjects.at(i)->GetReadyToDie() == false)
+					{
+						m_ActiveGameObjects.at(i)->SocailDistance(deltaTime);
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
+void Game::HandleShooting()
+{
+	if (m_pPlayer->IsShooting())
+	{
+		if (m_ShotCoolDown <= 0)
+		{
+			if (m_pPlayerController->HasShot() == true)
+			{
+				SpawnBullet(m_pPlayer->GetPosition());
+				m_pPlayerController->SetShot(false);
+				m_ShotCoolDown = .25f;
+			}
+		}
+	}
 }
 
 void Game::OnEvent(fw::Event* pEvent)
@@ -181,8 +258,61 @@ void Game::HandleCollision(float deltaTime) //BROKEN when player moves too quick
 							loopCount++;
 						}
 						m_pPlayer->SetActive(true);
+
 					}
 				}
+				
+			}
+
+		}
+
+		for (int i = 0; i < m_ActiveGameObjects.size(); i++)
+		{
+			fw::Bullet* pBullet = dynamic_cast<fw::Bullet*>(m_ActiveGameObjects.at(i));
+			for (int j = 0; j < i; j++)
+			{
+				if (m_ActiveGameObjects.at(i)->CheckCollision(m_ActiveGameObjects.at(j)) == true)
+				{
+				
+
+					if (pBullet != nullptr)
+					{
+						fw::Enemy* pEnemy = dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.at(j));
+						
+						if (pEnemy != nullptr)
+						{
+							m_ActiveGameObjects.at(i)->SetReadyToDie(true);
+							m_ActiveGameObjects.at(j)->SetReadyToDie(true);
+						}
+						
+						fw::PickUp* pPickUp = dynamic_cast<fw::PickUp*>(m_ActiveGameObjects.at(j));
+
+						if (pPickUp != nullptr)
+						{
+							m_ActiveGameObjects.at(i)->SetReadyToDie(true);
+							m_ActiveGameObjects.at(j)->SetReadyToDie(true);
+						}
+					}
+				}
+			}
+			if (pBullet != nullptr)
+			{
+				if (m_ActiveGameObjects.at(i)->GetPosition().x >= 10
+					|| m_ActiveGameObjects.at(i)->GetPosition().x <= -10
+					|| m_ActiveGameObjects.at(i)->GetPosition().y >= 10
+					|| m_ActiveGameObjects.at(i)->GetPosition().y <= -10)
+				{
+					m_ActiveGameObjects.at(i)->SetReadyToDie(true);
+				}
+			}
+		}
+
+	
+
+		if (m_pPlayer->GetActive())
+		{
+			for (int i = 0; i < m_ActiveGameObjects.size(); i++)
+			{
 				if (m_ActiveGameObjects.at(i)->GetReadyToDie())
 				{
 
@@ -216,12 +346,20 @@ void Game::HandleCollision(float deltaTime) //BROKEN when player moves too quick
 							m_vecPickUps.push_back(pPickUp);
 						}
 
+						fw::Bullet* pBullet = dynamic_cast<fw::Bullet*>(m_ActiveGameObjects.back());
+
+						if (pBullet != nullptr)
+						{
+							m_vecBullets.push_back(pBullet);
+							m_vecBullets.back()->Init(m_pPlayer->GetPosition());
+						}
 						m_ActiveGameObjects.pop_back();
 					}
 				}
 			}
-
 		}
+
+
 	}//End of Player on Object Collision 
 }
 
@@ -236,6 +374,11 @@ void Game::SpawnGameObjects()
 	{
 		//New enemies with mesh from the map, shader, no position.
 		m_vecPickUps.push_back(new fw::PickUp(m_Meshes["PickUp"], m_pGameObjectShader, fw::vec2()));
+	}	
+	for (int i = 0; i < 100; i++)
+	{
+		//New enemies with mesh from the map, shader, no position.
+		m_vecBullets.push_back(new fw::Bullet(m_Meshes["Bullet"], m_pGameObjectShader, fw::vec2(), m_pPlayerController));
 	}
 
 	//Vector of Active Game Objects
@@ -276,7 +419,7 @@ void Game::SpawnGameObjects()
 		}
 		if (colliding == true) //Broken?
 		{
-			m_vecEnemies.push_back(dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.back()));
+			m_vecEnemies.push_back(dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.back())); //wrong
 			m_ActiveGameObjects.pop_back();
 			break; //break only work on for and do while/ while
 		}
@@ -291,4 +434,14 @@ void Game::SpawnGameObjects()
 	m_pPlayer->SetActive(true); // when everything is in place activate the player.
 								
 
+}
+
+void Game::SpawnBullet(fw::vec2& position)
+{
+	m_ActiveGameObjects.push_back(m_vecBullets.back());
+	m_vecBullets.pop_back();
+	m_ActiveGameObjects.back()->SetPosition(position);
+	m_ActiveGameObjects.back()->SetActive(true);
+
+	//activate bullet
 }

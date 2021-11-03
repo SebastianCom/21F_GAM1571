@@ -11,13 +11,14 @@ namespace fw {
 		m_Speed = 10;
 		SetPosition(pos);
 		m_Radius = 0.80f;
+		
 	}
 	Player::~Player()
 	{
 	}
 	void Player::OnUpdate(float deltaTime)
 	{
-
+		
 		if (m_pPlayerController->IsRight())
 		{
 			m_Position.x += m_Speed * deltaTime;
@@ -37,5 +38,16 @@ namespace fw {
 			m_Position.y -= m_Speed * deltaTime;
 		}
 
+	}
+	bool Player::IsShooting()
+	{
+		if (m_pPlayerController->ShootingUp() == true
+			|| m_pPlayerController->ShootingDown() == true
+			|| m_pPlayerController->ShootingLeft() == true
+			|| m_pPlayerController->ShootingRight() == true)
+		{
+			return true;
+		}
+		else return false;
 	}
 } // namespace fw

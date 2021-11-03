@@ -28,6 +28,7 @@ namespace fw {
 		m_ObjectType = ObjectType::Enemny; //spelling error
 		m_Shrinkage = 1.0f;
 		m_Scale = 1.0f;
+		m_Chasing = true;
 	}
 
 	GameObject::~GameObject()
@@ -119,6 +120,15 @@ namespace fw {
 		}
 		return false;
 	}
+	bool GameObject::CheckCollision(fw::vec2 position, float radius)
+	{
+
+		float distanceSquared = (((m_Position.x - position.x) * (m_Position.x - position.x)) + ((m_Position.y - position.y) * (m_Position.y - position.y)));
+		float radiiSquared = (m_Radius + radius) * (m_Radius + radius);
+		return distanceSquared <= radiiSquared;
+		
+		return false;
+	}
 
 	void GameObject::SetActive(bool a)
 	{
@@ -143,6 +153,10 @@ namespace fw {
 	float GameObject::GetShrinkageTimer()
 	{
 		return m_Shrinkage;
+	}
+
+	void GameObject::MoveTo(float deltaTime, fw::vec2 position)
+	{
 	}
 
 } // namespace fw

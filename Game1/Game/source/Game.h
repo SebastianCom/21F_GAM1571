@@ -11,12 +11,14 @@ public:
 	void Update(float deltaTime) override;
 	void Draw()override;
 	
-
+	void HandleAI(float deltaTime);
+	void HandleShooting();
 
 	void Init();
 
 	void HandleCollision(float deltaTime);
 	void SpawnGameObjects();
+	void SpawnBullet(fw::vec2& position);
 
 protected:
 	
@@ -33,16 +35,17 @@ protected:
 
 	std::vector<fw::Enemy*> m_vecEnemies;
 	std::vector<fw::PickUp*> m_vecPickUps;
-
+	std::vector<fw::Bullet*> m_vecBullets;
 	
 
-	
+	float m_ShotCoolDown;
 	int m_Lives;
 	int m_Score;
 
 	fw::PlayerController* m_pPlayerController;
 	
 	std::map<std::string, fw::Mesh*> m_Meshes;
+
 
 
 

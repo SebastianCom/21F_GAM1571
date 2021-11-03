@@ -16,6 +16,7 @@
 #include "../../Game/source/GameObjects/Player.h"
 #include "../../Game/source/GameObjects/Enemy.h"
 #include "../../Game/source/GameObjects/PickUp.h"
+#include "../../Game/source/GameObjects/Bullet.h"
 #include "Objects/PlayerController.h"
 #include "Events/EventManager.h"
 #include "Events/Event.h"
