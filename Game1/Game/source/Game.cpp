@@ -474,7 +474,7 @@ void Game::SpawnGameObjects()
 	}
 
 	//Vector of Active Game Objects
-	if (m_Round == 1)
+	if (m_Round == 2)
 	{
 		for (int i = 0; i < static_cast<int>(fw::RandomFloat(1.0f, 5.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
 		{
@@ -487,7 +487,7 @@ void Game::SpawnGameObjects()
 			m_vecEnemies.pop_back();
 		}
 	}
-	if (m_Round == 2)
+	if (m_Round == 1)
 	{
 		for (int i = 0; i < static_cast<int>(fw::RandomFloat(1.0f, 5.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
 		{
