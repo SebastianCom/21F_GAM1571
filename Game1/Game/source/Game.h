@@ -22,6 +22,7 @@ public:
 
 protected:
 	
+	float m_DeltaTime;
 	fw::FWCore& m_FWCore;
 
 	float m_TimePassed;
@@ -34,6 +35,7 @@ protected:
 	std::vector<fw::GameObject*> m_ActiveGameObjects;
 
 	std::vector<fw::Enemy*> m_vecEnemies;
+	std::vector<fw::Enemy2*> m_vecPatrolEnemies;
 	std::vector<fw::PickUp*> m_vecPickUps;
 	std::vector<fw::Bullet*> m_vecBullets;
 	
@@ -43,8 +45,11 @@ protected:
 	int m_Score;
 
 	fw::PlayerController* m_pPlayerController;
+	fw::CollisionController* m_pCollisionController;
 	
 	std::map<std::string, fw::Mesh*> m_Meshes;
+	int m_Round;
+
 
 
 

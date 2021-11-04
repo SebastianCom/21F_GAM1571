@@ -60,12 +60,20 @@ namespace fw {
 		void SetChasing(bool isChasing) { m_Chasing = isChasing; }
 		bool GetChasing() { return m_Chasing; }
 
-		void SetScale(float scale) { m_Scale = scale; };
-		float GetScale() { return m_Scale; };
+		void SetScale(float scale) { m_Scale = scale; }
+		float GetScale() { return m_Scale; }
 
 		void SetShrinkageTimer(float a);
 		void DecrementShrinkageTimer(float a);
 		float GetShrinkageTimer();
+
+		fw::vec2 virtual GetPatrolSpotAlpha() { return m_PatrolSpotAlpha; }
+		fw::vec2 virtual GetPatrolSpotBeta() { return m_PatrolSpotBeta; };
+
+		void SetMovingToAlpha(bool a) { MovingToAlpha = a; }
+		void SetMovingToBeta(bool a) { MovingToBeta = a; }
+		bool GetMovingToAlpha() { return MovingToAlpha; }
+		bool GetMovingToBeta() { return MovingToBeta; }
 
 	protected:
 		
@@ -80,6 +88,10 @@ namespace fw {
 		bool m_IsActive;
 		float m_Shrinkage;
 		bool m_Chasing;
+		fw::vec2 m_PatrolSpotAlpha;
+		fw::vec2 m_PatrolSpotBeta;
+		bool MovingToAlpha;
+		bool MovingToBeta;
 		
 	};
 

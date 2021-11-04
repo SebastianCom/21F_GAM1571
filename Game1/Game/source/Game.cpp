@@ -12,9 +12,12 @@ Game::Game(fw::FWCore& fwCore)
 	m_pImGuiManager = nullptr;
 	m_pPlayer = nullptr;
 	m_pPlayerController = nullptr;
+	m_pCollisionController = nullptr;
 	m_Lives = 3;
 	m_Score = 0;
 	m_ShotCoolDown = 0;
+	m_DeltaTime = 0.0f;
+	m_Round = 0;
 
 }
 
@@ -34,6 +37,12 @@ Game::~Game()
 		delete m_vecEnemies.at(i);
 	}
 	m_vecEnemies.clear();
+
+	for (int i = 0; i < m_vecPatrolEnemies.size(); i++)
+	{
+		delete m_vecPatrolEnemies.at(i);
+	}
+	m_vecPatrolEnemies.clear();
 	
 	for (int i = 0; i < m_vecPickUps.size(); i++)
 	{
@@ -52,6 +61,9 @@ Game::~Game()
 		delete m_vecBullets.at(i);
 	}
 	m_vecBullets.clear();
+
+	delete m_pPlayerController;
+	delete m_pCollisionController;
 }
 
 void Game::Init()
@@ -66,6 +78,7 @@ void Game::Init()
 	//Create Meshes
 	m_Meshes["Player"] = new fw::Mesh(GL_TRIANGLES, PLAYER_VERTS);
 	m_Meshes["Enemy"] = new fw::Mesh(GL_TRIANGLES, ENEMY1_VERTS);
+	m_Meshes["Enemy2"] = new fw::Mesh(GL_TRIANGLES, ENEMY2_VERTS);
 	m_Meshes["PickUp"] = new fw::Mesh(GL_TRIANGLES, PICKUP_VERTS);
 	m_Meshes["Bullet"] = new fw::Mesh(GL_TRIANGLES, BULLET_VERTS);
 	
@@ -84,12 +97,13 @@ void Game::Init()
 void Game::Update(float deltaTime)
 {
 	//double time = GetSystemTimeSinceGameStart(); another way to do whats below. (Lines 20,21)
-	
+	m_DeltaTime = deltaTime;
 	m_pImGuiManager->StartFrame(deltaTime);
 
 	//ImGui Winodw Set up
 	ImGui::Text("Lives: %d", m_Lives);
 	ImGui::Text("Score: %d", m_Score);
+	ImGui::Text("Round: %d", m_Round);
 	ImGui::Text("Enemies Remaining: %d", m_vecEnemies.size());
 	ImGui::Text("Pick Ups Remaining: %d", m_vecPickUps.size());
 	ImGui::Text("Active Objects Remaining: %d", m_ActiveGameObjects.size());
@@ -122,6 +136,12 @@ void Game::Update(float deltaTime)
 
 	HandleCollision(deltaTime);
 	HandleAI(deltaTime);
+
+	if (m_ActiveGameObjects.size() == 0 && m_Round > 0)
+	{
+		m_Round++;
+		SpawnGameObjects();
+	}
 }
 
 void Game::Draw()
@@ -152,8 +172,16 @@ void Game::HandleAI(float deltaTime)
 				{
 					if (m_ActiveGameObjects.at(i)->GetReadyToDie() == false)
 					{
-						m_ActiveGameObjects.at(i)->MoveTo(deltaTime, m_pPlayer->GetPosition());
-						//move enemy towards the player.
+						if (m_ActiveGameObjects.at(i)->GetPosition().x < 14.2 && m_ActiveGameObjects.at(i)->GetPosition().x > -14.2 &&
+							m_ActiveGameObjects.at(i)->GetPosition().y < 14.2 && m_ActiveGameObjects.at(i)->GetPosition().y > -14.2)
+						{
+							m_ActiveGameObjects.at(i)->MoveTo(deltaTime, m_pPlayer->GetPosition());
+							//move enemy towards the player.
+						}
+						else
+						{
+							m_ActiveGameObjects.at(i)->SocailDistance(deltaTime);
+						}
 					}
 				}
 			}
@@ -162,7 +190,7 @@ void Game::HandleAI(float deltaTime)
 				fw::Enemy* pEnemy2 = dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.at(j));
 				if (pEnemy2 != nullptr)
 				{
-					if (m_ActiveGameObjects.at(i)->CheckCollision(m_ActiveGameObjects.at(j)) == true 
+					if (m_ActiveGameObjects.at(i)->CheckCollision(m_ActiveGameObjects.at(j)) == true
 						&& m_ActiveGameObjects.at(i)->GetChasing() == true && m_ActiveGameObjects.at(j)->GetChasing() == true)
 					{
 						if (m_ActiveGameObjects.at(i)->GetReadyToDie() == false)
@@ -180,6 +208,38 @@ void Game::HandleAI(float deltaTime)
 			}
 		}
 	}
+
+	for (int i = 0; i < m_ActiveGameObjects.size(); i++)
+	{
+		fw::Enemy2* pPatrolEnemy = dynamic_cast<fw::Enemy2*>(m_ActiveGameObjects.at(i));
+		if (pPatrolEnemy != nullptr)
+		{
+			if (m_ActiveGameObjects.at(i)->GetReadyToDie() == false)
+			{
+				if (m_ActiveGameObjects.at(i)->CheckCollision(m_ActiveGameObjects.at(i)->GetPatrolSpotAlpha(), .8f) == true)
+				{
+					m_ActiveGameObjects.at(i)->SetMovingToBeta(true);
+					m_ActiveGameObjects.at(i)->SetMovingToAlpha(false);
+
+				}
+				if (m_ActiveGameObjects.at(i)->CheckCollision(m_ActiveGameObjects.at(i)->GetPatrolSpotBeta(), .8f) == true)
+				{
+					m_ActiveGameObjects.at(i)->SetMovingToAlpha(true);
+					m_ActiveGameObjects.at(i)->SetMovingToBeta(false);
+				}
+
+				if (m_ActiveGameObjects.at(i)->GetMovingToBeta() == true)
+				{
+					m_ActiveGameObjects.at(i)->MoveTo(deltaTime, m_ActiveGameObjects.at(i)->GetPatrolSpotBeta());
+				}
+				if (m_ActiveGameObjects.at(i)->GetMovingToAlpha() == true)
+				{
+					m_ActiveGameObjects.at(i)->MoveTo(deltaTime, m_ActiveGameObjects.at(i)->GetPatrolSpotAlpha());
+				}
+			}
+		}
+	}
+	
 }
 
 void Game::HandleShooting()
@@ -201,6 +261,10 @@ void Game::HandleShooting()
 void Game::OnEvent(fw::Event* pEvent)
 {
 	m_pPlayerController->OnEvent(pEvent);
+
+	/*m_pCollisionController = new fw::CollisionController();*/
+
+
 }
 
 
@@ -213,9 +277,10 @@ void Game::HandleCollision(float deltaTime) //BROKEN when player moves too quick
 		{
 			for (int i = 0; i < m_ActiveGameObjects.size(); i++)
 			{
+				
 				if (m_ActiveGameObjects.at(i)->GetActive() == true)
 				{
-					if (m_pPlayer->CheckCollision(m_ActiveGameObjects.at(i)) == true)
+					if (m_pPlayer->CheckCollision(m_ActiveGameObjects.at(i)) == true && m_ActiveGameObjects.at(i)->GetReadyToDie() == false)
 					{
 						if (m_ActiveGameObjects.back()->GetActive() == true)
 						{
@@ -224,8 +289,9 @@ void Game::HandleCollision(float deltaTime) //BROKEN when player moves too quick
 						}
 
 						fw::Enemy* pEnemy = dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.at(i));
-
-						if (pEnemy != nullptr)
+						fw::Enemy2* pPatrolEnemy = dynamic_cast<fw::Enemy2*>(m_ActiveGameObjects.at(i));
+						
+						if (pEnemy != nullptr || pPatrolEnemy != nullptr)
 						{
 							m_Lives--;
 							m_pPlayer->SetActive(false);
@@ -237,14 +303,14 @@ void Game::HandleCollision(float deltaTime) //BROKEN when player moves too quick
 					}
 					if (m_pPlayer->GetActive() == false)
 					{
-						m_pPlayer->SetPosition(fw::vec2(fw::RandomFloat(-8.75, 8.75), fw::RandomFloat(-8.75, 8.75)));
+						m_pPlayer->SetPosition(fw::vec2(fw::RandomFloat(-13.75, 13.75), fw::RandomFloat(-13.75, 13.75)));
 
 						bool colliding = true;
 						int loopCount = 0;
 
 						while (colliding == true && loopCount < 100)
 						{
-							m_pPlayer->SetPosition(fw::vec2(fw::RandomFloat(-8.75, 8.75), fw::RandomFloat(-8.75, 8.75)));
+							m_pPlayer->SetPosition(fw::vec2(fw::RandomFloat(-13.75, 13.75), fw::RandomFloat(-13.75, 13.75)));
 							colliding = false;
 
 							for (int j = 0; j < m_ActiveGameObjects.size(); j++)
@@ -271,7 +337,7 @@ void Game::HandleCollision(float deltaTime) //BROKEN when player moves too quick
 			fw::Bullet* pBullet = dynamic_cast<fw::Bullet*>(m_ActiveGameObjects.at(i));
 			for (int j = 0; j < i; j++)
 			{
-				if (m_ActiveGameObjects.at(i)->CheckCollision(m_ActiveGameObjects.at(j)) == true)
+				if (m_ActiveGameObjects.at(i)->CheckCollision(m_ActiveGameObjects.at(j)) == true && m_ActiveGameObjects.at(j)->GetReadyToDie() == false)
 				{
 				
 
@@ -280,6 +346,14 @@ void Game::HandleCollision(float deltaTime) //BROKEN when player moves too quick
 						fw::Enemy* pEnemy = dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.at(j));
 						
 						if (pEnemy != nullptr)
+						{
+							m_ActiveGameObjects.at(i)->SetReadyToDie(true);
+							m_ActiveGameObjects.at(j)->SetReadyToDie(true);
+						}
+						
+						fw::Enemy2* pPatrolEnemy = dynamic_cast<fw::Enemy2*>(m_ActiveGameObjects.at(j));
+						
+						if (pPatrolEnemy != nullptr)
 						{
 							m_ActiveGameObjects.at(i)->SetReadyToDie(true);
 							m_ActiveGameObjects.at(j)->SetReadyToDie(true);
@@ -297,10 +371,10 @@ void Game::HandleCollision(float deltaTime) //BROKEN when player moves too quick
 			}
 			if (pBullet != nullptr)
 			{
-				if (m_ActiveGameObjects.at(i)->GetPosition().x >= 10
-					|| m_ActiveGameObjects.at(i)->GetPosition().x <= -10
-					|| m_ActiveGameObjects.at(i)->GetPosition().y >= 10
-					|| m_ActiveGameObjects.at(i)->GetPosition().y <= -10)
+				if (m_ActiveGameObjects.at(i)->GetPosition().x >= 15
+					|| m_ActiveGameObjects.at(i)->GetPosition().x <= -15
+					|| m_ActiveGameObjects.at(i)->GetPosition().y >= 15
+					|| m_ActiveGameObjects.at(i)->GetPosition().y <= -15)
 				{
 					m_ActiveGameObjects.at(i)->SetReadyToDie(true);
 				}
@@ -353,6 +427,14 @@ void Game::HandleCollision(float deltaTime) //BROKEN when player moves too quick
 							m_vecBullets.push_back(pBullet);
 							m_vecBullets.back()->Init(m_pPlayer->GetPosition());
 						}
+
+						fw::Enemy2* pPatrolEnemy = dynamic_cast<fw::Enemy2*>(m_ActiveGameObjects.at(i));
+						
+						if (pPatrolEnemy != nullptr)
+						{
+							m_vecPatrolEnemies.push_back(pPatrolEnemy);
+						}
+
 						m_ActiveGameObjects.pop_back();
 					}
 				}
@@ -370,6 +452,11 @@ void Game::SpawnGameObjects()
 		//New enemies with mesh from the map, shader, no position.
 		m_vecEnemies.push_back(new fw::Enemy(m_Meshes["Enemy"], m_pGameObjectShader, fw::vec2()));
 	}
+	for (int i = 0; i < 100; i++)
+	{
+		//New enemies with mesh from the map, shader, no position.
+		m_vecPatrolEnemies.push_back(new fw::Enemy2(m_Meshes["Enemy2"], m_pGameObjectShader, fw::vec2()));
+	}
 	for (int i = 0; i < 20; i++)
 	{
 		//New enemies with mesh from the map, shader, no position.
@@ -381,17 +468,55 @@ void Game::SpawnGameObjects()
 		m_vecBullets.push_back(new fw::Bullet(m_Meshes["Bullet"], m_pGameObjectShader, fw::vec2(), m_pPlayerController));
 	}
 
-	//Vector of Active Game Objects
-	//m_ActiveGameObjects.push_back(dynamic_cast<fw::Player*>(m_pPlayer));
-	for (int i = 0; i < static_cast<int>(fw::RandomFloat(1.0f, 5.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
+	if (m_Round == 0)
 	{
-		m_ActiveGameObjects.push_back(m_vecPickUps.back());
-		m_vecPickUps.pop_back();
+		m_Round++;
 	}
-	for (int i = 0; i < static_cast<int>(fw::RandomFloat(10.0f, 25.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
+
+	//Vector of Active Game Objects
+	if (m_Round == 1)
 	{
-		m_ActiveGameObjects.push_back(m_vecEnemies.back());
-		m_vecEnemies.pop_back();
+		for (int i = 0; i < static_cast<int>(fw::RandomFloat(1.0f, 5.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
+		{
+			m_ActiveGameObjects.push_back(m_vecPickUps.back());
+			m_vecPickUps.pop_back();
+		}
+		for (int i = 0; i < static_cast<int>(fw::RandomFloat(10.0f, 25.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
+		{
+			m_ActiveGameObjects.push_back(m_vecEnemies.back());
+			m_vecEnemies.pop_back();
+		}
+	}
+	if (m_Round == 2)
+	{
+		for (int i = 0; i < static_cast<int>(fw::RandomFloat(1.0f, 5.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
+		{
+			m_ActiveGameObjects.push_back(m_vecPickUps.back());
+			m_vecPickUps.pop_back();
+		}
+		for (int i = 0; i < static_cast<int>(fw::RandomFloat(5.0f, 15.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
+		{
+			m_ActiveGameObjects.push_back(m_vecPatrolEnemies.back());
+			m_vecPatrolEnemies.pop_back();
+		}
+	}
+	if (m_Round == 3)
+	{
+		for (int i = 0; i < static_cast<int>(fw::RandomFloat(1.0f, 5.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
+		{
+			m_ActiveGameObjects.push_back(m_vecPickUps.back());
+			m_vecPickUps.pop_back();
+		}
+		for (int i = 0; i < static_cast<int>(fw::RandomFloat(5.0f, 10.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
+		{
+			m_ActiveGameObjects.push_back(m_vecPatrolEnemies.back());
+			m_vecPatrolEnemies.pop_back();
+		}
+		for (int i = 0; i < static_cast<int>(fw::RandomFloat(3.0f, 5.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
+		{
+			m_ActiveGameObjects.push_back(m_vecEnemies.back());
+			m_vecEnemies.pop_back();
+		}
 	}
 
 	
@@ -404,7 +529,7 @@ void Game::SpawnGameObjects()
 		//If enemy is spawned on another enemy or the player, it will be moved before being set active. FLAWED*
 		while (colliding && loopCount < 1000)
 		{
-			m_ActiveGameObjects.at(i)->SetPosition(fw::vec2(fw::RandomFloat(-8.75f, 8.75f), fw::RandomFloat(-8.75f, 8.75f)));
+			m_ActiveGameObjects.at(i)->SetPosition(fw::vec2(fw::RandomFloat(-13.75f, 13.75f), fw::RandomFloat(-13.75f, 13.75f)));
 
 			colliding = false;
 			for (int j = 0; j < i; j++)

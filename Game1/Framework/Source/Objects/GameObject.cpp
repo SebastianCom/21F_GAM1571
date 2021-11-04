@@ -29,6 +29,8 @@ namespace fw {
 		m_Shrinkage = 1.0f;
 		m_Scale = 1.0f;
 		m_Chasing = true;
+		MovingToAlpha = true;
+		MovingToBeta = false;
 	}
 
 	GameObject::~GameObject()

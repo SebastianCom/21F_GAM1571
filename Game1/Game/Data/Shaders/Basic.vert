@@ -19,7 +19,7 @@ void main()
 	//pos *= u_Scale;
 	//pos.y += sin( u_Time + a_Position.x) / 5;
 
-	gl_Position = vec4( pos / 10 , 1.0, 1.0);
+	gl_Position = vec4( pos / 15 , 1.0, 1.0);
 
 	v_Color = a_Color;
 }

@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Math/Vector.h"
+#include "Framework.h"
 
 namespace fw {
 
-enum class EventType { Input, NotSet };
+enum class EventType { Input, NotSet, Collision };
 enum class DeviceType { Keyboard, Mouse };
 enum class InputState { Pressed, Released };
 
@@ -39,6 +40,22 @@ protected:
     InputState m_InputState;
     int m_ID;
     vec2 m_Position;
+};
+
+class CollisionEvent : public Event
+{
+public:
+    CollisionEvent()
+    {
+
+    }
+    ~CollisionEvent() {}
+
+    virtual EventType GetEventType() override { return EventType::Collision; }
+
+
+protected:
+
 };
 
 } // namespace fw

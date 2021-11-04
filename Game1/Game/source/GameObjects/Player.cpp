@@ -18,24 +18,46 @@ namespace fw {
 	}
 	void Player::OnUpdate(float deltaTime)
 	{
-		
-		if (m_pPlayerController->IsRight())
+		if (m_Position.x < 14.2f && m_Position.x > -14.2f
+			&& m_Position.y < 14.2f && m_Position.y > -14.2f)
 		{
-			m_Position.x += m_Speed * deltaTime;
-		}
+			if (m_pPlayerController->IsRight())
+			{
+				m_Position.x += m_Speed * deltaTime;
+			}
 
-		if (m_pPlayerController->IsLeft())
-		{
-			m_Position.x -= m_Speed * deltaTime;
-		}
+			if (m_pPlayerController->IsLeft())
+			{
+				m_Position.x -= m_Speed * deltaTime;
+			}
 
-		if (m_pPlayerController->IsUp())
-		{
-			m_Position.y += m_Speed * deltaTime;
+			if (m_pPlayerController->IsUp())
+			{
+				m_Position.y += m_Speed * deltaTime;
+			}
+			if (m_pPlayerController->IsDown())
+			{
+				m_Position.y -= m_Speed * deltaTime;
+			}
 		}
-		if (m_pPlayerController->IsDown())
+		else
 		{
-			m_Position.y -= m_Speed * deltaTime;
+			if (m_Position.x >= 14.2f)
+			{
+				m_Position.x = 14.1f;
+			}
+			if (m_Position.x <= -14.2f)
+			{
+				m_Position.x = -14.1f;
+			}
+			if (m_Position.y >= 14.2f)
+			{
+				m_Position.y = 14.1f;
+			}
+			if (m_Position.y <= -14.2f)
+			{
+				m_Position.y = -14.1f;
+			}
 		}
 
 	}
