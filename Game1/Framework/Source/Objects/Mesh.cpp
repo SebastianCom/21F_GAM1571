@@ -28,7 +28,7 @@ namespace fw {
 		glDeleteBuffers(1, &m_VBO);
 	}
 
-	void Mesh::Draw(ShaderProgram* pShader, vec2 pos, float time, float scale)
+	void Mesh::Draw(ShaderProgram* pShader, vec2 pos, float time, float scale, float colorShift)
 	{
 		// Draw the mesh.
 		{
@@ -42,6 +42,9 @@ namespace fw {
 			
 			GLint u_Scale = glGetUniformLocation(pShader->GetProgram(), "u_Scale");
 			glUniform1f(u_Scale, scale);
+			
+			GLint u_ColorShift = glGetUniformLocation(pShader->GetProgram(), "u_ColorShift");
+			glUniform1f(u_ColorShift, colorShift);
 
 			// Set this VBO to be the currently active one.
 			glBindBuffer(GL_ARRAY_BUFFER, m_VBO);

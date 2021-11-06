@@ -14,7 +14,7 @@ namespace fw {
 	enum class ObjectType
 	{
 		Player = 1,
-		Enemny = 2,
+		Enemy = 2,
 		PickUp = 3,
 	};
 
@@ -92,6 +92,7 @@ namespace fw {
 		fw::vec2 m_PatrolSpotBeta;
 		bool MovingToAlpha;
 		bool MovingToBeta;
+		float m_ColorShift;
 		
 	};
 

@@ -42,12 +42,16 @@ void Game::Init()
     m_pImGuiManager->Init();
 
     m_pBasicShader = new fw::ShaderProgram( "Data/Shaders/Basic.vert", "Data/Shaders/Basic.frag" );
-    m_pTexture = new fw::Texture();
-
+    m_pTexture = new fw::Texture("Data/Textures/mattsballs.png");
+    m_pTexture = new fw::Texture("Data/Textures/numbers.png");
+    //m_pTexture = new fw::Texture();
     std::vector<fw::VertexFormat> triangleVerts = {
-        { vec2(  0.0f, 0.0f),  255,255,255,255,  vec2(0.0f,0.0f) },
+        { vec2(-10.0f, -10.0f),  255,255,255,255,  vec2(0.0f,0.0f) },
         { vec2( 10.0f,10.0f),  255,255,255,255,  vec2(1.0f,1.0f) },
         { vec2(-10.0f,10.0f),  255,255,255,255,  vec2(0.0f,1.0f) },
+        { vec2(-10.0f, -10.0f),  255,255,255,255,  vec2(0.0f,0.0f) },
+        { vec2(10.0f, 10.0f),  255,255,255,255,  vec2(1.0f,1.0f) },
+        { vec2(10.0f, -10.0f),  255,255,255,255,  vec2(1.0f,0.0f) },
     };
     //std::vector<float> diamondVerts = { 0.0f,0.0f,0.2f,   5.0f,5.0f,0.6f,   -5.0f,5.0f,0.9f,   0.0f,10.0f,0.2f   };
 
@@ -56,7 +60,7 @@ void Game::Init()
 
     m_pPlayerController = new PlayerController();
 
-    m_pGameObject = new GameObject( m_Meshes["Diamond"], m_pBasicShader, vec2(-15.0f,0) );
+    m_pGameObject = new GameObject( m_Meshes["Diamond"], m_pBasicShader, vec2(-15,0) );
     m_pPlayer = new Player( m_Meshes["Triangle"], m_pBasicShader, vec2(0,0.0f), m_pPlayerController );
 }
 

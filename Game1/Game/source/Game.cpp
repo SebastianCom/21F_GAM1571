@@ -104,12 +104,86 @@ void Game::Update(float deltaTime)
 	ImGui::Text("Lives: %d", m_Lives);
 	ImGui::Text("Score: %d", m_Score);
 	ImGui::Text("Round: %d", m_Round);
-	ImGui::Text("Enemies Remaining: %d", m_vecEnemies.size());
-	ImGui::Text("Pick Ups Remaining: %d", m_vecPickUps.size());
-	ImGui::Text("Active Objects Remaining: %d", m_ActiveGameObjects.size());
-	ImGui::Text("Bullets Remaining: %d", m_vecBullets.size());
-	ImGui::Text("Player X: %.2f", m_pPlayer->GetPosition().x);
-	ImGui::Text("Player Y: %.2f", m_pPlayer->GetPosition().y);
+	
+	if (ImGui::Button(" Round Increase "))
+	{
+		//int tempsize = m_ActiveGameObjects.size();
+		for (int i = m_ActiveGameObjects.size() -1; i > -1; i--)
+		{
+			
+			fw::Enemy* pEnemy = dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.at(i));
+			fw::Enemy2* pPatrolEnemy = dynamic_cast<fw::Enemy2*>(m_ActiveGameObjects.at(i));
+			fw::PickUp* pPickUp = dynamic_cast<fw::PickUp*>(m_ActiveGameObjects.at(i));
+			fw::Bullet* pBullet = dynamic_cast<fw::Bullet*>(m_ActiveGameObjects.at(i));
+			if (pEnemy != nullptr)
+			{
+				m_vecEnemies.push_back(pEnemy);
+				m_ActiveGameObjects.pop_back();
+			}
+			
+			else if (pPatrolEnemy != nullptr)
+			{
+				m_vecPatrolEnemies.push_back(pPatrolEnemy);
+				m_ActiveGameObjects.pop_back();
+			}
+			
+			else if (pPickUp != nullptr)
+			{
+				m_vecPickUps.push_back(pPickUp);
+				m_ActiveGameObjects.pop_back();
+			}
+			
+			else if (pBullet != nullptr)
+			{
+				m_vecBullets.push_back(pBullet);
+				m_ActiveGameObjects.pop_back();
+			}
+			
+		}
+		m_Round++;
+		SpawnGameObjects();
+	}
+	
+	if (ImGui::Button(" Reset to 1 "))
+	{
+		//int tempsize = m_ActiveGameObjects.size();
+		for (int i = m_ActiveGameObjects.size() - 1; i > -1; i--)
+		{
+
+			fw::Enemy* pEnemy = dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.at(i));
+			fw::Enemy2* pPatrolEnemy = dynamic_cast<fw::Enemy2*>(m_ActiveGameObjects.at(i));
+			fw::PickUp* pPickUp = dynamic_cast<fw::PickUp*>(m_ActiveGameObjects.at(i));
+			fw::Bullet* pBullet = dynamic_cast<fw::Bullet*>(m_ActiveGameObjects.at(i));
+			if (pEnemy != nullptr)
+			{
+				m_vecEnemies.push_back(pEnemy);
+				m_ActiveGameObjects.pop_back();
+			}
+
+			else if (pPatrolEnemy != nullptr)
+			{
+				m_vecPatrolEnemies.push_back(pPatrolEnemy);
+				m_ActiveGameObjects.pop_back();
+			}
+
+			else if (pPickUp != nullptr)
+			{
+				m_vecPickUps.push_back(pPickUp);
+				m_ActiveGameObjects.pop_back();
+			}
+
+			else if (pBullet != nullptr)
+			{
+				m_vecBullets.push_back(pBullet);
+				m_ActiveGameObjects.pop_back();
+			}
+
+		}
+		m_Round = 1;
+		SpawnGameObjects();
+	}
+	
+	//Debugging 
 
 
 	m_TimePassed += deltaTime;
@@ -132,16 +206,23 @@ void Game::Update(float deltaTime)
 		}
 	}
 	
-	
+	ImGui::Text("Debugging below");
+	ImGui::Text("Enemy 1s Remaining: %d", m_vecEnemies.size());
+	ImGui::Text("Enemy 2s Remaining: %d", m_vecPatrolEnemies.size());
+	ImGui::Text("Pick Ups Remaining: %d", m_vecPickUps.size());
+	ImGui::Text("Active Objects Remaining: %d", m_ActiveGameObjects.size());
+	ImGui::Text("Bullets Remaining: %d", m_vecBullets.size());
+	ImGui::Text("Player X: %.2f", m_pPlayer->GetPosition().x);
+	ImGui::Text("Player Y: %.2f", m_pPlayer->GetPosition().y);
 
 	HandleCollision(deltaTime);
 	HandleAI(deltaTime);
 
-	if (m_ActiveGameObjects.size() == 0 && m_Round > 0)
-	{
-		m_Round++;
-		SpawnGameObjects();
-	}
+	//if (m_ActiveGameObjects.size() == 0 && m_Round > 0)
+	//{
+	//	m_Round++;
+	//	SpawnGameObjects();
+	//}
 }
 
 void Game::Draw()

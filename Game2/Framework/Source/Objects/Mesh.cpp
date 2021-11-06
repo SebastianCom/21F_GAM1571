@@ -56,12 +56,12 @@ void Mesh::Draw(ShaderProgram* pShader, float scale, vec2 pos, float time)
         glVertexAttribPointer( a_Position, 2, GL_FLOAT, GL_FALSE, 20, (void*)0 );
     }
 
-    //GLint a_Alpha = glGetAttribLocation( pShader->GetProgram(), "a_Alpha" );
-    //if( a_Alpha != -1 )
-    //{
-    //    glEnableVertexAttribArray( a_Alpha );
-    //    glVertexAttribPointer( a_Alpha, 1, GL_FLOAT, GL_FALSE, 12, (void*)8 );
-    //}
+    GLint a_Color = glGetAttribLocation( pShader->GetProgram(), "a_Color" );
+    if(a_Color != -1 )
+    {
+        glEnableVertexAttribArray(a_Color);
+        glVertexAttribPointer(a_Color, 4, GL_UNSIGNED_BYTE, GL_TRUE, 20, (void*)8 );
+    }
 
     GLint a_UVCoord = glGetAttribLocation( pShader->GetProgram(), "a_UVCoord" );
     if( a_UVCoord != -1 )

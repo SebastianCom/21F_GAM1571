@@ -25,9 +25,10 @@ namespace fw {
 		m_Radius = 0;
 		m_ReadyToDie = false;
 		m_IsActive = false;
-		m_ObjectType = ObjectType::Enemny; //spelling error
+		m_ObjectType = ObjectType::Enemy; //spelling error
 		m_Shrinkage = 1.0f;
 		m_Scale = 1.0f;
+		m_ColorShift = 1.0f;
 		m_Chasing = true;
 		MovingToAlpha = true;
 		MovingToBeta = false;
@@ -44,7 +45,7 @@ namespace fw {
 
 	void GameObject::Draw()
 	{
-			m_pMesh->Draw(m_pShader, m_Position, 0.0f, m_Scale);
+			m_pMesh->Draw(m_pShader, m_Position, 0.0f, m_Scale, m_ColorShift);
 	}
 
 	void GameObject::SetX(float x)

@@ -13,7 +13,7 @@ namespace fw {
 		SetPosition(pos);
 		m_Radius = 0.80f;
 		int tickCount = 0;
-		while (m_PatrolSpotAlpha == m_PatrolSpotBeta && m_PatrolSpotAlpha.DistanceTo(m_PatrolSpotBeta) < 3 || tickCount == 100)
+		while (m_PatrolSpotAlpha == m_PatrolSpotBeta && m_PatrolSpotAlpha.DistanceTo(m_PatrolSpotBeta) < 5 || tickCount == 100)
 		{
 			m_PatrolSpotAlpha = { fw::RandomFloat(-14,14),fw::RandomFloat(-14,14) };
 			m_PatrolSpotBeta = { fw::RandomFloat(-14,14),fw::RandomFloat(-14,14) };

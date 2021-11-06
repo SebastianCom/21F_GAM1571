@@ -12,10 +12,12 @@ namespace fw {
 
 		void OnUpdate(float deltaTime)override;
 
+		void Flash(float deltaTime);
 	
 
 	private:
-		
+		float m_FlashTimer;
+		bool m_IncreaseTimer;
 	};
 
 } // namespace fw

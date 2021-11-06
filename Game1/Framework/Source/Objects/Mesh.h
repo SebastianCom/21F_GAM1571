@@ -12,7 +12,7 @@ public:
 	Mesh(GLenum primitiveType, const std::vector<float>& verts);
 	virtual ~Mesh();
 
-	virtual void Draw(ShaderProgram* pShader, vec2 pos, float time, float scale);
+	virtual void Draw(ShaderProgram* pShader, vec2 pos, float time, float scale, float colorShift);
 
 
 protected:
