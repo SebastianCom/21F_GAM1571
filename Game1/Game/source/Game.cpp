@@ -216,13 +216,13 @@ void Game::Update(float deltaTime)
 	ImGui::Text("Player Y: %.2f", m_pPlayer->GetPosition().y);
 
 	HandleCollision(deltaTime);
-	HandleAI(deltaTime);
+	//HandleAI(deltaTime);
 
-	//if (m_ActiveGameObjects.size() == 0 && m_Round > 0)
-	//{
-	//	m_Round++;
-	//	SpawnGameObjects();
-	//}
+	if (m_ActiveGameObjects.size() == 0 && m_Round > 0)
+	{
+		m_Round++;
+		SpawnGameObjects();
+	} 
 }
 
 void Game::Draw()
@@ -418,7 +418,7 @@ void Game::HandleCollision(float deltaTime) //BROKEN when player moves too quick
 			fw::Bullet* pBullet = dynamic_cast<fw::Bullet*>(m_ActiveGameObjects.at(i));
 			for (int j = 0; j < i; j++)
 			{
-				if (m_ActiveGameObjects.at(i)->CheckCollision(m_ActiveGameObjects.at(j)) == true && m_ActiveGameObjects.at(j)->GetReadyToDie() == false)
+				if (m_ActiveGameObjects.at(i)->CheckBulletCollision(m_ActiveGameObjects.at(j)) == true && m_ActiveGameObjects.at(j)->GetReadyToDie() == false)
 				{
 				
 
@@ -636,6 +636,10 @@ void Game::SpawnGameObjects()
 	{
 		m_ActiveGameObjects.at(i)->SetActive(true);
 	}
+	for (int i = 0; i < m_ActiveGameObjects.size(); i++) // at this point all enemies should be in unique positions so it is safe to activate them all
+	{
+		m_ActiveGameObjects.at(i)->SetActive(true);
+	}
 
 	m_pPlayer->SetActive(true); // when everything is in place activate the player.
 								
@@ -646,8 +650,9 @@ void Game::SpawnBullet(fw::vec2& position)
 {
 	m_ActiveGameObjects.push_back(m_vecBullets.back());
 	m_vecBullets.pop_back();
-	m_ActiveGameObjects.back()->SetPosition(position);
 	m_ActiveGameObjects.back()->SetActive(true);
+	m_ActiveGameObjects.back()->SetPosition(position);
+	
 
 	//activate bullet
 }

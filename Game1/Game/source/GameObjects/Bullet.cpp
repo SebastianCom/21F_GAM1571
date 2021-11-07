@@ -89,6 +89,7 @@ namespace fw {
 		m_ShootingDown = false;
 		m_ShootingRight = false;
 		m_Shrinkage = 0.0f;
+		m_IsActive = true;
 	}
 
 	void Bullet::SetIsShooting(bool shooting)

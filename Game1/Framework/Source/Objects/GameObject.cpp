@@ -161,5 +161,22 @@ namespace fw {
 	void GameObject::MoveTo(float deltaTime, fw::vec2 position)
 	{
 	}
+	
+	bool GameObject::CheckBulletCollision(const GameObject* object)
+	{
+		//float distanceX = m_Position.x - object->m_Position.x;
+		//float distanceY = m_Position.y - object->m_Position.y;
+		//float distance = sqrt((distanceX * distanceX) * (distanceY * distanceY));
+		float distance = m_Position.DistanceTo(object->m_Position);
+		if (distance <= object->m_Radius)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
 
 } // namespace fw

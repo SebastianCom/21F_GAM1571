@@ -9,7 +9,7 @@ namespace fw {
 	{
 		m_Speed = 1;
 		SetPosition(pos);
-		m_Radius = 0.80f;
+		m_Radius = 0.8f;
 		m_BackUpSpot = {fw::RandomFloat(-14,14),fw::RandomFloat(-14,14)};
 	}
 	Enemy::~Enemy()

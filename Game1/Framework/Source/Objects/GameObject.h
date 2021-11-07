@@ -53,6 +53,7 @@ namespace fw {
 		void SetRadius(float radius);
 		bool  CheckCollision( const GameObject* object);
 		bool  CheckCollision(fw::vec2 position, float radius);
+		bool  CheckBulletCollision(const GameObject* object);
 
 		void SetActive(bool a);
 		bool GetActive();
