@@ -65,22 +65,20 @@ protected:
    GameObject* m_Collided2;
 };
 
-//class RoundEnd : public Event
-//{
-//public:
-//    RoundEnd(int* Round)
-//    {
-//        m_Round = *Round;
-//    }
-//    ~RoundEnd() {}
-//
-//    virtual EventType GetEventType() override { return EventType::RoundEnd; }
-//    int m_Round;
-//
-//protected:
-//    CollisionType m_CollisionType;
-//    
-//
-//};
+class RoundEnd : public Event
+{
+public:
+    RoundEnd()
+    {
+        
+    }
+    ~RoundEnd() {}
+
+    virtual EventType GetEventType() override { return EventType::RoundEnd; }
+    
+
+protected:
+
+};
 
 } // namespace fw

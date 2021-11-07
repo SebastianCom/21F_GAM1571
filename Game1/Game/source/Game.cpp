@@ -121,10 +121,10 @@ void Game::Update(float deltaTime)
 	
 	if (m_ActiveGameObjects.size() == 0 && m_Round > 0 && m_Round < 4)
 	{
-		//fw::RoundEnd* pRoundEnd = new fw::RoundEnd(&m_Round);
-		//m_FWCore.m_pEventManager->AddEvent(pRoundEnd);
-		m_Round++;
-		SpawnGameObjects();
+		fw::RoundEnd* pRoundEnd = new fw::RoundEnd();
+		m_FWCore.m_pEventManager->AddEvent(pRoundEnd);
+		//m_Round++;
+		//SpawnGameObjects();
 	}
 	//ImGui Winodw Set up
 	ImGui::Text("Lives: %d", m_pPlayer->GetLives());
@@ -144,9 +144,10 @@ void Game::Update(float deltaTime)
 	
 		if (m_Round <= 3) //JIMMY->Ill give you round 4 as a rest round Nothing will attack you, idk if it will help with marking but incase you need a safe space.
 		{	 
-			m_Round++;
+			fw::RoundEnd* pRoundEnd = new fw::RoundEnd();
+			m_FWCore.m_pEventManager->AddEvent(pRoundEnd);
 		}
-		SpawnGameObjects();
+		//SpawnGameObjects();
 	}
 	
 	if (ImGui::Button(" Reset to 1 "))
@@ -159,8 +160,10 @@ void Game::Update(float deltaTime)
 
 		}
 		DestroyObject();
-		m_Round = 1;
-		SpawnGameObjects();
+		m_Round = 0;
+		fw::RoundEnd* pRoundEnd = new fw::RoundEnd();
+		m_FWCore.m_pEventManager->AddEvent(pRoundEnd);
+		//SpawnGameObjects();
 	}
 	
 	//Debugging 
@@ -325,6 +328,11 @@ void Game::OnEvent(fw::Event* pEvent)
 	m_pPlayerController->OnEvent(pEvent);
 	if(pEvent->GetEventType() == fw::EventType::Collision)
 	m_pCollisionController->OnEvent(pEvent);
+	if (pEvent->GetEventType() == fw::EventType::RoundEnd)
+	{
+		m_Round++;
+		SpawnGameObjects();
+	}
 	DestroyObject();
 
 
