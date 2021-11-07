@@ -215,7 +215,8 @@ void Game::Update(float deltaTime)
 	ImGui::Text("Player X: %.2f", m_pPlayer->GetPosition().x);
 	ImGui::Text("Player Y: %.2f", m_pPlayer->GetPosition().y);
 
-	HandleCollision(deltaTime);
+	HandleCollision(deltaTime); // add return value to return the appropriate event then we can call on event from here passing in the returned event.
+	
 	//HandleAI(deltaTime);
 
 	if (m_ActiveGameObjects.size() == 0 && m_Round > 0)
@@ -342,7 +343,27 @@ void Game::HandleShooting()
 void Game::OnEvent(fw::Event* pEvent)
 {
 	m_pPlayerController->OnEvent(pEvent);
+	//For on collision create event i found this// InputEvent* pInput = new InputEvent(DeviceType::Keyboard, InputState::Pressed, (int)wParam);
+	if (pEvent->GetEventType() == fw::EventType::Collision)
+	{
+		fw::Collision* pEoE = static_cast<fw::Collision*>(pEvent);
+		if (pEoE->GetCollisionType() == fw::CollisionType::PlayerOnObject)
+		{
+			fw::Enemy* pEnemy = dynamic_cast<fw::Enemy*>(pEoE->GetCollidedObject2());
+			if (pEnemy != nullptr)
+			{
+				m_Lives--;
+				pEoE->GetCollidedObject1()->SetActive(false);
+			}
+			pEoE->GetCollidedObject2()->SetReadyToDie(true);
+			pEoE->GetCollidedObject2()->SetActive(false);
+		}
+		if (pEoE->GetCollisionType() == fw::CollisionType::EnemyOnObject)
+		{
 
+		}
+
+	}
 	/*m_pCollisionController = new fw::CollisionController();*/
 
 
@@ -363,6 +384,8 @@ void Game::HandleCollision(float deltaTime) //BROKEN when player moves too quick
 				{
 					if (m_pPlayer->CheckCollision(m_ActiveGameObjects.at(i)) == true && m_ActiveGameObjects.at(i)->GetReadyToDie() == false)
 					{
+						fw::Collision* pCollision = new fw::Collision(fw::CollisionType::PlayerOnObject, m_pPlayer, m_ActiveGameObjects.at(i));
+						Game::OnEvent(pCollision);
 						if (m_ActiveGameObjects.back()->GetActive() == true)
 						{
 							m_ActiveGameObjects.at(i)->SetReadyToDie(true);

@@ -8,6 +8,7 @@ namespace fw {
 enum class EventType { Input, NotSet, Collision };
 enum class DeviceType { Keyboard, Mouse };
 enum class InputState { Pressed, Released };
+enum class CollisionType {EnemyOnObject, PlayerOnObject};
 
 class Event
 {
@@ -42,20 +43,26 @@ protected:
     vec2 m_Position;
 };
 
-class CollisionEvent : public Event
+class Collision : public Event
 {
 public:
-    CollisionEvent()
+    Collision(CollisionType type, GameObject* CollidedObject1, GameObject* CollidedObject2)
     {
-
+        m_CollisionType = type;
+        m_Collided1 = CollidedObject1;
+        m_Collided2 = CollidedObject2;
     }
-    ~CollisionEvent() {}
+    ~Collision() {}
 
     virtual EventType GetEventType() override { return EventType::Collision; }
-
+    CollisionType GetCollisionType() { return m_CollisionType; }
+    GameObject* GetCollidedObject1() { return m_Collided1; }
+    GameObject* GetCollidedObject2() { return m_Collided2; }
 
 protected:
-
+   CollisionType m_CollisionType;
+   GameObject* m_Collided1;
+   GameObject* m_Collided2;
 };
 
 } // namespace fw
