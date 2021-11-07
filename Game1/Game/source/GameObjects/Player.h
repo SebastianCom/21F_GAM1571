@@ -15,11 +15,21 @@ namespace fw {
 
 		bool IsShooting();
 
+		void SetLives(int lives) { m_Lives = lives; }
+		void DecrementLives() { m_Lives--; }
+		int	 GetLives() { return m_Lives; }
+
+		void SetScore(int Score) { m_Score = Score; }
+		void IncrementScore() { m_Score += 10; }
+		int	 GetScore() { return m_Score; }
+
 
 
 	private:
 
 		PlayerController* m_pPlayerController;
+		int m_Lives;
+		int m_Score;
 	};
 
 } // namespace fw

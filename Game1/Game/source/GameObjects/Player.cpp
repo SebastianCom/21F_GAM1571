@@ -11,6 +11,8 @@ namespace fw {
 		m_Speed = 10;
 		SetPosition(pos);
 		m_Radius = 0.80f;
+		m_Lives = 3;
+		m_Score = 0;
 		
 	}
 	Player::~Player()

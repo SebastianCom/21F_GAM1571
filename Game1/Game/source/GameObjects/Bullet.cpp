@@ -81,7 +81,6 @@ namespace fw {
 		m_Speed = 5;
 		SetPosition(pos);
 		m_Radius = 0.20f;
-		m_IsActive = false;
 		m_IsShooting = false;
 		m_ReadyToDie = false;
 		m_ShootingUp = false;

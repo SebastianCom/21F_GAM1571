@@ -19,6 +19,7 @@ public:
 	void HandleCollision(float deltaTime);
 	void SpawnGameObjects();
 	void SpawnBullet(fw::vec2& position);
+	void DestroyObject();
 
 protected:
 	
@@ -41,8 +42,6 @@ protected:
 	
 
 	float m_ShotCoolDown;
-	int m_Lives;
-	int m_Score;
 
 	fw::PlayerController* m_pPlayerController;
 	fw::CollisionController* m_pCollisionController;

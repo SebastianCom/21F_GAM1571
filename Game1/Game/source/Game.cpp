@@ -13,8 +13,6 @@ Game::Game(fw::FWCore& fwCore)
 	m_pPlayer = nullptr;
 	m_pPlayerController = nullptr;
 	m_pCollisionController = nullptr;
-	m_Lives = 3;
-	m_Score = 0;
 	m_ShotCoolDown = 0;
 	m_DeltaTime = 0.0f;
 	m_Round = 0;
@@ -88,6 +86,27 @@ void Game::Init()
 	//Create Player
 	m_pPlayer = new fw::Player(m_Meshes["Player"], m_pGameObjectShader, fw::vec2(0,0), m_pPlayerController);
 	
+	for (int i = 0; i < 100; i++)
+	{
+		//New enemies with mesh from the map, shader, no position.
+		m_vecEnemies.push_back(new fw::Enemy(m_Meshes["Enemy"], m_pGameObjectShader, fw::vec2()));
+	}
+	for (int i = 0; i < 100; i++)
+	{
+		//New enemies with mesh from the map, shader, no position.
+		m_vecPatrolEnemies.push_back(new fw::Enemy2(m_Meshes["Enemy2"], m_pGameObjectShader, fw::vec2()));
+	}
+	for (int i = 0; i < 20; i++)
+	{
+		//New enemies with mesh from the map, shader, no position.
+		m_vecPickUps.push_back(new fw::PickUp(m_Meshes["PickUp"], m_pGameObjectShader, fw::vec2()));
+	}
+	for (int i = 0; i < 100; i++)
+	{
+		//New enemies with mesh from the map, shader, no position.
+		m_vecBullets.push_back(new fw::Bullet(m_Meshes["Bullet"], m_pGameObjectShader, fw::vec2(), m_pPlayerController));
+	}
+
 	//Create Enemies and Pick ups
 	SpawnGameObjects();
 
@@ -99,86 +118,47 @@ void Game::Update(float deltaTime)
 	//double time = GetSystemTimeSinceGameStart(); another way to do whats below. (Lines 20,21)
 	m_DeltaTime = deltaTime;
 	m_pImGuiManager->StartFrame(deltaTime);
-
+	
+	if (m_ActiveGameObjects.size() == 0 && m_Round > 0 && m_Round < 4)
+	{
+		//fw::RoundEnd* pRoundEnd = new fw::RoundEnd(&m_Round);
+		//m_FWCore.m_pEventManager->AddEvent(pRoundEnd);
+		m_Round++;
+		SpawnGameObjects();
+	}
 	//ImGui Winodw Set up
-	ImGui::Text("Lives: %d", m_Lives);
-	ImGui::Text("Score: %d", m_Score);
+	ImGui::Text("Lives: %d", m_pPlayer->GetLives());
+	ImGui::Text("Score: %d", m_pPlayer->GetScore());
 	ImGui::Text("Round: %d", m_Round);
 	
 	if (ImGui::Button(" Round Increase "))
 	{
-		//int tempsize = m_ActiveGameObjects.size();
-		for (int i = m_ActiveGameObjects.size() -1; i > -1; i--)
+		for (int i = 0; i < m_ActiveGameObjects.size(); i++)
 		{
-			
-			fw::Enemy* pEnemy = dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.at(i));
-			fw::Enemy2* pPatrolEnemy = dynamic_cast<fw::Enemy2*>(m_ActiveGameObjects.at(i));
-			fw::PickUp* pPickUp = dynamic_cast<fw::PickUp*>(m_ActiveGameObjects.at(i));
-			fw::Bullet* pBullet = dynamic_cast<fw::Bullet*>(m_ActiveGameObjects.at(i));
-			if (pEnemy != nullptr)
-			{
-				m_vecEnemies.push_back(pEnemy);
-				m_ActiveGameObjects.pop_back();
-			}
-			
-			else if (pPatrolEnemy != nullptr)
-			{
-				m_vecPatrolEnemies.push_back(pPatrolEnemy);
-				m_ActiveGameObjects.pop_back();
-			}
-			
-			else if (pPickUp != nullptr)
-			{
-				m_vecPickUps.push_back(pPickUp);
-				m_ActiveGameObjects.pop_back();
-			}
-			
-			else if (pBullet != nullptr)
-			{
-				m_vecBullets.push_back(pBullet);
-				m_ActiveGameObjects.pop_back();
-			}
-			
+			m_ActiveGameObjects.at(i)->SetReadyToDie(true);
+			m_ActiveGameObjects.at(i)->SetActive(false);
+			m_ActiveGameObjects.at(i)->SetShrinkageTimer(0.0f);
+
 		}
-		m_Round++;
+		DestroyObject();
+	
+		if (m_Round <= 3) //JIMMY->Ill give you round 4 as a rest round Nothing will attack you, idk if it will help with marking but incase you need a safe space.
+		{	 
+			m_Round++;
+		}
 		SpawnGameObjects();
 	}
 	
 	if (ImGui::Button(" Reset to 1 "))
 	{
-		//int tempsize = m_ActiveGameObjects.size();
-		for (int i = m_ActiveGameObjects.size() - 1; i > -1; i--)
+		for (int i = 0; i < m_ActiveGameObjects.size(); i++)
 		{
-
-			fw::Enemy* pEnemy = dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.at(i));
-			fw::Enemy2* pPatrolEnemy = dynamic_cast<fw::Enemy2*>(m_ActiveGameObjects.at(i));
-			fw::PickUp* pPickUp = dynamic_cast<fw::PickUp*>(m_ActiveGameObjects.at(i));
-			fw::Bullet* pBullet = dynamic_cast<fw::Bullet*>(m_ActiveGameObjects.at(i));
-			if (pEnemy != nullptr)
-			{
-				m_vecEnemies.push_back(pEnemy);
-				m_ActiveGameObjects.pop_back();
-			}
-
-			else if (pPatrolEnemy != nullptr)
-			{
-				m_vecPatrolEnemies.push_back(pPatrolEnemy);
-				m_ActiveGameObjects.pop_back();
-			}
-
-			else if (pPickUp != nullptr)
-			{
-				m_vecPickUps.push_back(pPickUp);
-				m_ActiveGameObjects.pop_back();
-			}
-
-			else if (pBullet != nullptr)
-			{
-				m_vecBullets.push_back(pBullet);
-				m_ActiveGameObjects.pop_back();
-			}
+			m_ActiveGameObjects.at(i)->SetReadyToDie(true);
+			m_ActiveGameObjects.at(i)->SetActive(false);
+			m_ActiveGameObjects.at(i)->SetShrinkageTimer(0.0f);
 
 		}
+		DestroyObject();
 		m_Round = 1;
 		SpawnGameObjects();
 	}
@@ -217,13 +197,10 @@ void Game::Update(float deltaTime)
 
 	HandleCollision(deltaTime); // add return value to return the appropriate event then we can call on event from here passing in the returned event.
 	
-	//HandleAI(deltaTime);
+	HandleAI(deltaTime);
 
-	if (m_ActiveGameObjects.size() == 0 && m_Round > 0)
-	{
-		m_Round++;
-		SpawnGameObjects();
-	} 
+
+
 }
 
 void Game::Draw()
@@ -275,6 +252,8 @@ void Game::HandleAI(float deltaTime)
 					if (m_ActiveGameObjects.at(i)->CheckCollision(m_ActiveGameObjects.at(j)) == true
 						&& m_ActiveGameObjects.at(i)->GetChasing() == true && m_ActiveGameObjects.at(j)->GetChasing() == true)
 					{
+						//fw::Collision* pCollision = new fw::Collision(fw::CollisionType::EnemyOnObject, m_ActiveGameObjects.at(i), m_ActiveGameObjects.at(j));
+						//Game::OnEvent(pCollision);
 						if (m_ActiveGameObjects.at(i)->GetReadyToDie() == false)
 						{
 							m_ActiveGameObjects.at(i)->SetChasing(false);
@@ -334,7 +313,7 @@ void Game::HandleShooting()
 			{
 				SpawnBullet(m_pPlayer->GetPosition());
 				m_pPlayerController->SetShot(false);
-				m_ShotCoolDown = .25f;
+				m_ShotCoolDown = 0.25f;
 			}
 		}
 	}
@@ -342,29 +321,11 @@ void Game::HandleShooting()
 
 void Game::OnEvent(fw::Event* pEvent)
 {
+
 	m_pPlayerController->OnEvent(pEvent);
-	//For on collision create event i found this// InputEvent* pInput = new InputEvent(DeviceType::Keyboard, InputState::Pressed, (int)wParam);
-	if (pEvent->GetEventType() == fw::EventType::Collision)
-	{
-		fw::Collision* pEoE = static_cast<fw::Collision*>(pEvent);
-		if (pEoE->GetCollisionType() == fw::CollisionType::PlayerOnObject)
-		{
-			fw::Enemy* pEnemy = dynamic_cast<fw::Enemy*>(pEoE->GetCollidedObject2());
-			if (pEnemy != nullptr)
-			{
-				m_Lives--;
-				pEoE->GetCollidedObject1()->SetActive(false);
-			}
-			pEoE->GetCollidedObject2()->SetReadyToDie(true);
-			pEoE->GetCollidedObject2()->SetActive(false);
-		}
-		if (pEoE->GetCollisionType() == fw::CollisionType::EnemyOnObject)
-		{
-
-		}
-
-	}
-	/*m_pCollisionController = new fw::CollisionController();*/
+	if(pEvent->GetEventType() == fw::EventType::Collision)
+	m_pCollisionController->OnEvent(pEvent);
+	DestroyObject();
 
 
 }
@@ -384,51 +345,10 @@ void Game::HandleCollision(float deltaTime) //BROKEN when player moves too quick
 				{
 					if (m_pPlayer->CheckCollision(m_ActiveGameObjects.at(i)) == true && m_ActiveGameObjects.at(i)->GetReadyToDie() == false)
 					{
-						fw::Collision* pCollision = new fw::Collision(fw::CollisionType::PlayerOnObject, m_pPlayer, m_ActiveGameObjects.at(i));
-						Game::OnEvent(pCollision);
-						if (m_ActiveGameObjects.back()->GetActive() == true)
-						{
-							m_ActiveGameObjects.at(i)->SetReadyToDie(true);
-							m_ActiveGameObjects.at(i)->SetActive(false);
-						}
-
-						fw::Enemy* pEnemy = dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.at(i));
-						fw::Enemy2* pPatrolEnemy = dynamic_cast<fw::Enemy2*>(m_ActiveGameObjects.at(i));
 						
-						if (pEnemy != nullptr || pPatrolEnemy != nullptr)
-						{
-							m_Lives--;
-							m_pPlayer->SetActive(false);
-						}
-						else
-						{
-							m_Score += 10;
-						}
-					}
-					if (m_pPlayer->GetActive() == false)
-					{
-						m_pPlayer->SetPosition(fw::vec2(fw::RandomFloat(-13.75, 13.75), fw::RandomFloat(-13.75, 13.75)));
-
-						bool colliding = true;
-						int loopCount = 0;
-
-						while (colliding == true && loopCount < 100)
-						{
-							m_pPlayer->SetPosition(fw::vec2(fw::RandomFloat(-13.75, 13.75), fw::RandomFloat(-13.75, 13.75)));
-							colliding = false;
-
-							for (int j = 0; j < m_ActiveGameObjects.size(); j++)
-							{
-								if (m_pPlayer->CheckCollision(m_ActiveGameObjects.at(j)) == true)
-								{
-									colliding = true;
-								}
-
-							}
-							loopCount++;
-						}
-						m_pPlayer->SetActive(true);
-
+						fw::Collision* pCollision = new fw::Collision(fw::CollisionType::PlayerOnObject, m_pPlayer, m_ActiveGameObjects.at(i));
+						m_FWCore.m_pEventManager->AddEvent(pCollision);
+						
 					}
 				}
 				
@@ -438,41 +358,17 @@ void Game::HandleCollision(float deltaTime) //BROKEN when player moves too quick
 
 		for (int i = 0; i < m_ActiveGameObjects.size(); i++)
 		{
-			fw::Bullet* pBullet = dynamic_cast<fw::Bullet*>(m_ActiveGameObjects.at(i));
+			
 			for (int j = 0; j < i; j++)
 			{
 				if (m_ActiveGameObjects.at(i)->CheckBulletCollision(m_ActiveGameObjects.at(j)) == true && m_ActiveGameObjects.at(j)->GetReadyToDie() == false)
 				{
+					fw::Collision* pCollision = new fw::Collision(fw::CollisionType::BulletOnObject, m_ActiveGameObjects.at(i), m_ActiveGameObjects.at(j));
+					m_FWCore.m_pEventManager->AddEvent(pCollision);
 				
-
-					if (pBullet != nullptr)
-					{
-						fw::Enemy* pEnemy = dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.at(j));
-						
-						if (pEnemy != nullptr)
-						{
-							m_ActiveGameObjects.at(i)->SetReadyToDie(true);
-							m_ActiveGameObjects.at(j)->SetReadyToDie(true);
-						}
-						
-						fw::Enemy2* pPatrolEnemy = dynamic_cast<fw::Enemy2*>(m_ActiveGameObjects.at(j));
-						
-						if (pPatrolEnemy != nullptr)
-						{
-							m_ActiveGameObjects.at(i)->SetReadyToDie(true);
-							m_ActiveGameObjects.at(j)->SetReadyToDie(true);
-						}
-						
-						fw::PickUp* pPickUp = dynamic_cast<fw::PickUp*>(m_ActiveGameObjects.at(j));
-
-						if (pPickUp != nullptr)
-						{
-							m_ActiveGameObjects.at(i)->SetReadyToDie(true);
-							m_ActiveGameObjects.at(j)->SetReadyToDie(true);
-						}
-					}
 				}
 			}
+			fw::Bullet* pBullet = dynamic_cast<fw::Bullet*>(m_ActiveGameObjects.at(i));
 			if (pBullet != nullptr)
 			{
 				if (m_ActiveGameObjects.at(i)->GetPosition().x >= 15
@@ -480,66 +376,24 @@ void Game::HandleCollision(float deltaTime) //BROKEN when player moves too quick
 					|| m_ActiveGameObjects.at(i)->GetPosition().y >= 15
 					|| m_ActiveGameObjects.at(i)->GetPosition().y <= -15)
 				{
-					m_ActiveGameObjects.at(i)->SetReadyToDie(true);
+					fw::Collision* pCollision = new fw::Collision(fw::CollisionType::BulletOnWall, m_ActiveGameObjects.at(i), m_ActiveGameObjects.at(i));
+					m_FWCore.m_pEventManager->AddEvent(pCollision);
 				}
 			}
 		}
-
 	
-
+		//Make Function
 		if (m_pPlayer->GetActive())
 		{
 			for (int i = 0; i < m_ActiveGameObjects.size(); i++)
 			{
-				if (m_ActiveGameObjects.at(i)->GetReadyToDie())
+				fw::Bullet* pBullet = dynamic_cast<fw::Bullet*>(m_ActiveGameObjects.at(i));
+				if (m_ActiveGameObjects.at(i)->GetReadyToDie() && pBullet == nullptr)
 				{
 
 					if (m_ActiveGameObjects.at(i)->GetShrinkageTimer() > 0)
 					{
 						m_ActiveGameObjects.at(i)->DecrementShrinkageTimer(deltaTime); //m_Shrinkage -= deltatime
-					}
-
-					else if (m_ActiveGameObjects.at(i)->GetShrinkageTimer() <= 0) //when the shrink is over is deletes the enemy. Enemy will reflect if not deleted at 0
-					{
-						fw::GameObject* temp;
-						fw::GameObject* temp1;
-						temp = m_ActiveGameObjects.at(i);
-						temp1 = m_ActiveGameObjects.back();
-
-						m_ActiveGameObjects.at(i) = temp1;
-						m_ActiveGameObjects.back() = temp;
-
-
-						fw::Enemy* pEnemy = dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.back());
-
-						if (pEnemy != nullptr)
-						{
-							m_vecEnemies.push_back(pEnemy);
-						}
-
-						fw::PickUp* pPickUp = dynamic_cast<fw::PickUp*>(m_ActiveGameObjects.back());
-
-						if (pPickUp != nullptr)
-						{
-							m_vecPickUps.push_back(pPickUp);
-						}
-
-						fw::Bullet* pBullet = dynamic_cast<fw::Bullet*>(m_ActiveGameObjects.back());
-
-						if (pBullet != nullptr)
-						{
-							m_vecBullets.push_back(pBullet);
-							m_vecBullets.back()->Init(m_pPlayer->GetPosition());
-						}
-
-						fw::Enemy2* pPatrolEnemy = dynamic_cast<fw::Enemy2*>(m_ActiveGameObjects.at(i));
-						
-						if (pPatrolEnemy != nullptr)
-						{
-							m_vecPatrolEnemies.push_back(pPatrolEnemy);
-						}
-
-						m_ActiveGameObjects.pop_back();
 					}
 				}
 			}
@@ -551,30 +405,24 @@ void Game::HandleCollision(float deltaTime) //BROKEN when player moves too quick
 
 void Game::SpawnGameObjects()
 {
-	for (int i = 0; i < 100; i++)
-	{
-		//New enemies with mesh from the map, shader, no position.
-		m_vecEnemies.push_back(new fw::Enemy(m_Meshes["Enemy"], m_pGameObjectShader, fw::vec2()));
-	}
-	for (int i = 0; i < 100; i++)
-	{
-		//New enemies with mesh from the map, shader, no position.
-		m_vecPatrolEnemies.push_back(new fw::Enemy2(m_Meshes["Enemy2"], m_pGameObjectShader, fw::vec2()));
-	}
-	for (int i = 0; i < 20; i++)
-	{
-		//New enemies with mesh from the map, shader, no position.
-		m_vecPickUps.push_back(new fw::PickUp(m_Meshes["PickUp"], m_pGameObjectShader, fw::vec2()));
-	}	
-	for (int i = 0; i < 100; i++)
-	{
-		//New enemies with mesh from the map, shader, no position.
-		m_vecBullets.push_back(new fw::Bullet(m_Meshes["Bullet"], m_pGameObjectShader, fw::vec2(), m_pPlayerController));
-	}
 
 	if (m_Round == 0)
 	{
 		m_Round++;
+	}
+
+	if (m_Round == 1)
+	{
+		for (int i = 0; i < static_cast<int>(fw::RandomFloat(1.0f, 5.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
+		{
+			m_ActiveGameObjects.push_back(m_vecPickUps.back());
+			m_vecPickUps.pop_back();
+		}
+		for (int i = 0; i < static_cast<int>(fw::RandomFloat(5.0f, 15.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
+		{
+			m_ActiveGameObjects.push_back(m_vecPatrolEnemies.back());
+			m_vecPatrolEnemies.pop_back();
+		}
 	}
 
 	//Vector of Active Game Objects
@@ -591,19 +439,7 @@ void Game::SpawnGameObjects()
 			m_vecEnemies.pop_back();
 		}
 	}
-	if (m_Round == 1)
-	{
-		for (int i = 0; i < static_cast<int>(fw::RandomFloat(1.0f, 5.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
-		{
-			m_ActiveGameObjects.push_back(m_vecPickUps.back());
-			m_vecPickUps.pop_back();
-		}
-		for (int i = 0; i < static_cast<int>(fw::RandomFloat(5.0f, 15.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
-		{
-			m_ActiveGameObjects.push_back(m_vecPatrolEnemies.back());
-			m_vecPatrolEnemies.pop_back();
-		}
-	}
+
 	if (m_Round == 3)
 	{
 		for (int i = 0; i < static_cast<int>(fw::RandomFloat(1.0f, 5.0f)); i++) //Get a random number of enemies - static cast so we can use the random float function
@@ -622,8 +458,6 @@ void Game::SpawnGameObjects()
 			m_vecEnemies.pop_back();
 		}
 	}
-
-	
 
 	//Spawn Random amount of enemies in random locations
 	for (int i = 0; i < m_ActiveGameObjects.size(); i++) //Get a random number of enemies - static cast so we can use the random float function
@@ -658,11 +492,9 @@ void Game::SpawnGameObjects()
 	for (int i = 0; i < m_ActiveGameObjects.size(); i++) // at this point all enemies should be in unique positions so it is safe to activate them all
 	{
 		m_ActiveGameObjects.at(i)->SetActive(true);
+	
 	}
-	for (int i = 0; i < m_ActiveGameObjects.size(); i++) // at this point all enemies should be in unique positions so it is safe to activate them all
-	{
-		m_ActiveGameObjects.at(i)->SetActive(true);
-	}
+
 
 	m_pPlayer->SetActive(true); // when everything is in place activate the player.
 								
@@ -674,8 +506,88 @@ void Game::SpawnBullet(fw::vec2& position)
 	m_ActiveGameObjects.push_back(m_vecBullets.back());
 	m_vecBullets.pop_back();
 	m_ActiveGameObjects.back()->SetActive(true);
+	m_ActiveGameObjects.back()->SetReadyToDie(false);
 	m_ActiveGameObjects.back()->SetPosition(position);
 	
 
 	//activate bullet
+}
+
+void Game::DestroyObject()
+{
+	if (m_pPlayer->GetActive())
+	{
+		for (int i = 0; i < m_ActiveGameObjects.size(); i++)
+		{
+			fw::Bullet* pBullet = dynamic_cast<fw::Bullet*>(m_ActiveGameObjects.at(i));
+
+			if (pBullet == nullptr)
+			{
+				if (m_ActiveGameObjects.at(i)->GetShrinkageTimer() <= 0) //when the shrink is over is deletes the enemy. Enemy will reflect if not deleted at 0
+				{
+					fw::GameObject* temp;
+					fw::GameObject* temp1;
+					temp = m_ActiveGameObjects.at(i);
+					temp1 = m_ActiveGameObjects.back();
+
+					m_ActiveGameObjects.at(i) = temp1;
+					m_ActiveGameObjects.back() = temp;
+
+
+					fw::Enemy* pEnemy = dynamic_cast<fw::Enemy*>(m_ActiveGameObjects.back());
+
+					if (pEnemy != nullptr)
+					{
+						pEnemy->SetReadyToDie(false);
+						pEnemy->SetShrinkageTimer(1.0f);
+						pEnemy->SetScale(1.0f);
+						m_vecEnemies.push_back(pEnemy);
+					}
+
+					fw::PickUp* pPickUp = dynamic_cast<fw::PickUp*>(m_ActiveGameObjects.back());
+
+					if (pPickUp != nullptr)
+					{
+						pPickUp->SetReadyToDie(false);
+						pPickUp->SetShrinkageTimer(1.0f);
+						pPickUp->SetScale(1.0f);
+						m_vecPickUps.push_back(pPickUp);
+					}
+
+					fw::Enemy2* pPatrolEnemy = dynamic_cast<fw::Enemy2*>(m_ActiveGameObjects.back());
+
+					if (pPatrolEnemy != nullptr)
+					{
+						pPatrolEnemy->SetReadyToDie(false);
+						pPatrolEnemy->SetShrinkageTimer(1.0f);
+						pPatrolEnemy->SetScale(1.0f);
+						m_vecPatrolEnemies.push_back(pPatrolEnemy);
+					}
+
+					m_ActiveGameObjects.pop_back();
+				}
+			}
+
+			if (pBullet != nullptr)
+			{
+				if (m_ActiveGameObjects.at(i)->GetReadyToDie())
+				{
+					fw::GameObject* temp;
+					fw::GameObject* temp1;
+					temp = m_ActiveGameObjects.at(i);
+					temp1 = m_ActiveGameObjects.back();
+
+					m_ActiveGameObjects.at(i) = temp1;
+					m_ActiveGameObjects.back() = temp;
+					
+					pBullet->SetReadyToDie(false);
+					m_vecBullets.push_back(pBullet);
+					m_vecBullets.back()->Init(m_pPlayer->GetPosition());
+
+					m_ActiveGameObjects.pop_back();
+				}
+			}
+
+		}
+	}
 }

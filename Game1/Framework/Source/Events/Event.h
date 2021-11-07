@@ -5,10 +5,10 @@
 
 namespace fw {
 
-enum class EventType { Input, NotSet, Collision };
+enum class EventType { Input, NotSet, Collision, RoundEnd };
 enum class DeviceType { Keyboard, Mouse };
 enum class InputState { Pressed, Released };
-enum class CollisionType {EnemyOnObject, PlayerOnObject};
+enum class CollisionType {EnemyOnObject, PlayerOnObject, BulletOnObject, BulletOnWall};
 
 class Event
 {
@@ -64,5 +64,23 @@ protected:
    GameObject* m_Collided1;
    GameObject* m_Collided2;
 };
+
+//class RoundEnd : public Event
+//{
+//public:
+//    RoundEnd(int* Round)
+//    {
+//        m_Round = *Round;
+//    }
+//    ~RoundEnd() {}
+//
+//    virtual EventType GetEventType() override { return EventType::RoundEnd; }
+//    int m_Round;
+//
+//protected:
+//    CollisionType m_CollisionType;
+//    
+//
+//};
 
 } // namespace fw

@@ -8,6 +8,8 @@ class EventManager;
 
 class FWCore
 {
+public:
+    EventManager* m_pEventManager;
 protected:
     bool m_EscapeKeyWillQuit;
 
@@ -20,7 +22,7 @@ protected:
     HINSTANCE m_hInstance;
     MyGLContext* m_pMyGLContext;
 
-    EventManager* m_pEventManager;
+    //EventManager* m_pEventManager;
 
     bool m_KeyStates[256];
     bool m_MouseButtonStates[3];
