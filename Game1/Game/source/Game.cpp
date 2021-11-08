@@ -209,7 +209,7 @@ void Game::Draw()
 
 void Game::OnEvent(fw::Event* pEvent)
 {
-
+	if(pEvent->GetEventType() == fw::EventType::Input)
 	m_pPlayerController->OnEvent(pEvent);
 	
 	if (pEvent->GetEventType() == fw::EventType::Collision)
@@ -220,8 +220,11 @@ void Game::OnEvent(fw::Event* pEvent)
 		m_Round++;
 		SpawnGameObjects();
 	}
-	
-	DestroyObject();
+
+	if (pEvent->GetEventType() == fw::EventType::Destroy)
+	{
+		DestroyObject();
+	}
 
 
 }
@@ -395,6 +398,11 @@ void Game::HandleCollision(float deltaTime) //Collision does not always trigger.
 				if (m_ActiveGameObjects.at(i)->GetShrinkageTimer() > 0)
 				{
 					m_ActiveGameObjects.at(i)->DecrementShrinkageTimer(deltaTime); //m_Shrinkage -= deltatime
+				}
+				else
+				{
+					fw::Destroy* pDestroy = new fw::Destroy();
+					m_FWCore.m_pEventManager->AddEvent(pDestroy);
 				}
 			}
 		}

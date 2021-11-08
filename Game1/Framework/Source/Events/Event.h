@@ -5,7 +5,7 @@
 
 namespace fw {
 
-enum class EventType { Input, NotSet, Collision, RoundEnd };
+enum class EventType { Input, NotSet, Collision, RoundEnd, Destroy };
 enum class DeviceType { Keyboard, Mouse };
 enum class InputState { Pressed, Released };
 enum class CollisionType {EnemyOnObject, PlayerOnObject, BulletOnObject, BulletOnWall};
@@ -76,6 +76,22 @@ public:
 
     virtual EventType GetEventType() override { return EventType::RoundEnd; }
     
+
+protected:
+
+};
+
+class Destroy : public Event
+{
+public:
+    Destroy()
+    {
+
+    }
+    ~Destroy() {}
+
+    virtual EventType GetEventType() override { return EventType::Destroy; }
+
 
 protected:
 
