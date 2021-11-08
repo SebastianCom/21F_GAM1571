@@ -103,4 +103,8 @@ const std::vector<float> ENEMY2_VERTS = {
 	-0.10f, 0.14f, 1.0f, 1.0f, 1.0f, 1.0f,0.0f, 0.20f, 1.0f, 1.0f, 1.0f, 1.0f,-0.16f, -0.04f, 1.0f, 0.0f, 0.0f, 1.0f,0.14f, -0.04f, 1.0f, 0.0f, 0.0f, 1.0f,-0.01f, -0.13f, 1.0f, 0.0f, 0.0f, 1.0f
 };
 
+const float MIN_RANGE = 0.0f;
+const float MAX_RANGE = 100.0f;
+const float RESULT_RANGE = 1.0f;
+
 

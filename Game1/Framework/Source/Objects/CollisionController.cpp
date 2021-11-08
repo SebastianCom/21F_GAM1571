@@ -8,7 +8,6 @@ namespace fw {
 	{
 		m_Object1 = nullptr;
 		m_Object2 = nullptr;
-		m_Collision = false;
 	}
 
 	CollisionController::~CollisionController()
@@ -110,31 +109,7 @@ namespace fw {
 
 		}
 
-		//if (pEvent->GetEventType() == fw::EventType::RoundEnd)
-		//{
-		//	fw::RoundEnd* RE = static_cast<fw::RoundEnd*>(pEvent);
-		//	RE->m_Round++;
-
-		//}
 	}
 	
-
-	bool CollisionController::CheckCollision()
-	{
-		if (m_Object1 != nullptr)
-		{
-			float distanceSquared = (((m_Object1->GetPosition().x - m_Object2->GetPosition().x) * (m_Object1->GetPosition().x - m_Object2->GetPosition().x)) + ((m_Object1->GetPosition().y - m_Object2->GetPosition().y) * (m_Object1->GetPosition().y - m_Object2->GetPosition().y)));
-			float radiiSquared = (m_Object1->GetRadius() + m_Object2->GetRadius()) * (m_Object1->GetRadius() + m_Object2->GetRadius());
-			if (distanceSquared <= radiiSquared)
-			{
-				m_Collision = true;
-			}
-		}
-		else
-		{
-			m_Collision = false;
-		}
-		return m_Collision;
-	}
 
 } // namespace fw

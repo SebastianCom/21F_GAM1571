@@ -26,9 +26,9 @@ namespace fw {
 		m_ReadyToDie = false;
 		m_IsActive = false;
 		m_ObjectType = ObjectType::Enemy; //spelling error
-		m_Shrinkage = 1.0f;
-		m_Scale = 1.0f;
-		m_ColorShift = 1.0f;
+		m_Shrinkage = RESULT_RANGE;
+		m_Scale = MAX_RANGE;
+		m_ColorShift = MAX_RANGE;
 		m_Chasing = true;
 		MovingToAlpha = true;
 		MovingToBeta = false;
@@ -169,6 +169,22 @@ namespace fw {
 		//float distance = sqrt((distanceX * distanceX) * (distanceY * distanceY));
 		float distance = m_Position.DistanceTo(object->m_Position);
 		if (distance <= object->m_Radius)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+	bool GameObject::CheckBulletCollision(fw::vec2 pos, float radius)
+	{
+		//float distanceX = m_Position.x - object->m_Position.x;
+		//float distanceY = m_Position.y - object->m_Position.y;
+		//float distance = sqrt((distanceX * distanceX) * (distanceY * distanceY));
+		float distance = m_Position.DistanceTo(pos);
+		if (distance <= radius)
 		{
 			return true;
 		}

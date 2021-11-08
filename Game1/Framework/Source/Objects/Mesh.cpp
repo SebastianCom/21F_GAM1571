@@ -41,10 +41,12 @@ namespace fw {
 			glUniform1f(u_Time, time);
 			
 			GLint u_Scale = glGetUniformLocation(pShader->GetProgram(), "u_Scale");
-			glUniform1f(u_Scale, scale);
+			float Scale = (scale - MIN_RANGE) / (MAX_RANGE - MIN_RANGE) * RESULT_RANGE;
+			glUniform1f(u_Scale, Scale);
 			
 			GLint u_ColorShift = glGetUniformLocation(pShader->GetProgram(), "u_ColorShift");
-			glUniform1f(u_ColorShift, colorShift);
+			float ColorShift = (colorShift - MIN_RANGE) / (MAX_RANGE - MIN_RANGE) * RESULT_RANGE;
+			glUniform1f(u_ColorShift, ColorShift);
 
 			// Set this VBO to be the currently active one.
 			glBindBuffer(GL_ARRAY_BUFFER, m_VBO);

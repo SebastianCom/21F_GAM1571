@@ -15,14 +15,15 @@ varying float v_ColorShift;
 
 void main()
 {
-	
 	vec2 pos = (a_Position * u_Scale + u_Offset);
-	
 	//pos *= u_Scale;
 	//pos.y += sin( u_Time + a_Position.x) / 5;
+	float x = 0;
+	float y = 100;
+	
 
-	gl_Position = vec4( pos / 15 , 1.0, 1.0);
 
+	gl_Position = vec4( pos / 15 , 0.0, 1.0);
 	v_Color = a_Color;
 	v_ColorShift = u_ColorShift;
 }

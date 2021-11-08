@@ -10,8 +10,8 @@ namespace fw {
 		m_Speed = 5;
 		SetPosition(pos);
 		m_Radius = 0.60f;
-		m_ColorShift = 1.0f;
-		m_FlashTimer = 0.0f;
+		m_ColorShift = MAX_RANGE;
+		m_FlashTimer = MIN_RANGE;
 		m_IncreaseTimer = false;
 	}
 	PickUp::~PickUp()
@@ -19,13 +19,13 @@ namespace fw {
 	}
 	void PickUp::OnUpdate(float deltaTime)
 	{
-		ImGui::SliderFloat("Color Shift", &m_FlashTimer, 0.0f, 1.0f);
+		ImGui::SliderFloat("Color Shift", &m_FlashTimer, MIN_RANGE, MAX_RANGE);
 		Flash(deltaTime);
 		m_ColorShift = m_FlashTimer;
 
 		if (GetReadyToDie() == true)
 		{
-			SetScale(GetShrinkageTimer());
+			SetScale(GetShrinkageTimer()*MAX_RANGE);
 		}
 		
 	}
@@ -33,19 +33,19 @@ namespace fw {
 	void PickUp::Flash(float deltaTime)
 	{
 		
-		if(m_FlashTimer >= 1.0f)
+		if(m_FlashTimer >= MAX_RANGE)
 		{
 			m_IncreaseTimer = false;
 		}
-		else if (m_FlashTimer <= 0.0f)
+		else if (m_FlashTimer <= MIN_RANGE)
 		{
 			m_IncreaseTimer = true;
 		}
 
 		if (m_IncreaseTimer)
-			m_FlashTimer += deltaTime;
+			m_FlashTimer += deltaTime * MAX_RANGE;
 		else 
-			m_FlashTimer -= deltaTime;
+			m_FlashTimer -= deltaTime * MAX_RANGE;
 	}
 
 

@@ -29,7 +29,7 @@ namespace fw {
 
 			if (GetReadyToDie() == true)
 			{
-				SetScale(GetShrinkageTimer());
+				SetScale(GetShrinkageTimer()*MAX_RANGE);
 			}
 
 	}

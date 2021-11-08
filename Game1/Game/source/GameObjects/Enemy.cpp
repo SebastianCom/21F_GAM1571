@@ -21,7 +21,7 @@ namespace fw {
 
 			if (GetReadyToDie() == true)
 			{
-				SetScale(GetShrinkageTimer());
+				SetScale(GetShrinkageTimer()*MAX_RANGE);
 			}
 
 	}
@@ -51,7 +51,7 @@ namespace fw {
 
 		MoveTo(deltaTime, fw::vec2(m_BackUpSpot));
 		
-		if (CheckCollision(m_BackUpSpot,1.0f) == true) //Janky but i like it for now. There seems to be a que due to the way it used the vector. 
+		if (CheckBulletCollision(m_BackUpSpot,1.0f) == true) //Janky but i like it for now. There seems to be a que due to the way it used the vector. 
 		{
 			m_Chasing = true;
 		}
