@@ -3,10 +3,31 @@
 #include "PlayerController.h"
 #include "GameObject.h"
 #include "Player.h"
+#include "..\Libraries\rapidjson\document.h"
+
 
 Game::Game(fw::FWCore& fwCore)
     : m_FWCore( fwCore )
 {
+    using namespace rapidjson;
+    const char* json = fw::LoadCompleteFile("Data/Textures/Sokoban.json", nullptr);
+    Document document;
+    document.Parse(json);
+
+    // 2. Modify it by DOM.
+    Value& widthValue = document["Width"];
+    int width = widthValue.GetInt();
+
+    Value& spriteArray = document["Sprites"];
+    for (int i = 0; i < spriteArray.Size(); i++)
+    {
+       Value& sprite = spriteArray[i];
+       int x = sprite["X"].GetInt();
+    }
+
+
+
+
     m_pImGuiManager = nullptr;
 
     m_pBasicShader = nullptr;
@@ -42,26 +63,21 @@ void Game::Init()
     m_pImGuiManager->Init();
 
     m_pBasicShader = new fw::ShaderProgram( "Data/Shaders/Basic.vert", "Data/Shaders/Basic.frag" );
-    m_pTexture = new fw::Texture("Data/Textures/mattsballs.png");
-    m_pTexture = new fw::Texture("Data/Textures/numbers.png");
-    //m_pTexture = new fw::Texture();
-    std::vector<fw::VertexFormat> triangleVerts = {
-        { vec2(-10.0f, -10.0f),  255,255,255,255,  vec2(0.0f,0.0f) },
-        { vec2( 10.0f,10.0f),  255,255,255,255,  vec2(1.0f,1.0f) },
-        { vec2(-10.0f,10.0f),  255,255,255,255,  vec2(0.0f,1.0f) },
-        { vec2(-10.0f, -10.0f),  255,255,255,255,  vec2(0.0f,0.0f) },
-        { vec2(10.0f, 10.0f),  255,255,255,255,  vec2(1.0f,1.0f) },
-        { vec2(10.0f, -10.0f),  255,255,255,255,  vec2(1.0f,0.0f) },
-    };
-    //std::vector<float> diamondVerts = { 0.0f,0.0f,0.2f,   5.0f,5.0f,0.6f,   -5.0f,5.0f,0.9f,   0.0f,10.0f,0.2f   };
+    m_pTexture = new fw::Texture( "Data/Textures/numbers.png" );
 
-    m_Meshes["Triangle"] = new fw::Mesh( GL_TRIANGLES, triangleVerts );
-    m_Meshes["Diamond"] = new fw::Mesh( GL_TRIANGLE_STRIP, triangleVerts );
+    std::vector<fw::VertexFormat> spriteVerts = {
+        { vec2(  0.0f, 0.0f),  255,0,0,255,  vec2(0.0f,0.0f) }, // bl
+        { vec2(  0.0f,10.0f),  0,255,0,255,  vec2(0.0f,1.0f) }, // tl
+        { vec2( 10.0f,10.0f),  0,0,255,255,  vec2(1.0f,1.0f) }, // tr
+        { vec2( 10.0f, 0.0f),  128,128,128,255,  vec2(1.0f,0.0f) }, // br
+    };
+
+    m_Meshes["Sprite"] = new fw::Mesh( GL_TRIANGLE_FAN, spriteVerts );
 
     m_pPlayerController = new PlayerController();
 
-    m_pGameObject = new GameObject( m_Meshes["Diamond"], m_pBasicShader, vec2(-15,0) );
-    m_pPlayer = new Player( m_Meshes["Triangle"], m_pBasicShader, vec2(0,0.0f), m_pPlayerController );
+    m_pGameObject = new GameObject( m_Meshes["Sprite"], m_pBasicShader, vec2(-15.0f,0) );
+    m_pPlayer = new Player( m_Meshes["Sprite"], m_pBasicShader, vec2(0,0.0f), m_pPlayerController );
 }
 
 void Game::OnEvent(fw::Event* pEvent)
@@ -86,8 +102,10 @@ void Game::Draw()
     glClearColor( 0.0f, 0.0f, 0.2f, 1.0f );
     glClear( GL_COLOR_BUFFER_BIT );
 
-    m_pGameObject->Draw();
-    m_pPlayer->Draw();
+    vec2 CamPosition = vec2(0, 0);
+    vec2 ProjScale = vec2(0, 0);
+    m_pGameObject->Draw(CamPosition, ProjScale);//camPos, projScale,
+    m_pPlayer->Draw(CamPosition, ProjScale);
 
     m_pImGuiManager->EndFrame();
 }

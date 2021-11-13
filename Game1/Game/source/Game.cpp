@@ -127,7 +127,7 @@ void Game::Update(float deltaTime)
 		}
 		DestroyObject();
 	
-		if (m_Round <= 3) //JIMMY->Ill give you round 4 as a rest round Nothing will attack you, idk if it will help with marking but incase you need a safe space.
+		if (m_Round <= 3) //JIMMY->Ill give you round 4 as a rest round Nothing will spawn, idk if it will help but incase you need a safe space.
 		{	 
 			fw::RoundEnd* pRoundEnd = new fw::RoundEnd();
 			m_FWCore.m_pEventManager->AddEvent(pRoundEnd);

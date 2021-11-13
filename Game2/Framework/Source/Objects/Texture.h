@@ -6,7 +6,7 @@ class Texture
 {
 public:
     Texture();
-    Texture(const char* filename);
+    Texture(char* filename);
     virtual ~Texture();
 
 protected:

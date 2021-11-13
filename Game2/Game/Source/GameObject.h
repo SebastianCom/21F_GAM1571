@@ -10,7 +10,7 @@ public:
     virtual ~GameObject();
 
     virtual void Update(float deltaTime);
-    virtual void Draw();
+    virtual void Draw(vec2 camPos, vec2 projScale);
 
     bool IsCollidingWith(GameObject* pOtherObject);
 

@@ -1,5 +1,6 @@
 #include "CoreHeaders.h"
 #include "Texture.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "../Libraries/stb/stb_image.h"
 
@@ -47,30 +48,31 @@ Texture::Texture()
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 }
 
-Texture::Texture(const char* filename)
+Texture::Texture(char* filename)
 {
     int w;
     int h;
     int numChannels;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char* pixels = stbi_load(filename, &w, &h, &numChannels, 4);
-    
-    glGenTextures(1, &m_TextureID);
+    stbi_set_flip_vertically_on_load( true );
+    unsigned char* pixels = stbi_load( filename, &w, &h, &numChannels, 4 );
+    assert( pixels != nullptr );
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_TextureID);
+    glGenTextures( 1, &m_TextureID );
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glActiveTexture( GL_TEXTURE0 );
+    glBindTexture( GL_TEXTURE_2D, m_TextureID );
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels );
 
-    stbi_image_free(pixels);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+
+    stbi_image_free( pixels );
 }
 
 Texture::~Texture()
 {
-    glDeleteTextures(1, &m_TextureID);
+    glDeleteTextures( 1, &m_TextureID );
 }
 
 } // namespace fw

@@ -18,9 +18,9 @@ void GameObject::Update(float deltaTime)
 {
 }
 
-void GameObject::Draw()
+void GameObject::Draw(vec2 camPos, vec2 projScale)//camPos, projScale,
 {
-    m_pMesh->Draw( m_pShader, m_Scale, m_Position, 0.0f );
+    m_pMesh->Draw( m_pShader, m_Scale, m_Position, 0.0f, camPos, projScale );
 }
 
 bool GameObject::IsCollidingWith(GameObject* pOtherObject)

@@ -19,7 +19,10 @@ public:
     Mesh(GLenum primitiveType, std::vector<VertexFormat>& verts);
     virtual ~Mesh();
 
-    void Draw(ShaderProgram* pShader, float scale, vec2 pos, float time);
+    void SetupAttribute(ShaderProgram* pShader, char* name, int size, GLenum type, GLboolean normalize, int stride, int64_t startIndex);
+    void Draw(ShaderProgram* pShader, float scale, vec2 pos, float time, vec2 camPos, vec2 projScale);
+    void SetupUniform(ShaderProgram* pShader, GLchar* name, float uValue);
+    void SetupUniform(ShaderProgram* pShader, GLchar* name, vec2 uValue);
 
 protected:
     GLuint m_VBO;

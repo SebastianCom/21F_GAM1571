@@ -38,7 +38,8 @@ project "Framework"
         "Framework/Source/**.h",
         "Framework/Libraries/imgui/*.cpp",
         "Framework/Libraries/imgui/*.h",
-		"Framework/Libraries/stb/*.h",
+        "Framework/Libraries/stb/*.h",
+        "Framework/Libraries/rapidjson/**h",
     }
 
     includedirs {
