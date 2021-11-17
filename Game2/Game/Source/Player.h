@@ -7,7 +7,7 @@ class PlayerController;
 class Player : public GameObject
 {
 public:
-    Player(fw::Mesh* pMesh, fw::ShaderProgram* pShader, vec2 pos, PlayerController* pController);
+    Player(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, PlayerController* pController);
     virtual ~Player();
 
     virtual void Update(float deltaTime) override;

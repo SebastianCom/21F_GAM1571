@@ -1,6 +1,7 @@
 #include "CoreHeaders.h"
 #include "Mesh.h"
 #include "ShaderProgram.h"
+#include "Texture.h"
 
 namespace fw {
 
@@ -26,6 +27,18 @@ Mesh::~Mesh()
     glDeleteBuffers( 1, &m_VBO );
 }
 
+void Mesh::SetupUniform(ShaderProgram* pShader, char* name, float value)
+{
+    GLint location = glGetUniformLocation( pShader->GetProgram(), name );
+    glUniform1f( location, value );
+}
+
+void Mesh::SetupUniform(ShaderProgram* pShader, char* name, vec2 value)
+{
+    GLint location = glGetUniformLocation( pShader->GetProgram(), name );
+    glUniform2f( location, value.x, value.y );
+}
+
 void Mesh::SetupAttribute(ShaderProgram* pShader, char* name, int size, GLenum type, GLboolean normalize, int stride, int64_t startIndex)
 {
     GLint location = glGetAttribLocation( pShader->GetProgram(), name );
@@ -36,33 +49,20 @@ void Mesh::SetupAttribute(ShaderProgram* pShader, char* name, int size, GLenum t
     }
 }
 
-void Mesh::Draw(ShaderProgram* pShader, float scale, vec2 pos, float time, vec2 camPos, vec2 projScale)
+void Mesh::Draw(ShaderProgram* pShader, Texture* pTexture, float scale, vec2 pos, float time)
 {
     // Setup uniforms.
     glUseProgram( pShader->GetProgram() );
 
-     //GLint u_ViewTranslation = glGetUniformLocation(pShader->GetProgram(), "u_ViewTranslation");
-    //glUniform2f(u_ViewTranslation, view.x, view.y);
+    SetupUniform( pShader, "u_ObjectScale", scale );
+    SetupUniform( pShader, "u_Offset", pos );
+    SetupUniform( pShader, "u_Time", time );
 
-    //GLint u_ProjScale = glGetUniformLocation(pShader->GetProgram(), "u_ProjScale");
-    //glUniform2f(u_ProjScale, proj.x, proj.y);
-    
-    SetupUniform(pShader, "u_ObjectScale", scale);
-    SetupUniform(pShader, "u_Offset", pos);
-    SetupUniform(pShader, "u_CamPos", camPos);
-    SetupUniform(pShader, "u_ProjScale", projScale);
-    SetupUniform(pShader, "u_Time", time);
-    
-    //GLint u_ObjectScale = glGetUniformLocation( pShader->GetProgram(), "u_ObjectScale" );
-    //glUniform1f( u_ObjectScale, scale );
-
-    //GLint u_Offset = glGetUniformLocation( pShader->GetProgram(), "u_Offset" );
-    //glUniform2f( u_Offset, pos.x, pos.y );
-
-
-
-    //GLint u_Time = glGetUniformLocation( pShader->GetProgram(), "u_Time" );
-    //glUniform1f( u_Time, time );
+    // Setup and program the texture uniform.
+    glActiveTexture( GL_TEXTURE0 );
+    glBindTexture( GL_TEXTURE_2D, pTexture->GetTextureID() );
+    GLint location = glGetUniformLocation( pShader->GetProgram(), "u_Texture" );
+    glUniform1i( location, 0 );
 
     // Set this VBO to be the currently active one.
     glBindBuffer( GL_ARRAY_BUFFER, m_VBO );
@@ -75,18 +75,6 @@ void Mesh::Draw(ShaderProgram* pShader, float scale, vec2 pos, float time, vec2 
 
     // Draw the primitive.
     glDrawArrays( m_PrimitiveType, 0, m_NumVerts );
-}
-
-void Mesh::SetupUniform(ShaderProgram* pShader, GLchar* name, float uValue)
-{
-    GLint location = glGetUniformLocation(pShader->GetProgram(), name);
-    glUniform1f(location, uValue);
-}
-
-void Mesh::SetupUniform(ShaderProgram* pShader, GLchar* name, vec2 uValue)
-{
-    GLint location = glGetUniformLocation(pShader->GetProgram(), name);
-    glUniform2f(location, uValue.x, uValue.y);
 }
 
 } // namespace fw

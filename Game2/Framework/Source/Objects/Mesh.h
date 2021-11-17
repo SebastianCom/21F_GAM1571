@@ -5,6 +5,7 @@
 namespace fw {
 
 class ShaderProgram;
+class Texture;
 
 struct VertexFormat
 {
@@ -19,10 +20,10 @@ public:
     Mesh(GLenum primitiveType, std::vector<VertexFormat>& verts);
     virtual ~Mesh();
 
+    void SetupUniform(ShaderProgram* pShader, char* name, float value);
+    void SetupUniform(ShaderProgram* pShader, char* name, vec2 value);
     void SetupAttribute(ShaderProgram* pShader, char* name, int size, GLenum type, GLboolean normalize, int stride, int64_t startIndex);
-    void Draw(ShaderProgram* pShader, float scale, vec2 pos, float time, vec2 camPos, vec2 projScale);
-    void SetupUniform(ShaderProgram* pShader, GLchar* name, float uValue);
-    void SetupUniform(ShaderProgram* pShader, GLchar* name, vec2 uValue);
+    void Draw(ShaderProgram* pShader, Texture* pTexture, float scale, vec2 pos, float time);
 
 protected:
     GLuint m_VBO;
