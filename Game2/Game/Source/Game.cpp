@@ -3,6 +3,7 @@
 #include "PlayerController.h"
 #include "GameObject.h"
 #include "Player.h"
+#include "TileMap.h"
 #include "../Libraries/rapidjson/document.h"
 
 Game::Game(fw::FWCore& fwCore)
@@ -21,6 +22,8 @@ Game::Game(fw::FWCore& fwCore)
     m_pPlayer = nullptr;
     CameraPos = vec2(0, 0);
     ProjScale = vec2(1/20.0f, 1/20.0f);
+    
+    TileMap* Test = new TileMap();
 }
 
 Game::~Game()
