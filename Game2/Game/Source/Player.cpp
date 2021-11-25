@@ -20,6 +20,6 @@ void Player::Update(float deltaTime)
         m_Position.x += speed * deltaTime;
     }
 
-    ImGui::DragFloat( "X", &m_Position.x, 0.1f, -50, 50 );
-    ImGui::DragFloat( "Y", &m_Position.y, 0.1f, -50, 50 );
+   /* ImGui::DragFloat( "X", &m_Position.x, 0.1f, -50, 50 );
+    ImGui::DragFloat( "Y", &m_Position.y, 0.1f, -50, 50 );*/
 }

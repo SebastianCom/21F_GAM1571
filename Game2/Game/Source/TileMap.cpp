@@ -13,22 +13,22 @@ TileMap::TileMap(fw::Mesh* mesh, fw::ShaderProgram* shader, fw::Texture* texture
 	 SetLayout();
 	 m_2DLayout;
 	 m_WorldLayout;
-	 m_Scale = 5;
+	 m_Scale = fw::vec2(5,5);
 	 m_pSpriteSheet = new fw::SpriteSheet();
 
 
 
-	 for (int i = 0; i < 100; i++)
+	 for (int i = 0; i < MaxTiles; i++)
 	 {
 		 int x = i % m_Width;
 		 int y = i / m_Width;
 
 		 m_2DLayout.push_back(fw::vec2(x,y));
 	 }
-	 for (int i = 0; i < 100; i++)
+	 for (int i = 0; i < MaxTiles; i++)
 	 {
-		 int x = m_2DLayout[i].x * (m_Scale*2);
-		 int y = m_2DLayout[i].y * (m_Scale*2);
+		 int x = m_2DLayout[i].x * (m_Scale.x * m_Width);
+		 int y = m_2DLayout[i].y * (m_Scale.y * m_Height);
 		 m_WorldLayout.push_back(fw::vec2(x, y));
 	 }
 	 
@@ -46,47 +46,15 @@ TileMap::~TileMap()
 void TileMap::Draw(fw::vec2 camPos, fw::vec2 projScale)
 {
 	float sheetWidth = m_pSpriteSheet->GetSheetWidth();
-	for (int i = 0; i < 100; i++)
-	{
-		fw::vec2 uvScale = fw::vec2(0, 0);
-		fw::vec2 uvOffset = fw::vec2(0, 0);
-		
-		if (pTiles[i] == Brick)
-		{
-			uvScale = m_pTileProperties[Brick].m_uvScale;
-			uvOffset = m_pTileProperties[Brick].m_uvOffset;
-		}
-		else if (pTiles[i] == BoxRed)
-		{
-			uvScale = m_pTileProperties[BoxRed].m_uvScale;
-			uvOffset = m_pTileProperties[BoxRed].m_uvOffset;
-		}
-		else if (pTiles[i] == BoxBlue)
-		{
-			uvScale = m_pTileProperties[BoxBlue].m_uvScale;
-			uvOffset = m_pTileProperties[BoxBlue].m_uvOffset;
-		}
-		else if (pTiles[i] == BoxGreen)
-		{
-			uvScale = m_pTileProperties[BoxGreen].m_uvScale;
-			uvOffset = m_pTileProperties[BoxGreen].m_uvOffset;
-		}
-		else if (pTiles[i] == Ground)
-		{
-			uvScale = m_pTileProperties[Ground].m_uvScale;
-			uvOffset = m_pTileProperties[Ground].m_uvOffset;
-		}
-		else if (pTiles[i] == Empty)
-		{
-			uvScale = m_pTileProperties[Empty].m_uvScale;
-			uvOffset = m_pTileProperties[Empty].m_uvOffset;
-		}
-		
-		m_pMesh->Draw(m_pShader, m_pTexture, fw::vec2(1,1), m_WorldLayout[i], 0.0f, camPos, projScale, sheetWidth, uvScale, uvOffset);
+	for (int i = 0; i < MaxTiles; i++)
+	{	
+		ReverseArrayOnY(m_WorldLayout);
+		m_pMesh->Draw(m_pShader, m_pTexture, m_Scale, m_ReversedWorldLayout[i], 0.0f, camPos, projScale, sheetWidth, GetUVScale(pTiles[i]), GetUVOffset(pTiles[i]));
 	}
 	
 	//m_pMesh->Draw(m_pShader, m_pTexture, 2DlayoutAtI, worldPosAtI, 0.0f, camPos, projScale, sheetWidth, uvScale, uvOffset);
 }
+
 
 
 void TileMap::SetLayout()
@@ -106,16 +74,16 @@ void TileMap::SetLayout()
 	};	
 	unsigned char pLayout[100] =
 	{
-		BoxGreen, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, BoxRed,
-		Empty, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Empty,
-		Empty, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Empty,
-		Empty, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Empty,
-		Empty, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Empty,
-		Empty, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Empty,
-		Empty, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Empty,
-		Empty, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Empty,
-		Empty, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Empty,
-		BoxBlue, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
+		Brick, Brick, Brick, Brick, Brick, Brick, Brick,Brick, Brick, Brick,
+		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
+		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
+		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
+		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
+		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
+		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
+		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
+		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
+		Brick, Brick, Brick, Brick, Brick, Brick, Brick,Brick, Brick, Brick,
 	};
 
 	if (m_ElevationLevel == 1)
@@ -136,13 +104,13 @@ void TileMap::SetLayout()
 
 void TileMap::SetProperites()
 {
-	m_pTileProperties[TT::Brick].Moveable = false;
-	m_pTileProperties[TT::Brick].Walkable = false;
-	m_pTileProperties[TT::Brick].m_pShader = nullptr;
-	m_pTileProperties[TT::Brick].m_pTexture = nullptr;
-	m_pTileProperties[TT::Brick].m_pMesh = nullptr;
-	m_pTileProperties[TT::Brick].m_uvScale = fw::vec2(0,0);
-	m_pTileProperties[TT::Brick].m_uvOffset = fw::vec2(0, 0);
+	m_pTileProperties[TT::Empty].Moveable = false;
+	m_pTileProperties[TT::Empty].Walkable = true;
+	m_pTileProperties[TT::Empty].m_pShader = nullptr;
+	m_pTileProperties[TT::Empty].m_pTexture = nullptr;
+	m_pTileProperties[TT::Empty].m_pMesh = nullptr;
+	m_pTileProperties[TT::Empty].m_uvScale = fw::vec2(0,0);
+	m_pTileProperties[TT::Empty].m_uvOffset = fw::vec2(0, 0);
 
 	m_pTileProperties[TT::Brick].Moveable = false;
 	m_pTileProperties[TT::Brick].Walkable = false;
@@ -183,6 +151,81 @@ void TileMap::SetProperites()
 	m_pTileProperties[TT::Ground].m_pMesh = m_pMesh;
 	m_pTileProperties[TT::Ground].m_uvScale = m_pSpriteSheet->GetSpriteInfo("ground_06").UVScale;
 	m_pTileProperties[TT::Ground].m_uvOffset = m_pSpriteSheet->GetSpriteInfo("ground_06").UVOffset;
+}
+
+void TileMap::ReverseArrayOnY(std::vector<fw::vec2>(arraytoreverse))
+{
+	int num = 100;
+
+	for (int i = 0; i < num; i++)
+	{
+		m_ReversedWorldLayout[i].x = arraytoreverse[i].x;
+		int otherIndex = (num - 1) - i;
+		m_ReversedWorldLayout[i].y = arraytoreverse[otherIndex].y;
+	}
+}
+
+fw::vec2 TileMap::GetUVScale(unsigned char pTiles)
+{
+	fw::vec2 uvScale = fw::vec2(0, 0);
+
+	if (pTiles == Brick)
+	{
+		uvScale = m_pTileProperties[Brick].m_uvScale;
+	}
+	else if (pTiles == BoxRed)
+	{
+		uvScale = m_pTileProperties[BoxRed].m_uvScale;
+	}
+	else if (pTiles == BoxBlue)
+	{
+		uvScale = m_pTileProperties[BoxBlue].m_uvScale;
+	}
+	else if (pTiles == BoxGreen)
+	{
+		uvScale = m_pTileProperties[BoxGreen].m_uvScale;
+	}
+	else if (pTiles == Ground)
+	{
+		uvScale = m_pTileProperties[Ground].m_uvScale;
+	}
+	else if (pTiles == Empty)
+	{
+		uvScale = m_pTileProperties[Empty].m_uvScale;
+	}
+	return uvScale;
+}
+
+fw::vec2 TileMap::GetUVOffset(unsigned char pTiles)
+{
+
+	fw::vec2 uvOffset = fw::vec2(0, 0);
+
+	if (pTiles == Brick)
+	{
+		uvOffset = m_pTileProperties[Brick].m_uvOffset;
+	}
+	else if (pTiles == BoxRed)
+	{
+		uvOffset = m_pTileProperties[BoxRed].m_uvOffset;
+	}
+	else if (pTiles == BoxBlue)
+	{
+		uvOffset = m_pTileProperties[BoxBlue].m_uvOffset;
+	}
+	else if (pTiles == BoxGreen)
+	{
+		uvOffset = m_pTileProperties[BoxGreen].m_uvOffset;
+	}
+	else if (pTiles == Ground)
+	{
+		uvOffset = m_pTileProperties[Ground].m_uvOffset;
+	}
+	else if (pTiles == Empty)
+	{
+		uvOffset = m_pTileProperties[Empty].m_uvOffset;
+	}
+	return uvOffset;
 }
 
 

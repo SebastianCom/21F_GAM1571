@@ -25,8 +25,8 @@ Game::Game(fw::FWCore& fwCore)
     m_pTileMapLevel2 = nullptr;
 
 
-    CameraPos = vec2(50, 50);
-    ProjScale = vec2(1/5.0f, 1/5.0f);
+    CameraPos = vec2(250, 250);
+    ProjScale = vec2(1/25.0f, 1/25.0f);
     
 }
 
@@ -64,14 +64,6 @@ void Game::Init()
     m_pBasicShader = new fw::ShaderProgram( "Data/Shaders/Basic.vert", "Data/Shaders/Basic.frag" );
     m_pTexture = new fw::Texture("Data/Textures/Sprites.png");
 
-	//"Width":	512,
-	//"Height":	512,
-    //"Name":	"ground_05",
-    //    "X":	195,
-    //    "Y":	448,
-    //    "W":	64,
-    //    "H":	64
-
     std::vector<fw::VertexFormat> spriteVerts = {
         { vec2(  0.0f, 0.0f),  255,255,255,255,  vec2(0.0f,0.0f) }, // bl // * vec2(64/512.0f,64/512.0f) + vec2(195/512.0f,448/512.0f) }, // bl
         { vec2(  0.0f,10.0f),  255,255,255,255,  vec2(0.0f,1.0f) }, // tl // * vec2(64/512.0f,64/512.0f) + vec2(195/512.0f,448/512.0f) }, // tl
@@ -102,7 +94,7 @@ void Game::Update(float deltaTime)
 {
     m_pImGuiManager->StartFrame(deltaTime);
 
-    ImGui::ShowDemoWindow();
+    //ImGui::ShowDemoWindow();
 
     m_pGameObject->Update(deltaTime);
     m_pPlayer->Update(deltaTime);
@@ -110,27 +102,6 @@ void Game::Update(float deltaTime)
     CheckForCollisions();
 
     const int num = 15;
-
-    //int* values = new int[num];
-    //for (int i = 0; i < num; i++)
-    //{
-    //    values[i] = i + 1;
-    //}
-    ////reverse the array
-    //for (int i = 0; i < num / 2; i++)
-    //{
-    //    int otherIndex = (num - 1) - i;
-    //    int temp = values[i];
-    //    values[i] = values[otherIndex];
-    //    values[otherIndex] = temp;
-    //}
-
-    //int* valuesReversed = new int[num];
-    //for (int i = 0; i < num; i++)
-    //{
-    //    int otherIndex = (num - 1) - i;
-    //    valuesReversed[i] = values[otherIndex];
-    //}
 
 
 }
@@ -153,7 +124,7 @@ void Game::CheckForCollisions()
 {
     if( m_pGameObject->IsCollidingWith( m_pPlayer ) )
     {
-        ImGui::Text( "GameObject colliding with Player" );
+        //ImGui::Text( "GameObject colliding with Player" );
         // TODO: Handle collisions.
     }
 }
