@@ -14,9 +14,11 @@ public:
     bool IsLeftHeld()  { return m_Left; }
     bool IsRightHeld() { return m_Right; }
 
-protected:
     bool m_Up;
     bool m_Down;
     bool m_Left;
     bool m_Right;
+
+protected:
+
 };

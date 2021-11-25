@@ -11,9 +11,16 @@ public:
     virtual ~Player();
 
     virtual void Update(float deltaTime) override;
+    virtual void Draw(fw::vec2 camPos, fw::vec2 projScale) override;
+
+    void MoveTheFucker(float deltaTime);
 
     void SetPlayerController(PlayerController* pController) { m_pPlayerController = pController; }
 
 protected:
     PlayerController* m_pPlayerController;
+    fw::vec2 m_PlayerScale;
+    float m_Speed;
+    std::string m_CurrentSprite;
+    float m_AnimTimer;
 };

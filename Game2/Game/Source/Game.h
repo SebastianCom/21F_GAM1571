@@ -33,7 +33,7 @@ protected:
 
     PlayerController* m_pPlayerController;
 
-    GameObject* m_pGameObject;
+
     GameObject* m_pPlayer;
 
     TileMap* m_pTileMapGround;

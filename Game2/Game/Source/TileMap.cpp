@@ -74,16 +74,16 @@ void TileMap::SetLayout()
 	};	
 	unsigned char pLayout[100] =
 	{
-		Brick, Brick, Brick, Brick, Brick, Brick, Brick,Brick, Brick, Brick,
-		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
-		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
-		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
-		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
-		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
-		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
-		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
-		Brick, Empty, Empty, Empty, Empty, Empty, Empty,Empty, Empty, Brick,
-		Brick, Brick, Brick, Brick, Brick, Brick, Brick,Brick, Brick, Brick,
+		Brick, Brick, Brick,   Brick, Brick, Brick, Brick,    Brick, Brick, Brick,
+		Brick, Empty, BoxRed,  Empty, Empty, Brick, Empty,    Empty, Empty, Brick,
+		Brick, Empty, Empty,   Empty, Empty, Brick, Empty,    Empty, Empty, Brick,
+		Brick, Empty, Empty,   Empty, Empty, Empty, Empty,    Empty, Empty, Brick,
+		Brick, Empty, Empty,   Empty, Empty, Empty, Empty,    Empty, Brick, Brick,
+		Brick, Empty, Empty,   Empty, Empty, Empty, BoxGreen, Empty, Empty, Brick,
+		Brick, Empty, Empty,   Empty, Empty, Empty, Empty,    Empty, Empty, Brick,
+		Brick, Empty, BoxBlue, Brick, Empty, Empty, Empty,    Empty, Empty, Brick,
+		Brick, Empty, Empty,   Brick, Empty, Empty, Empty,    Empty, Empty, Brick,
+		Brick, Brick, Brick,   Brick, Brick, Brick, Brick,    Brick, Brick, Brick,
 	};
 
 	if (m_ElevationLevel == 1)

@@ -25,10 +25,7 @@ void GameObject::Update(float deltaTime)
 
 void GameObject::Draw(fw::vec2 camPos, fw::vec2 projScale) //TODO projScale, camPos
 {
-    float sheetWidth = m_pSpriteSheet->GetSheetWidth();
-    fw::vec2 uvOffset = m_pSpriteSheet->GetSpriteInfo(m_Sprites["Red Box"]).UVOffset;
-    fw::vec2 uvScale = m_pSpriteSheet->GetSpriteInfo(m_Sprites["Red Box"]).UVScale;
-    m_pMesh->Draw( m_pShader, m_pTexture, m_Scale, m_Position, 0.0f, camPos, projScale, sheetWidth, uvScale, uvOffset);
+
 }
 
 bool GameObject::IsCollidingWith(GameObject* pOtherObject)
@@ -59,8 +56,19 @@ void GameObject::HardCodeNames()
     m_Sprites["Stone"] = "ground_06";
     
     m_Sprites["Player Down"] = "player_05";
+    m_Sprites["Player Down2"] = "player_06";
+    m_Sprites["Player Down3"] = "player_07";
+   
     m_Sprites["Player Up"] = "player_08";
+    m_Sprites["Player Up2"] = "player_09";
+    m_Sprites["Player Up3"] = "player_10";
+    
     m_Sprites["Player Left"] = "player_20";
+    m_Sprites["Player Left2"] = "player_21";
+    m_Sprites["Player Left3"] = "player_22";
+   
     m_Sprites["Player Right"] = "player_17";
+    m_Sprites["Player Right2"] = "player_18";
+    m_Sprites["Player Right3"] = "player_19";
 
 }

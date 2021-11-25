@@ -18,7 +18,6 @@ Game::Game(fw::FWCore& fwCore)
 
     m_pPlayerController = nullptr;
 
-    m_pGameObject = nullptr;
     m_pPlayer = nullptr;
 
     m_pTileMapGround = nullptr;
@@ -32,7 +31,6 @@ Game::Game(fw::FWCore& fwCore)
 
 Game::~Game()
 {
-    delete m_pGameObject;
     delete m_pPlayer;
 
     delete m_pTileMapGround;
@@ -75,11 +73,13 @@ void Game::Init()
 
     m_pPlayerController = new PlayerController();
 
-    m_pGameObject = new GameObject( m_Meshes["Sprite"], m_pBasicShader, m_pTexture, vec2(0,0));
-    m_pPlayer = new Player( m_Meshes["Sprite"], m_pBasicShader, m_pTexture, vec2(0,0), m_pPlayerController );
+    
     
     m_pTileMapGround = new TileMap(m_Meshes["Sprite"], m_pBasicShader, m_pTexture,1);
     m_pTileMapLevel2 = new TileMap(m_Meshes["Sprite"], m_pBasicShader, m_pTexture,2);
+
+    m_pPlayer = new Player(m_Meshes["Sprite"], m_pBasicShader, m_pTexture, vec2(250, 250), m_pPlayerController);
+
     //fw::vec2 test = m_pPlayer->m_pSpriteSheet->GetSpriteInfo(m_pPlayer->m_Sprites["Player Down"]).UVOffset;
 
 
@@ -94,9 +94,8 @@ void Game::Update(float deltaTime)
 {
     m_pImGuiManager->StartFrame(deltaTime);
 
-    //ImGui::ShowDemoWindow();
+    ImGui::ShowDemoWindow();
 
-    m_pGameObject->Update(deltaTime);
     m_pPlayer->Update(deltaTime);
 
     CheckForCollisions();
@@ -111,20 +110,19 @@ void Game::Draw()
     glClearColor( 0.0f, 0.0f, 0.2f, 1.0f );
     glClear( GL_COLOR_BUFFER_BIT );
 
-    //m_pGameObject->Draw(CameraPos, ProjScale);
-    //m_pPlayer->Draw(CameraPos, ProjScale);
-    
     m_pTileMapGround->Draw(CameraPos, ProjScale);
     m_pTileMapLevel2->Draw(CameraPos, ProjScale);
+   
+    m_pPlayer->Draw(CameraPos, ProjScale);
 
     m_pImGuiManager->EndFrame();
 }
 
 void Game::CheckForCollisions()
 {
-    if( m_pGameObject->IsCollidingWith( m_pPlayer ) )
-    {
-        //ImGui::Text( "GameObject colliding with Player" );
-        // TODO: Handle collisions.
-    }
+    //if( m_pGameObject->IsCollidingWith( m_pPlayer ) )
+    //{
+    //    //ImGui::Text( "GameObject colliding with Player" );
+    //    // TODO: Handle collisions.
+    //}
 }

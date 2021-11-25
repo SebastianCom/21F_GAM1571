@@ -4,6 +4,9 @@
 PlayerController::PlayerController()
 {
     m_Right = false;
+    m_Left = false;
+    m_Up = false;
+    m_Down = false;
 }
 
 PlayerController::~PlayerController()
