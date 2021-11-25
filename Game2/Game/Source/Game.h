@@ -3,9 +3,11 @@
 #include "Framework.h"
 #include "DataTypes.h"
 
+
 class PlayerController;
 class GameObject;
 class SpriteSheet;
+class TileMap;
 
 class Game : public fw::GameCore
 {
@@ -33,6 +35,9 @@ protected:
 
     GameObject* m_pGameObject;
     GameObject* m_pPlayer;
+
+    TileMap* m_pTileMapGround;
+    TileMap* m_pTileMapLevel2;
 
     fw::vec2 CameraPos;
     fw::vec2 ProjScale;

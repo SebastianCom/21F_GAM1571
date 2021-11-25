@@ -3,11 +3,12 @@
 
 enum  TT
 {
-	Ground,    //0
-	Brick,     //1
-	BoxRed,    //2
-	BoxBlue,   //3
-	BoxGreen,  //4
+	Empty,
+	Ground,    //1
+	Brick,     //2
+	BoxRed,    //3
+	BoxBlue,   //4
+	BoxGreen,  //5
 	NumTypes, //brilliant 
 };
 
@@ -18,15 +19,20 @@ struct TileProperties
 	fw::Texture* m_pTexture;
 	bool Walkable;
 	bool Moveable;
+	fw::vec2 m_uvOffset;
+	fw::vec2 m_uvScale;
 };
 
 class TileMap
 {
 public: 
-	TileMap();
+	TileMap(fw::Mesh* mesh, fw::ShaderProgram* shader, fw::Texture* texture, int level);
 	~TileMap();
 
 	void SetLayout();
+	void SetProperites();
+
+	void Draw(fw::vec2 camPos, fw::vec2 projScale);
 
 private:
 
@@ -36,6 +42,13 @@ private:
 	std::vector<fw::vec2> m_2DLayout;
 	std::vector<fw::vec2> m_WorldLayout;
 	int m_Scale;
+	fw::SpriteSheet* m_pSpriteSheet;
+	fw::Mesh* m_pMesh;
+	fw::ShaderProgram* m_pShader;
+	fw::Texture* m_pTexture;
+	TileProperties* m_pTileProperties;
+	int m_ElevationLevel;
+
 	
 };
 
