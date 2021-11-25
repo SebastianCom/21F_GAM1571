@@ -3,7 +3,7 @@
 #include "PlayerController.h"
 
 Player::Player(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, PlayerController* pController)
-    : GameObject( pMesh, pShader, pTexture, pos )
+    : GameObject( pMesh, pShader, pTexture, pos)
     , m_pPlayerController( pController )
 {
 }

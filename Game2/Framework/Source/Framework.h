@@ -17,5 +17,6 @@
 #include "Objects/Mesh.h"
 #include "Objects/ShaderProgram.h"
 #include "Objects/Texture.h"
+#include "Objects/SpriteSheet.h"
 #include "UI/ImGuiManager.h"
 #include "Utility/Utility.h"

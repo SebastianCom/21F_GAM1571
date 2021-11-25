@@ -49,7 +49,9 @@ void Mesh::SetupAttribute(ShaderProgram* pShader, char* name, int size, GLenum t
     }
 }
 
-void Mesh::Draw(ShaderProgram* pShader, Texture* pTexture, float scale, vec2 pos, float time)
+void Mesh::Draw(ShaderProgram* pShader, Texture* pTexture, fw::vec2 scale, vec2 pos, float time, 
+                fw::vec2 camPos, fw::vec2 projScale, float sheetWidth, fw::vec2 uvScale, 
+                fw::vec2 uvOffset)
 {
     // Setup uniforms.
     glUseProgram( pShader->GetProgram() );
@@ -57,6 +59,11 @@ void Mesh::Draw(ShaderProgram* pShader, Texture* pTexture, float scale, vec2 pos
     SetupUniform( pShader, "u_ObjectScale", scale );
     SetupUniform( pShader, "u_Offset", pos );
     SetupUniform( pShader, "u_Time", time );
+    SetupUniform( pShader, "u_CameraPosition", camPos );
+    SetupUniform( pShader, "u_ProjectionScale", projScale );
+    SetupUniform( pShader, "u_SpriteSheetWidth", sheetWidth );
+    SetupUniform( pShader, "u_UVScale", uvScale );
+    SetupUniform( pShader, "u_UVOffset", uvOffset );
 
     // Setup and program the texture uniform.
     glActiveTexture( GL_TEXTURE0 );

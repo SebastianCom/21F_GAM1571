@@ -23,7 +23,10 @@ public:
     void SetupUniform(ShaderProgram* pShader, char* name, float value);
     void SetupUniform(ShaderProgram* pShader, char* name, vec2 value);
     void SetupAttribute(ShaderProgram* pShader, char* name, int size, GLenum type, GLboolean normalize, int stride, int64_t startIndex);
-    void Draw(ShaderProgram* pShader, Texture* pTexture, float scale, vec2 pos, float time);
+    void Draw(ShaderProgram* pShader, Texture* pTexture, fw::vec2 scale, vec2 pos, 
+                float time, fw::vec2 camPos, fw::vec2 projScale, float sheetWidth, 
+                fw::vec2 uvScale, fw::vec2 uvOffset
+            );
 
 protected:
     GLuint m_VBO;

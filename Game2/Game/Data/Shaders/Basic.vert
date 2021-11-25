@@ -4,19 +4,30 @@ attribute vec2 a_Position;
 attribute vec4 a_Color;
 attribute vec2 a_UVCoord;
 
-uniform float u_ObjectScale;
+uniform vec2 u_ObjectScale;
 uniform vec2 u_Offset;
+
+uniform vec2 u_CameraPosition;
+uniform vec2 u_ProjectionScale;
+
+uniform float u_SpriteSheetWidth;
+uniform vec2 u_UVScale;
+uniform vec2 u_UVOffset;
 
 varying vec4 v_Color;
 varying vec2 v_UVCoord;
 
+
+
+
+
 void main()
 {
-    vec2 objectScale = vec2(1, 1);
+    vec2 objectScale = u_ObjectScale;
     vec2 objectTranslation = u_Offset;
-    vec2 cameraPos = vec2(0, 0);
+    vec2 cameraPos = u_CameraPosition;
     vec2 viewTranslation = cameraPos * -1;
-    vec2 projScale = vec2(1/20.0, 1/20.0);
+    vec2 projScale = u_ProjectionScale;
 
     vec2 objectSpacePosition = a_Position;
     vec2 worldSpacePosition = objectSpacePosition * objectScale + objectTranslation;
@@ -38,8 +49,11 @@ void main()
     //    "W":	64,
     //    "H":	64
     //vec2(64/512.0f,64/512.0f) + vec2(195/512.0f,448/512.0f) }, // bl
+//
+//    vec2 uvScale = vec2( 64.0/512.0, 64.0/512.0 );
+//    vec2 uvOffset = vec2( 195.0/512.0, 448.0/512.0 );
+    vec2 uvScale = vec2( u_UVScale.x/u_SpriteSheetWidth, u_UVScale.y/u_SpriteSheetWidth );
+    vec2 uvOffset = vec2(u_UVOffset.x/u_SpriteSheetWidth,u_UVOffset.y/u_SpriteSheetWidth );
 
-    vec2 uvScale = vec2( 64.0/512.0, 64.0/512.0 );
-    vec2 uvOffset = vec2( 195.0/512.0, 448.0/512.0 );
     v_UVCoord = a_UVCoord*uvScale + uvOffset;
 }

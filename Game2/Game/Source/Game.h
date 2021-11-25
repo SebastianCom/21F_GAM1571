@@ -5,6 +5,7 @@
 
 class PlayerController;
 class GameObject;
+class SpriteSheet;
 
 class Game : public fw::GameCore
 {
@@ -27,10 +28,13 @@ protected:
     std::map<std::string, fw::Mesh*> m_Meshes;
     fw::ShaderProgram* m_pBasicShader;
     fw::Texture* m_pTexture;
-    fw::Texture* m_pTexture2;
 
     PlayerController* m_pPlayerController;
 
     GameObject* m_pGameObject;
     GameObject* m_pPlayer;
+
+    fw::vec2 CameraPos;
+    fw::vec2 ProjScale;
+
 };

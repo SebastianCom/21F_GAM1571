@@ -3,6 +3,8 @@
 #include "Framework.h"
 #include "DataTypes.h"
 
+class SpriteInfo;
+
 class GameObject
 {
 public:
@@ -10,9 +12,13 @@ public:
     virtual ~GameObject();
 
     virtual void Update(float deltaTime);
-    virtual void Draw();
+    virtual void Draw(fw::vec2 camPos, fw::vec2 projScale);
 
     bool IsCollidingWith(GameObject* pOtherObject);
+
+    void HardCodeNames();
+
+
 
 protected:
     fw::Mesh* m_pMesh;
@@ -21,6 +27,9 @@ protected:
 
     float m_CollisionRadius;
 
-    float m_Scale;
+    vec2 m_Scale;
     vec2 m_Position;
+    
+    fw::SpriteSheet* m_pSpriteSheet;
+    std::map<std::string, std::string> m_Sprites;
 };

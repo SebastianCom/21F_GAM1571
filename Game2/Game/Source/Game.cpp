@@ -8,34 +8,19 @@
 Game::Game(fw::FWCore& fwCore)
     : m_FWCore( fwCore )
 {
-    //// Load json spritesheet.
-    //const char* json = fw::LoadCompleteFile( "Data/Textures/Sokoban.json", nullptr );
-    //rapidjson::Document document;
-    //document.Parse( json );
-    //delete[] json;
-
-    //rapidjson::Value& widthValue = document["Width"];
-    //int width = widthValue.GetInt();
-
-    //rapidjson::Value& spriteArray = document["Sprites"];
-    //for( rapidjson::SizeType i=0; i<spriteArray.Size(); i++ )
-    //{
-    //    rapidjson::Value& sprite = spriteArray[i];
-    //    int x = sprite["X"].GetInt();
-    //    int bp = 1;
-    //}
 
     // Init members.
     m_pImGuiManager = nullptr;
 
     m_pBasicShader = nullptr;
     m_pTexture = nullptr;
-    m_pTexture2 = nullptr;
 
     m_pPlayerController = nullptr;
 
     m_pGameObject = nullptr;
     m_pPlayer = nullptr;
+    CameraPos = vec2(0, 0);
+    ProjScale = vec2(1/20.0f, 1/20.0f);
 }
 
 Game::~Game()
@@ -66,8 +51,7 @@ void Game::Init()
     m_pImGuiManager->Init();
 
     m_pBasicShader = new fw::ShaderProgram( "Data/Shaders/Basic.vert", "Data/Shaders/Basic.frag" );
-    m_pTexture = new fw::Texture();
-    m_pTexture2 = new fw::Texture( "Data/Textures/Sprites.png" );
+    m_pTexture = new fw::Texture("Data/Textures/Sprites.png");
 
 	//"Width":	512,
 	//"Height":	512,
@@ -88,8 +72,12 @@ void Game::Init()
 
     m_pPlayerController = new PlayerController();
 
-    m_pGameObject = new GameObject( m_Meshes["Sprite"], m_pBasicShader, m_pTexture, vec2(-100.0f,-10.0f) );
-    m_pPlayer = new Player( m_Meshes["Sprite"], m_pBasicShader, m_pTexture2, vec2(0,0), m_pPlayerController );
+    m_pGameObject = new GameObject( m_Meshes["Sprite"], m_pBasicShader, m_pTexture, vec2(0,0));
+    m_pPlayer = new Player( m_Meshes["Sprite"], m_pBasicShader, m_pTexture, vec2(0,0), m_pPlayerController );
+    
+    //fw::vec2 test = m_pPlayer->m_pSpriteSheet->GetSpriteInfo(m_pPlayer->m_Sprites["Player Down"]).UVOffset;
+
+
 }
 
 void Game::OnEvent(fw::Event* pEvent)
@@ -99,14 +87,39 @@ void Game::OnEvent(fw::Event* pEvent)
 
 void Game::Update(float deltaTime)
 {
-    m_pImGuiManager->StartFrame( deltaTime );
+    m_pImGuiManager->StartFrame(deltaTime);
 
     ImGui::ShowDemoWindow();
 
-    m_pGameObject->Update( deltaTime );
-    m_pPlayer->Update( deltaTime );
+    m_pGameObject->Update(deltaTime);
+    m_pPlayer->Update(deltaTime);
 
     CheckForCollisions();
+
+    const int num = 15;
+
+    //int* values = new int[num];
+    //for (int i = 0; i < num; i++)
+    //{
+    //    values[i] = i + 1;
+    //}
+    ////reverse the array
+    //for (int i = 0; i < num / 2; i++)
+    //{
+    //    int otherIndex = (num - 1) - i;
+    //    int temp = values[i];
+    //    values[i] = values[otherIndex];
+    //    values[otherIndex] = temp;
+    //}
+
+    //int* valuesReversed = new int[num];
+    //for (int i = 0; i < num; i++)
+    //{
+    //    int otherIndex = (num - 1) - i;
+    //    valuesReversed[i] = values[otherIndex];
+    //}
+
+
 }
 
 void Game::Draw()
@@ -114,8 +127,8 @@ void Game::Draw()
     glClearColor( 0.0f, 0.0f, 0.2f, 1.0f );
     glClear( GL_COLOR_BUFFER_BIT );
 
-    m_pGameObject->Draw();
-    m_pPlayer->Draw();
+    m_pGameObject->Draw(CameraPos, ProjScale);
+    m_pPlayer->Draw(CameraPos, ProjScale);
 
     m_pImGuiManager->EndFrame();
 }
