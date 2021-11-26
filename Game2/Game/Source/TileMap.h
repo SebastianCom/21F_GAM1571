@@ -14,13 +14,13 @@ enum  TT
 
 struct TileProperties
 {
-	fw::Mesh* m_pMesh;
-	fw::ShaderProgram* m_pShader;
-	fw::Texture* m_pTexture;
-	bool Walkable;
-	bool Moveable;
-	fw::vec2 m_uvOffset;
-	fw::vec2 m_uvScale;
+	fw::Mesh* m_pMesh = nullptr;
+	fw::ShaderProgram* m_pShader = nullptr;
+	fw::Texture* m_pTexture = nullptr;
+	bool Walkable = false;
+	bool Moveable = false;
+	fw::vec2 m_uvOffset = fw::vec2(0,0);
+	fw::vec2 m_uvScale = fw::vec2(0, 0);
 };
 
 class TileMap
@@ -33,13 +33,16 @@ public:
 	void SetProperites();
 
 	void Draw(fw::vec2 camPos, fw::vec2 projScale);
-	void ReverseArrayOnY(std::vector<fw::vec2>(arraytoreverse));
 
 	fw::vec2 GetUVScale(unsigned char pTiles);
 	fw::vec2 GetUVOffset(unsigned char pTiles);
 
 	int GetTileSize() { return m_TileSize; }
 	int GetTileMapWidth() { return m_Width; }
+
+	unsigned char GetTile(int index);
+	TileProperties GetTileProperties(char tile);
+
 private:
 
 
@@ -47,6 +50,7 @@ private:
 	int m_Width; 
 	const int MaxTiles = 100;
 	unsigned char* pTiles; 
+	unsigned char* pReversedTiles; 
 	std::vector<fw::vec2> m_2DLayout;
 	std::vector<fw::vec2> m_WorldLayout;
 	fw::vec2 m_Scale;

@@ -30,11 +30,11 @@ void Player::Update(float deltaTime)
 
 void Player::Draw(fw::vec2 camPos, fw::vec2 projScale)
 {
-    float sheetWidth = m_pSpriteSheet->GetSheetWidth();
+    int sheetWidth = m_pSpriteSheet->GetSheetWidth();
     fw::vec2 uvOffset = m_pSpriteSheet->GetSpriteInfo(m_CurrentSprite).UVOffset;
     fw::vec2 uvScale = m_pSpriteSheet->GetSpriteInfo(m_CurrentSprite).UVScale;
    
-    m_pMesh->Draw(m_pShader, m_pTexture, m_PlayerScale, m_Position, 0.0f, camPos, projScale, sheetWidth, uvScale, uvOffset);
+    m_pMesh->Draw(m_pShader, m_pTexture, m_PlayerScale, m_Position, 0.0f, camPos, projScale, float(sheetWidth), uvScale, uvOffset);
 }
 
 void Player::MoveTheFucker(float deltaTime)
@@ -143,4 +143,9 @@ void Player::MoveTheFucker(float deltaTime)
 fw::vec2 Player::GetPosition()
 {
     return m_Position;
+}
+
+void Player::SetPosition(fw::vec2 pos)
+{
+    m_Position = pos;
 }

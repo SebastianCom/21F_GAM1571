@@ -24,8 +24,8 @@ namespace fw
             rapidjson::Value& sprite = spriteArray[i];
 
             std::string spriteName = sprite["Name"].GetString();
-            fw::vec2 spriteScale = fw::vec2(sprite["W"].GetInt(), sprite["H"].GetInt());
-            fw::vec2 spriteOffset = fw::vec2(sprite["X"].GetInt(), sprite["Y"].GetInt());
+            fw::vec2 spriteScale = fw::vec2(float(sprite["W"].GetInt()), float(sprite["H"].GetInt()));
+            fw::vec2 spriteOffset = fw::vec2(float(sprite["X"].GetInt()), float(sprite["Y"].GetInt()));
 
             SpriteInfo NewSprite = SpriteInfo(spriteName, spriteScale, spriteOffset);
 
@@ -47,8 +47,9 @@ namespace fw
                 return SpriteObjects[i];
             }
         }
+        return SpriteObjects[0];
     }
-    float SpriteSheet::GetSheetWidth()
+    int SpriteSheet::GetSheetWidth()
     {
         return m_SheetWidth;
     }

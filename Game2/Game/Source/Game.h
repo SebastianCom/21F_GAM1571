@@ -42,5 +42,7 @@ protected:
 
     fw::vec2 CameraPos;
     fw::vec2 ProjScale;
+    
+    fw::vec2 m_SafePosition;
 
 };

@@ -27,11 +27,11 @@ public:
     virtual ~SpriteSheet();
 
     SpriteInfo GetSpriteInfo(std::string name);
-    float GetSheetWidth();
+    int GetSheetWidth();
     std::vector<SpriteInfo>(SpriteObjects);
    
 protected:
-    float m_SheetWidth = 0.0f;
+    int m_SheetWidth = 0;
   
 };
 

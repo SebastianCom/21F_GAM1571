@@ -16,7 +16,7 @@ public:
     void MoveTheFucker(float deltaTime);
     
     fw::vec2 GetPosition();
-
+    void SetPosition(fw::vec2 pos);
     void SetPlayerController(PlayerController* pController) { m_pPlayerController = pController; }
 
 protected:

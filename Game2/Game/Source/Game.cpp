@@ -23,6 +23,7 @@ Game::Game(fw::FWCore& fwCore)
     m_pTileMapGround = nullptr;
     m_pTileMapLevel2 = nullptr;
 
+    m_SafePosition = fw::vec2(0, 0);
 
     CameraPos = vec2(250, 250);
     ProjScale = vec2(1/25.0f, 1/25.0f);
@@ -78,7 +79,7 @@ void Game::Init()
     m_pTileMapGround = new TileMap(m_Meshes["Sprite"], m_pBasicShader, m_pTexture,1);
     m_pTileMapLevel2 = new TileMap(m_Meshes["Sprite"], m_pBasicShader, m_pTexture,2);
 
-    m_pPlayer = new Player(m_Meshes["Sprite"], m_pBasicShader, m_pTexture, vec2(250, 250), m_pPlayerController);
+    m_pPlayer = new Player(m_Meshes["Sprite"], m_pBasicShader, m_pTexture, vec2(225, 250), m_pPlayerController);
 
     //fw::vec2 test = m_pPlayer->m_pSpriteSheet->GetSpriteInfo(m_pPlayer->m_Sprites["Player Down"]).UVOffset;
 
@@ -122,9 +123,27 @@ void Game::CheckForCollisions()
 {
     fw::vec2 playerPos = m_pPlayer->GetPosition();
 
-    float y = playerPos.x / m_pTileMapLevel2->GetTileSize();
-    float x = playerPos.y / m_pTileMapLevel2->GetTileSize();
-    int cp = 1;
-    int playerIndex = y * m_pTileMapLevel2->GetTileMapWidth() + x;
-    int bp = 1;
+    float x = playerPos.x / m_pTileMapLevel2->GetTileSize();
+    float y = playerPos.y / m_pTileMapLevel2->GetTileSize();
+    int playerIndex = int(round(y) * m_pTileMapLevel2->GetTileMapWidth() + round(x)); //floor gets top right
+    
+    ImGui::DragInt("Index", &playerIndex, 0, 100);
+    
+    unsigned char CurrentTile = m_pTileMapLevel2->GetTile(playerIndex);
+    
+    int IntCurrentTile = int(CurrentTile);
+    ImGui::DragInt("Index", &IntCurrentTile, 0, 100);
+    
+    bool walkable = m_pTileMapLevel2->GetTileProperties(CurrentTile).Walkable;
+    
+    if (walkable)
+    {
+        m_SafePosition = m_pPlayer->GetPosition();
+        ImGui::Text("Walkable");
+    }
+    else if (!walkable)
+    {
+        m_pPlayer->SetPosition(m_SafePosition);
+        ImGui::Text("Not Walkable");
+    }
 }

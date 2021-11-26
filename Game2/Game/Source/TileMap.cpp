@@ -9,32 +9,33 @@ TileMap::TileMap(fw::Mesh* mesh, fw::ShaderProgram* shader, fw::Texture* texture
 {
 	 m_Height = 10;
 	 m_Width = 10;
-	 pTiles = new unsigned char [m_Height * m_Width];
+	 pTiles = new unsigned char [long long(m_Height) * m_Width]; //need 8 bytes and it would not allow me to cast to a pointed
+	 pReversedTiles = new unsigned char [long long(m_Height) * m_Width]; //need 8 bytes and it would not allow me to cast to a pointed
 	 SetLayout();
 	 m_2DLayout;
 	 m_WorldLayout;
 	 m_Scale = fw::vec2(5,5);
 	 m_pSpriteSheet = new fw::SpriteSheet();
-	 m_TileSize = m_Scale.x * m_Height;
+	 m_TileSize = int(m_Scale.x) * m_Height;
 
 
 	 for (int i = 0; i < MaxTiles; i++)
 	 {
-		 int x = i % m_Width;
-		 int y = i / m_Width;
+		 float x = float(i % m_Width);
+		 float y = float(i / m_Width);
 
 		 m_2DLayout.push_back(fw::vec2(x,y));
 	 }
 	 for (int i = 0; i < MaxTiles; i++)
 	 {
-		 int x = m_2DLayout[i].x * (m_TileSize);
-		 int y = m_2DLayout[i].y * (m_TileSize);
-		 m_WorldLayout.push_back(fw::vec2(x, y));
+		 float x = m_2DLayout[i].x * (m_TileSize);
+		 float y = m_2DLayout[i].y * (m_TileSize);
+		 m_WorldLayout.push_back(fw::vec2(x, y)); 
 	 }
-	 
+
 	 m_pTileProperties = new TileProperties[TT::NumTypes];
 	 SetProperites();
-
+	 //Reverse1DArray();
 }
 
 TileMap::~TileMap()
@@ -45,15 +46,26 @@ TileMap::~TileMap()
 
 void TileMap::Draw(fw::vec2 camPos, fw::vec2 projScale)
 {
-	float sheetWidth = m_pSpriteSheet->GetSheetWidth();
+	int sheetWidth = m_pSpriteSheet->GetSheetWidth();
 	for (int i = 0; i < MaxTiles; i++)
 	{	
-		ReverseArrayOnY(m_WorldLayout);
-		m_pMesh->Draw(m_pShader, m_pTexture, m_Scale, m_ReversedWorldLayout[i], 0.0f, camPos, projScale, sheetWidth, GetUVScale(pTiles[i]), GetUVOffset(pTiles[i]));
+		//ReverseArrayOnY(m_WorldLayout);
+		m_pMesh->Draw(m_pShader, m_pTexture, m_Scale, m_WorldLayout[i], 0.0f, camPos, projScale, float(sheetWidth), GetUVScale(pTiles[i]), GetUVOffset(pTiles[i]));
 	}
 	
 	//m_pMesh->Draw(m_pShader, m_pTexture, 2DlayoutAtI, worldPosAtI, 0.0f, camPos, projScale, sheetWidth, uvScale, uvOffset);
 }
+
+unsigned char TileMap::GetTile(int index)
+{
+	return pTiles[index];
+}
+
+TileProperties TileMap::GetTileProperties(char tile)
+{
+	return m_pTileProperties[tile];
+}
+
 
 
 
@@ -79,7 +91,7 @@ void TileMap::SetLayout()
 		Brick, Empty, Empty,   Empty, Empty, Brick, Empty,    Empty, Empty, Brick,
 		Brick, Empty, Empty,   Empty, Empty, Empty, Empty,    Empty, Empty, Brick,
 		Brick, Empty, Empty,   Empty, Empty, Empty, Empty,    Empty, Brick, Brick,
-		Brick, Empty, Empty,   Empty, Empty, Empty, BoxGreen, Empty, Empty, Brick,
+		Brick, Empty, Empty,   Empty, Empty, Empty, BoxGreen, Empty, Empty, Brick, //pushed after here
 		Brick, Empty, Empty,   Empty, Empty, Empty, Empty,    Empty, Empty, Brick,
 		Brick, Empty, BoxBlue, Brick, Empty, Empty, Empty,    Empty, Empty, Brick,
 		Brick, Empty, Empty,   Brick, Empty, Empty, Empty,    Empty, Empty, Brick,
@@ -100,6 +112,12 @@ void TileMap::SetLayout()
 			pTiles[i] = pLayout[i];
 		}
 	}
+	for (int i = 0; i < 100; i++)
+	{
+		int temp = pTiles[i];
+		pTiles[i] = pTiles[(100 - i) - 1];
+		pTiles[100 - i] = temp;
+	}
 }
 
 void TileMap::SetProperites()
@@ -111,6 +129,14 @@ void TileMap::SetProperites()
 	m_pTileProperties[TT::Empty].m_pMesh = nullptr;
 	m_pTileProperties[TT::Empty].m_uvScale = fw::vec2(0,0);
 	m_pTileProperties[TT::Empty].m_uvOffset = fw::vec2(0, 0);
+
+	m_pTileProperties[TT::Ground].Moveable = false;
+	m_pTileProperties[TT::Ground].Walkable = true;
+	m_pTileProperties[TT::Ground].m_pShader = m_pShader;
+	m_pTileProperties[TT::Ground].m_pTexture = m_pTexture;
+	m_pTileProperties[TT::Ground].m_pMesh = m_pMesh;
+	m_pTileProperties[TT::Ground].m_uvScale = m_pSpriteSheet->GetSpriteInfo("ground_06").UVScale;
+	m_pTileProperties[TT::Ground].m_uvOffset = m_pSpriteSheet->GetSpriteInfo("ground_06").UVOffset;
 
 	m_pTileProperties[TT::Brick].Moveable = false;
 	m_pTileProperties[TT::Brick].Walkable = false;
@@ -144,26 +170,9 @@ void TileMap::SetProperites()
 	m_pTileProperties[TT::BoxGreen].m_uvScale = m_pSpriteSheet->GetSpriteInfo("crate_05").UVScale;
 	m_pTileProperties[TT::BoxGreen].m_uvOffset = m_pSpriteSheet->GetSpriteInfo("crate_05").UVOffset;
 
-	m_pTileProperties[TT::Ground].Moveable = false;
-	m_pTileProperties[TT::Ground].Walkable = false;
-	m_pTileProperties[TT::Ground].m_pShader = m_pShader;
-	m_pTileProperties[TT::Ground].m_pTexture = m_pTexture;
-	m_pTileProperties[TT::Ground].m_pMesh = m_pMesh;
-	m_pTileProperties[TT::Ground].m_uvScale = m_pSpriteSheet->GetSpriteInfo("ground_06").UVScale;
-	m_pTileProperties[TT::Ground].m_uvOffset = m_pSpriteSheet->GetSpriteInfo("ground_06").UVOffset;
+
 }
 
-void TileMap::ReverseArrayOnY(std::vector<fw::vec2>(arraytoreverse))
-{
-	int num = 100;
-
-	for (int i = 0; i < num; i++)
-	{
-		m_ReversedWorldLayout[i].x = arraytoreverse[i].x;
-		int otherIndex = (num - 1) - i;
-		m_ReversedWorldLayout[i].y = arraytoreverse[otherIndex].y;
-	}
-}
 
 fw::vec2 TileMap::GetUVScale(unsigned char pTiles)
 {
