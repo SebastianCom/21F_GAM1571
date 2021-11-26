@@ -147,7 +147,24 @@ void Game::CheckForCollisions()
     //    }
     //}
 
-    fw::vec2 playerPos = m_pPlayer->GetPosition();
+    fw::vec2 playerPos = fw::vec2(0, 0);
+
+    if(m_pPlayer->GetDirection() == Up)
+    {
+        playerPos = m_pPlayer->GetPosition() += fw::vec2(0,25);
+    }
+    else if (m_pPlayer->GetDirection() == Down)
+    {
+        playerPos = m_pPlayer->GetPosition() += fw::vec2(0, -25);
+    }
+    else if (m_pPlayer->GetDirection() == Left)
+    {
+        playerPos = m_pPlayer->GetPosition() += fw::vec2(-25, 0);
+    }
+    else if (m_pPlayer->GetDirection() == Right)
+    {
+        playerPos = m_pPlayer->GetPosition() += fw::vec2(25, 0);
+    }
 
     float x = playerPos.x / m_pTileMapLevel2->GetTileSize();
     float y = playerPos.y / m_pTileMapLevel2->GetTileSize();

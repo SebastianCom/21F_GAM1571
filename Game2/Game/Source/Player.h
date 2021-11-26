@@ -4,6 +4,14 @@
 
 class PlayerController;
 
+enum Direction
+{
+    Up,
+    Down,
+    Left,
+    Right,
+};
+
 class Player : public GameObject
 {
 public:
@@ -19,10 +27,13 @@ public:
     void SetPosition(fw::vec2 pos);
     void SetPlayerController(PlayerController* pController) { m_pPlayerController = pController; }
 
+    unsigned char GetDirection() { return m_PlayerDirection; }
+
 protected:
     PlayerController* m_pPlayerController;
     fw::vec2 m_PlayerScale;
     float m_Speed;
     std::string m_CurrentSprite;
     float m_AnimTimer;
+    unsigned char m_PlayerDirection;
 };
