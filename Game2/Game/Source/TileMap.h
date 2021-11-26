@@ -38,6 +38,8 @@ public:
 	fw::vec2 GetUVScale(unsigned char pTiles);
 	fw::vec2 GetUVOffset(unsigned char pTiles);
 
+	int GetTileSize() { return m_TileSize; }
+	int GetTileMapWidth() { return m_Width; }
 private:
 
 
@@ -55,6 +57,7 @@ private:
 	TileProperties* m_pTileProperties;
 	int m_ElevationLevel;
 	fw::vec2 m_ReversedWorldLayout[100];
+	int m_TileSize;
 
 	
 };

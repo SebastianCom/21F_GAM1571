@@ -14,6 +14,8 @@ public:
     virtual void Draw(fw::vec2 camPos, fw::vec2 projScale) override;
 
     void MoveTheFucker(float deltaTime);
+    
+    fw::vec2 GetPosition();
 
     void SetPlayerController(PlayerController* pController) { m_pPlayerController = pController; }
 

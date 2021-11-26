@@ -15,7 +15,7 @@ TileMap::TileMap(fw::Mesh* mesh, fw::ShaderProgram* shader, fw::Texture* texture
 	 m_WorldLayout;
 	 m_Scale = fw::vec2(5,5);
 	 m_pSpriteSheet = new fw::SpriteSheet();
-
+	 m_TileSize = m_Scale.x * m_Height;
 
 
 	 for (int i = 0; i < MaxTiles; i++)
@@ -27,8 +27,8 @@ TileMap::TileMap(fw::Mesh* mesh, fw::ShaderProgram* shader, fw::Texture* texture
 	 }
 	 for (int i = 0; i < MaxTiles; i++)
 	 {
-		 int x = m_2DLayout[i].x * (m_Scale.x * m_Width);
-		 int y = m_2DLayout[i].y * (m_Scale.y * m_Height);
+		 int x = m_2DLayout[i].x * (m_TileSize);
+		 int y = m_2DLayout[i].y * (m_TileSize);
 		 m_WorldLayout.push_back(fw::vec2(x, y));
 	 }
 	 

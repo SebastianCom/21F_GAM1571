@@ -8,6 +8,7 @@ class PlayerController;
 class GameObject;
 class SpriteSheet;
 class TileMap;
+class Player;
 
 class Game : public fw::GameCore
 {
@@ -34,7 +35,7 @@ protected:
     PlayerController* m_pPlayerController;
 
 
-    GameObject* m_pPlayer;
+    Player* m_pPlayer;
 
     TileMap* m_pTileMapGround;
     TileMap* m_pTileMapLevel2;

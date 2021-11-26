@@ -10,6 +10,7 @@ Player::Player(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTextur
     m_Speed = 50.0f;
     m_CurrentSprite = m_Sprites["Player Down"];
     m_AnimTimer = 1.0f;
+    m_Position = pos;
 }
 
 Player::~Player()
@@ -43,6 +44,7 @@ void Player::MoveTheFucker(float deltaTime)
     {
         m_Position.x += m_Speed * deltaTime;
         m_AnimTimer -= deltaTime;
+
 
         if (m_AnimTimer >= 0.8f)
         {
@@ -136,4 +138,9 @@ void Player::MoveTheFucker(float deltaTime)
     {
         m_AnimTimer = 1.0f;
     }
+}
+
+fw::vec2 Player::GetPosition()
+{
+    return m_Position;
 }

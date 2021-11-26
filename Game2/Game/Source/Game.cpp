@@ -120,9 +120,11 @@ void Game::Draw()
 
 void Game::CheckForCollisions()
 {
-    //if( m_pGameObject->IsCollidingWith( m_pPlayer ) )
-    //{
-    //    //ImGui::Text( "GameObject colliding with Player" );
-    //    // TODO: Handle collisions.
-    //}
+    fw::vec2 playerPos = m_pPlayer->GetPosition();
+
+    float y = playerPos.x / m_pTileMapLevel2->GetTileSize();
+    float x = playerPos.y / m_pTileMapLevel2->GetTileSize();
+    int cp = 1;
+    int playerIndex = y * m_pTileMapLevel2->GetTileMapWidth() + x;
+    int bp = 1;
 }
