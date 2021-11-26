@@ -23,7 +23,7 @@ Game::Game(fw::FWCore& fwCore)
     m_pTileMapGround = nullptr;
     m_pTileMapLevel2 = nullptr;
 
-    m_SafePosition = fw::vec2(0, 0);
+    m_SafePosition = fw::vec2(0,0);
 
     CameraPos = vec2(250, 250);
     ProjScale = vec2(1/25.0f, 1/25.0f);
@@ -101,7 +101,7 @@ void Game::Update(float deltaTime)
 
     CheckForCollisions();
 
-    const int num = 15;
+   
 
 
 }
@@ -121,29 +121,52 @@ void Game::Draw()
 
 void Game::CheckForCollisions()
 {
+    //std::vector<fw::vec2> playerPos;
+    //playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(-25,0)); //TL
+    //playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(25,0));  //TR
+    //playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(-25,-25)); //BL
+    //playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(25,-25)); //BR
+
+
+    //for (int i = 0; i < playerPos.size(); i++)
+    //{
+    //    float x = playerPos[i].x / m_pTileMapLevel2->GetTileSize();
+    //    float y = playerPos[i].y / m_pTileMapLevel2->GetTileSize();
+    //    int playerIndex = int(round(y) * m_pTileMapLevel2->GetTileMapWidth() + round(x)); //floor gets top right
+    //    unsigned char CurrentTile = m_pTileMapLevel2->GetTile(playerIndex);
+    //    bool walkable = m_pTileMapLevel2->GetTileProperties(CurrentTile).Walkable;
+
+    //    if (walkable)
+    //    {
+    //        m_SafePosition[i] = playerPos[i];
+    //    }
+    //    else if (!walkable)
+    //    {
+    //        m_pPlayer->SetPosition(m_SafePosition[i]);
+    //        break;
+    //    }
+    //}
+
     fw::vec2 playerPos = m_pPlayer->GetPosition();
 
     float x = playerPos.x / m_pTileMapLevel2->GetTileSize();
     float y = playerPos.y / m_pTileMapLevel2->GetTileSize();
     int playerIndex = int(round(y) * m_pTileMapLevel2->GetTileMapWidth() + round(x)); //floor gets top right
-    
-    ImGui::DragInt("Index", &playerIndex, 0, 100);
-    
     unsigned char CurrentTile = m_pTileMapLevel2->GetTile(playerIndex);
-    
     int IntCurrentTile = int(CurrentTile);
-    ImGui::DragInt("Index", &IntCurrentTile, 0, 100);
-    
     bool walkable = m_pTileMapLevel2->GetTileProperties(CurrentTile).Walkable;
-    
+
     if (walkable)
     {
         m_SafePosition = m_pPlayer->GetPosition();
-        ImGui::Text("Walkable");
     }
     else if (!walkable)
     {
         m_pPlayer->SetPosition(m_SafePosition);
-        ImGui::Text("Not Walkable");
     }
+ 
+    
+   
+    
+
 }
