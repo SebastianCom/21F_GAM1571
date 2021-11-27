@@ -43,6 +43,8 @@ public:
 	unsigned char GetTile(int index);
 	TileProperties GetTileProperties(char tile);
 
+	void SwapTiles(char tile, char newtile);
+
 private:
 
 

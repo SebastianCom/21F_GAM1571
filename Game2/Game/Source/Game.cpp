@@ -170,10 +170,11 @@ void Game::CheckForCollisions()
     float y = playerPos.y / m_pTileMapLevel2->GetTileSize();
     int playerIndex = int(round(y) * m_pTileMapLevel2->GetTileMapWidth() + round(x)); //floor gets top right
     unsigned char CurrentTile = m_pTileMapLevel2->GetTile(playerIndex);
-    int IntCurrentTile = int(CurrentTile);
     bool walkable = m_pTileMapLevel2->GetTileProperties(CurrentTile).Walkable;
+    bool moveable = m_pTileMapLevel2->GetTileProperties(CurrentTile).Moveable;
 
-    if (walkable)
+
+    if (walkable)//Walk check
     {
         m_SafePosition = m_pPlayer->GetPosition();
     }
@@ -182,8 +183,38 @@ void Game::CheckForCollisions()
         m_pPlayer->SetPosition(m_SafePosition);
     }
  
-    
+    if (moveable)//move check
+    {
+        if (m_pPlayer->GetDirection() == Right)
+        {
+            unsigned char newIndex = playerIndex + 1;
+            unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
+            if(m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
+            m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
+        }
+        if (m_pPlayer->GetDirection() == Left)
+        {
+            unsigned char newIndex = playerIndex - 1;
+            unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
+            if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
+                m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
+        }
+        if (m_pPlayer->GetDirection() == Up)
+        {
+            unsigned char newIndex = playerIndex + 10;
+            unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
+            if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
+                m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
+        }
+        if (m_pPlayer->GetDirection() == Down)
+        {
+            unsigned char newIndex = playerIndex - 10;
+            unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
+            if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
+                m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
+        }
+    }
    
-    
+    ImGui::Text("Jimmy: If you have time please try\n moving my boxes around");
 
 }

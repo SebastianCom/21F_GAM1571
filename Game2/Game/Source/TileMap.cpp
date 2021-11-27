@@ -66,6 +66,13 @@ TileProperties TileMap::GetTileProperties(char tile)
 	return m_pTileProperties[tile];
 }
 
+void TileMap::SwapTiles(char tile, char newtile)
+{
+	unsigned char temp = pTiles[tile];
+	pTiles[tile] = pTiles[newtile];
+	pTiles[newtile] = temp;
+}
+
 
 
 
