@@ -39,6 +39,7 @@ bool GameObject::IsCollidingWith(GameObject* pOtherObject)
     return false;
 }
 
+//I did this more for fun to see if i could create a map, i really couldve just set string variables for all of them
 void GameObject::HardCodeNames()
 {
     m_Sprites["Red Brick"] = "block_01";

@@ -62,7 +62,6 @@ private:
 	fw::Texture* m_pTexture;
 	TileProperties* m_pTileProperties;
 	int m_ElevationLevel;
-	fw::vec2 m_ReversedWorldLayout[100];
 	int m_TileSize;
 
 	

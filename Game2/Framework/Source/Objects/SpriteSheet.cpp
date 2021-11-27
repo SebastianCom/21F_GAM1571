@@ -16,7 +16,7 @@ namespace fw
 
         rapidjson::Value& widthValue = document["Width"];
         m_SheetWidth = widthValue.GetInt();
-        int bp = 1;
+
         rapidjson::Value& spriteArray = document["Sprites"];
 
         for (rapidjson::SizeType i = 0; i < spriteArray.Size(); i++)

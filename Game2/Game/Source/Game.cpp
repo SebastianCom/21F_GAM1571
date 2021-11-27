@@ -6,6 +6,7 @@
 #include "TileMap.h"
 #include "../Libraries/rapidjson/document.h"
 
+//No warnings on rebuild 11/27 5:03pm
 Game::Game(fw::FWCore& fwCore)
     : m_FWCore( fwCore )
 {
@@ -75,14 +76,10 @@ void Game::Init()
     m_pPlayerController = new PlayerController();
 
     
-    
     m_pTileMapGround = new TileMap(m_Meshes["Sprite"], m_pBasicShader, m_pTexture,1);
     m_pTileMapLevel2 = new TileMap(m_Meshes["Sprite"], m_pBasicShader, m_pTexture,2);
 
-    m_pPlayer = new Player(m_Meshes["Sprite"], m_pBasicShader, m_pTexture, vec2(225, 250), m_pPlayerController);
-
-    //fw::vec2 test = m_pPlayer->m_pSpriteSheet->GetSpriteInfo(m_pPlayer->m_Sprites["Player Down"]).UVOffset;
-
+    m_pPlayer = new Player(m_Meshes["Sprite"], m_pBasicShader, m_pTexture, vec2(225, 250), m_pPlayerController); //Spawning offset on the x for debug purposes
 
 }
 
@@ -94,8 +91,6 @@ void Game::OnEvent(fw::Event* pEvent)
 void Game::Update(float deltaTime)
 {
     m_pImGuiManager->StartFrame(deltaTime);
-
-    ImGui::ShowDemoWindow();
 
     m_pPlayer->Update(deltaTime);
 
@@ -124,10 +119,10 @@ void Game::CheckForCollisions()
     //Known bug on moveable object if you hold one direction and tap another
     //i had it using a middle point but it didnt look nice and did not colide on corners 
     std::vector<fw::vec2> playerPos;
-    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(-20, 0)); //TL
-    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(20, 0));  //TR
-    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(-20, -20)); //BL
-    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(20, -20)); //BR
+    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(-18, 0)); //TL //18 felt better than 20
+    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(18, 0));  //TR
+    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(-18, -20)); //BL
+    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(18, -20)); //BR
     bool walkable = true;
     
     for (int i = 0; i < playerPos.size(); i++)
@@ -187,6 +182,6 @@ void Game::CheckForCollisions()
 
 
 
-    ImGui::Text("Jimmy: If you have time please try\n moving my boxes around");
+    ImGui::Text("Jimmy: If you have time please try\n       moving my boxes around its super\n       primitive a the moment");
 
 }

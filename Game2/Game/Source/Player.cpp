@@ -16,6 +16,7 @@ Player::Player(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTextur
 
 Player::~Player()
 {
+
 }
 
 void Player::Update(float deltaTime)
@@ -37,6 +38,11 @@ void Player::Draw(fw::vec2 camPos, fw::vec2 projScale)
    
     m_pMesh->Draw(m_pShader, m_pTexture, m_PlayerScale, m_Position, 0.0f, camPos, projScale, float(sheetWidth), uvScale, uvOffset);
 }
+
+
+//------------------------------ My Functions ------------------------------------------------------
+//I do this because it helps me if i seperate functions i made from the draw and update functions.
+//I get that for some i made the draw function but i still lie to divide my functions like this.
 
 void Player::MoveTheFucker(float deltaTime)
 {
