@@ -47,21 +47,24 @@ void Player::MoveTheFucker(float deltaTime)
         m_AnimTimer -= deltaTime;
         m_PlayerDirection = Right;
 
-        if (m_AnimTimer >= 0.8f)
+        if (!m_pPlayerController->IsUpHeld() && !m_pPlayerController->IsDownHeld()) //fixes animation tears
         {
-            m_CurrentSprite = m_Sprites["Player Right"];
-        }
-        if (m_AnimTimer >= 0.6f && m_AnimTimer < 0.8f)
-        {
-            m_CurrentSprite = m_Sprites["Player Right2"];
-        }
-        if (m_AnimTimer >= 0.3f && m_AnimTimer < 0.6f)
-        {
-            m_CurrentSprite = m_Sprites["Player Right"];
-        }
-        if (m_AnimTimer >= 0.0f && m_AnimTimer < 0.3f)
-        {
-            m_CurrentSprite = m_Sprites["Player Right3"];
+            if (m_AnimTimer >= 0.8f)
+            {
+                m_CurrentSprite = m_Sprites["Player Right"];
+            }
+            if (m_AnimTimer >= 0.6f && m_AnimTimer < 0.8f)
+            {
+                m_CurrentSprite = m_Sprites["Player Right2"];
+            }
+            if (m_AnimTimer >= 0.3f && m_AnimTimer < 0.6f)
+            {
+                m_CurrentSprite = m_Sprites["Player Right"];
+            }
+            if (m_AnimTimer >= 0.0f && m_AnimTimer < 0.3f)
+            {
+                m_CurrentSprite = m_Sprites["Player Right3"];
+            }
         }
 
     }
@@ -72,21 +75,24 @@ void Player::MoveTheFucker(float deltaTime)
         m_AnimTimer -= deltaTime;
         m_PlayerDirection = Left;
 
-        if (m_AnimTimer >= 0.8f)
+        if (!m_pPlayerController->IsUpHeld() && !m_pPlayerController->IsDownHeld()) //fixes animation tears
         {
-            m_CurrentSprite = m_Sprites["Player Left"];
-        }
-        if (m_AnimTimer >= 0.6f && m_AnimTimer < 0.8f)
-        {
-            m_CurrentSprite = m_Sprites["Player Left2"];
-        }
-        if (m_AnimTimer >= 0.3f && m_AnimTimer < 0.6f)
-        {
-            m_CurrentSprite = m_Sprites["Player Left"];
-        }
-        if (m_AnimTimer >= 0.0f && m_AnimTimer < 0.3f)
-        {
-            m_CurrentSprite = m_Sprites["Player Left3"];
+            if (m_AnimTimer >= 0.8f)
+            {
+                m_CurrentSprite = m_Sprites["Player Left"];
+            }
+            if (m_AnimTimer >= 0.6f && m_AnimTimer < 0.8f)
+            {
+                m_CurrentSprite = m_Sprites["Player Left2"];
+            }
+            if (m_AnimTimer >= 0.3f && m_AnimTimer < 0.6f)
+            {
+                m_CurrentSprite = m_Sprites["Player Left"];
+            }
+            if (m_AnimTimer >= 0.0f && m_AnimTimer < 0.3f)
+            {
+                m_CurrentSprite = m_Sprites["Player Left3"];
+            }
         }
     }
 

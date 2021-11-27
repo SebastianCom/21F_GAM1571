@@ -121,60 +121,61 @@ void Game::Draw()
 
 void Game::CheckForCollisions()
 {
-    //std::vector<fw::vec2> playerPos;
-    //playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(-25,0)); //TL
-    //playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(25,0));  //TR
-    //playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(-25,-25)); //BL
-    //playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(25,-25)); //BR
-
-
-    //for (int i = 0; i < playerPos.size(); i++)
-    //{
-    //    float x = playerPos[i].x / m_pTileMapLevel2->GetTileSize();
-    //    float y = playerPos[i].y / m_pTileMapLevel2->GetTileSize();
-    //    int playerIndex = int(round(y) * m_pTileMapLevel2->GetTileMapWidth() + round(x)); //floor gets top right
-    //    unsigned char CurrentTile = m_pTileMapLevel2->GetTile(playerIndex);
-    //    bool walkable = m_pTileMapLevel2->GetTileProperties(CurrentTile).Walkable;
-
-    //    if (walkable)
-    //    {
-    //        m_SafePosition[i] = playerPos[i];
-    //    }
-    //    else if (!walkable)
-    //    {
-    //        m_pPlayer->SetPosition(m_SafePosition[i]);
-    //        break;
-    //    }
-    //}
-
-    fw::vec2 playerPos = fw::vec2(0, 0);
-
-    if(m_pPlayer->GetDirection() == Up)
+    //Known bug on moveable object if you hold one direction and tap another
+    //i had it using a middle point but it didnt look nice and did not colide on corners 
+    std::vector<fw::vec2> playerPos;
+    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(-20, 0)); //TL
+    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(20, 0));  //TR
+    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(-20, -20)); //BL
+    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(20, -20)); //BR
+    bool walkable = true;
+    
+    for (int i = 0; i < playerPos.size(); i++)
     {
-        playerPos = m_pPlayer->GetPosition() += fw::vec2(0,25);
-    }
-    else if (m_pPlayer->GetDirection() == Down)
-    {
-        playerPos = m_pPlayer->GetPosition() += fw::vec2(0, -25);
-    }
-    else if (m_pPlayer->GetDirection() == Left)
-    {
-        playerPos = m_pPlayer->GetPosition() += fw::vec2(-25, 0);
-    }
-    else if (m_pPlayer->GetDirection() == Right)
-    {
-        playerPos = m_pPlayer->GetPosition() += fw::vec2(25, 0);
-    }
+        float x = playerPos[i].x / m_pTileMapLevel2->GetTileSize();
+        float y = playerPos[i].y / m_pTileMapLevel2->GetTileSize();
+        int playerIndex = int(round(y) * m_pTileMapLevel2->GetTileMapWidth() + round(x)); //floor gets top right
+        unsigned char CurrentTile = m_pTileMapLevel2->GetTile(playerIndex);
+        walkable = m_pTileMapLevel2->GetTileProperties(CurrentTile).Walkable;
+        bool moveable = m_pTileMapLevel2->GetTileProperties(CurrentTile).Moveable;
 
-    float x = playerPos.x / m_pTileMapLevel2->GetTileSize();
-    float y = playerPos.y / m_pTileMapLevel2->GetTileSize();
-    int playerIndex = int(round(y) * m_pTileMapLevel2->GetTileMapWidth() + round(x)); //floor gets top right
-    unsigned char CurrentTile = m_pTileMapLevel2->GetTile(playerIndex);
-    bool walkable = m_pTileMapLevel2->GetTileProperties(CurrentTile).Walkable;
-    bool moveable = m_pTileMapLevel2->GetTileProperties(CurrentTile).Moveable;
-
-
-    if (walkable)//Walk check
+        if (moveable)//move check
+        {
+            if (m_pPlayer->GetDirection() == Right)
+            {
+                unsigned char newIndex = playerIndex + 1;
+                unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
+                if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
+                    m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
+            }
+            if (m_pPlayer->GetDirection() == Left)
+            {
+                unsigned char newIndex = playerIndex - 1;
+                unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
+                if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
+                    m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
+            }
+            if (m_pPlayer->GetDirection() == Up)
+            {
+                unsigned char newIndex = playerIndex + 10;
+                unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
+                if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
+                    m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
+            }
+            if (m_pPlayer->GetDirection() == Down)
+            {
+                unsigned char newIndex = playerIndex - 10;
+                unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
+                if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
+                    m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
+            }
+        }
+        if (!walkable)
+        {
+            break;
+        }
+    }
+    if (walkable)
     {
         m_SafePosition = m_pPlayer->GetPosition();
     }
@@ -182,39 +183,10 @@ void Game::CheckForCollisions()
     {
         m_pPlayer->SetPosition(m_SafePosition);
     }
- 
-    if (moveable)//move check
-    {
-        if (m_pPlayer->GetDirection() == Right)
-        {
-            unsigned char newIndex = playerIndex + 1;
-            unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
-            if(m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
-            m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
-        }
-        if (m_pPlayer->GetDirection() == Left)
-        {
-            unsigned char newIndex = playerIndex - 1;
-            unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
-            if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
-                m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
-        }
-        if (m_pPlayer->GetDirection() == Up)
-        {
-            unsigned char newIndex = playerIndex + 10;
-            unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
-            if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
-                m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
-        }
-        if (m_pPlayer->GetDirection() == Down)
-        {
-            unsigned char newIndex = playerIndex - 10;
-            unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
-            if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
-                m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
-        }
-    }
-   
+    playerPos.clear();
+
+
+
     ImGui::Text("Jimmy: If you have time please try\n moving my boxes around");
 
 }
