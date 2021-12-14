@@ -9,6 +9,7 @@ class GameObject;
 class SpriteSheet;
 class TileMap;
 class Player;
+class Enemy;
 
 class Game : public fw::GameCore
 {
@@ -31,11 +32,13 @@ protected:
     std::map<std::string, fw::Mesh*> m_Meshes;
     fw::ShaderProgram* m_pBasicShader;
     fw::Texture* m_pTexture;
+    fw::Texture* m_pEnemyTexture;
 
     PlayerController* m_pPlayerController;
 
 
     Player* m_pPlayer;
+    Enemy* m_pEnemy;
 
     TileMap* m_pTileMapGround;
     TileMap* m_pTileMapLevel2;

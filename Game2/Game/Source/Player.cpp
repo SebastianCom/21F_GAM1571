@@ -3,7 +3,7 @@
 #include "PlayerController.h"
 
 Player::Player(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, PlayerController* pController)
-    : GameObject( pMesh, pShader, pTexture, pos)
+    : GameObject( pMesh, pShader, pTexture, pos, 1)
     , m_pPlayerController( pController )
 {
     m_PlayerScale = fw::vec2(5, 5);

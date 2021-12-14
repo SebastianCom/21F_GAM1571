@@ -1,0 +1,31 @@
+{
+	"SpriteTool":	2,
+	"Texture":	"Sprites.png",
+	"Width":	256,
+	"Height":	256,
+	"Sprites":	[{
+			"Name":	"enemyBlack3",
+			"X":	0,
+			"Y":	172,
+			"W":	103,
+			"H":	84
+		}, {
+			"Name":	"enemyBlue3",
+			"X":	0,
+			"Y":	87,
+			"W":	103,
+			"H":	84
+		}, {
+			"Name":	"enemyGreen3",
+			"X":	104,
+			"Y":	172,
+			"W":	103,
+			"H":	84
+		}, {
+			"Name":	"enemyRed3",
+			"X":	0,
+			"Y":	2,
+			"W":	103,
+			"H":	84
+		}]
+}

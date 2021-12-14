@@ -15,7 +15,7 @@ TileMap::TileMap(fw::Mesh* mesh, fw::ShaderProgram* shader, fw::Texture* texture
 	 SetLayout();
 	 m_WorldLayout;
 	 m_Scale = fw::vec2(5,5);
-	 m_pSpriteSheet = new fw::SpriteSheet();
+	 m_pSpriteSheet = new fw::SpriteSheet(1);
 	 m_TileSizeX = int(m_Scale.x) * m_Height;
 	 m_TileSizeY = int(m_Scale.y) * m_Height;
 

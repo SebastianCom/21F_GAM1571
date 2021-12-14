@@ -5,32 +5,61 @@
 namespace fw
 {
 
-    fw::SpriteSheet::SpriteSheet()
+    fw::SpriteSheet::SpriteSheet(char sheet)
     {
 
         // Load json spritesheet.
-        const char* json = fw::LoadCompleteFile("Data/Textures/Sprites.json", nullptr);
-        rapidjson::Document document;
-        document.Parse(json);
-        delete[] json;
-
-        rapidjson::Value& widthValue = document["Width"];
-        m_SheetWidth = widthValue.GetInt();
-
-        rapidjson::Value& spriteArray = document["Sprites"];
-
-        for (rapidjson::SizeType i = 0; i < spriteArray.Size(); i++)
+        if (sheet == 1)
         {
-            rapidjson::Value& sprite = spriteArray[i];
+            const char* json = fw::LoadCompleteFile("Data/Textures/Sprites.json", nullptr);
+            rapidjson::Document document;
+            document.Parse(json);
+            delete[] json;
 
-            std::string spriteName = sprite["Name"].GetString();
-            fw::vec2 spriteScale = fw::vec2(float(sprite["W"].GetInt()), float(sprite["H"].GetInt())) / m_SheetWidth;
-            fw::vec2 spriteOffset = fw::vec2(float(sprite["X"].GetInt()), float(sprite["Y"].GetInt())) / m_SheetWidth;
+            rapidjson::Value& widthValue = document["Width"];
+            m_SheetWidth = widthValue.GetInt();
 
-            SpriteInfo NewSprite = SpriteInfo(spriteName, spriteScale, spriteOffset);
+            rapidjson::Value& spriteArray = document["Sprites"];
 
-            SpriteObjects.push_back(NewSprite);
+            for (rapidjson::SizeType i = 0; i < spriteArray.Size(); i++)
+            {
+                rapidjson::Value& sprite = spriteArray[i];
 
+                std::string spriteName = sprite["Name"].GetString();
+                fw::vec2 spriteScale = fw::vec2(float(sprite["W"].GetInt()), float(sprite["H"].GetInt())) / m_SheetWidth;
+                fw::vec2 spriteOffset = fw::vec2(float(sprite["X"].GetInt()), float(sprite["Y"].GetInt())) / m_SheetWidth;
+
+                SpriteInfo NewSprite = SpriteInfo(spriteName, spriteScale, spriteOffset);
+
+                SpriteObjects.push_back(NewSprite);
+
+            }
+        }
+        else
+        {
+            const char* json = fw::LoadCompleteFile("Data/Textures/EnemySprites.json", nullptr);
+            rapidjson::Document document;
+            document.Parse(json);
+            delete[] json;
+
+            rapidjson::Value& widthValue = document["Width"];
+            m_SheetWidth = widthValue.GetInt();
+
+            rapidjson::Value& spriteArray = document["Sprites"];
+
+            for (rapidjson::SizeType i = 0; i < spriteArray.Size(); i++)
+            {
+                rapidjson::Value& sprite = spriteArray[i];
+
+                std::string spriteName = sprite["Name"].GetString();
+                fw::vec2 spriteScale = fw::vec2(float(sprite["W"].GetInt()), float(sprite["H"].GetInt())) / m_SheetWidth;
+                fw::vec2 spriteOffset = fw::vec2(float(sprite["X"].GetInt()), float(sprite["Y"].GetInt())) / m_SheetWidth;
+
+                SpriteInfo NewSprite = SpriteInfo(spriteName, spriteScale, spriteOffset);
+
+                SpriteObjects.push_back(NewSprite);
+
+            }
         }
     }
 

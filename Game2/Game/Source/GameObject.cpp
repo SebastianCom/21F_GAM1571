@@ -1,7 +1,7 @@
 #include "Framework.h"
 #include "GameObject.h"
 
-GameObject::GameObject(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos)
+GameObject::GameObject(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, char sheetNumber)
     : m_pMesh( pMesh )
     , m_pShader( pShader )
     , m_pTexture( pTexture )
@@ -11,7 +11,8 @@ GameObject::GameObject(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture*
    
     m_CollisionRadius = 5.0f;
     HardCodeNames();
-    m_pSpriteSheet = new fw::SpriteSheet();
+    m_pSpriteSheet = new fw::SpriteSheet(sheetNumber);
+
 }
 
 GameObject::~GameObject()
@@ -72,4 +73,5 @@ void GameObject::HardCodeNames()
     m_Sprites["Player Right2"] = "player_18";
     m_Sprites["Player Right3"] = "player_19";
 
+    m_Sprites["Enemy Blue"] = "enemyBlue3";
 }

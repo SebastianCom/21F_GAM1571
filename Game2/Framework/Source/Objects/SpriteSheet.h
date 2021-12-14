@@ -23,7 +23,7 @@ struct SpriteInfo
 class SpriteSheet
 {
 public:
-    SpriteSheet();
+    SpriteSheet(char sheet);
     virtual ~SpriteSheet();
 
     SpriteInfo GetSpriteInfo(std::string name);

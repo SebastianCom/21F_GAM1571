@@ -8,7 +8,7 @@ class SpriteInfo;
 class GameObject
 {
 public:
-    GameObject(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos);
+    GameObject(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, char sheetNumber);
     virtual ~GameObject();
 
     virtual void Update(float deltaTime);

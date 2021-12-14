@@ -3,6 +3,7 @@
 #include "PlayerController.h"
 #include "GameObject.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "TileMap.h"
 #include "../Libraries/rapidjson/document.h"
 #include <functional>
@@ -43,10 +44,12 @@ Game::Game(fw::FWCore& fwCore)
 
     m_pBasicShader = nullptr;
     m_pTexture = nullptr;
+    m_pEnemyTexture = nullptr;
 
     m_pPlayerController = nullptr;
 
     m_pPlayer = nullptr;
+    m_pEnemy = nullptr;
 
     m_pTileMapGround = nullptr;
     m_pTileMapLevel2 = nullptr;
@@ -61,6 +64,7 @@ Game::Game(fw::FWCore& fwCore)
 Game::~Game()
 {
     delete m_pPlayer;
+    delete m_pEnemy;
 
     delete m_pTileMapGround;
     delete m_pTileMapLevel2;
@@ -68,6 +72,7 @@ Game::~Game()
     delete m_pPlayerController;
 
     delete m_pTexture;
+    delete m_pEnemyTexture;
     delete m_pBasicShader;
    
 
@@ -90,6 +95,7 @@ void Game::Init()
 
     m_pBasicShader = new fw::ShaderProgram( "Data/Shaders/Basic.vert", "Data/Shaders/Basic.frag" );
     m_pTexture = new fw::Texture("Data/Textures/Sprites.png");
+    m_pEnemyTexture = new fw::Texture("Data/Textures/EnemySprites.png");
 
     std::vector<fw::VertexFormat> spriteVerts = {
         { vec2(  0.0f, 0.0f),  255,255,255,255,  vec2(0.0f,0.0f) }, // bl // * vec2(64/512.0f,64/512.0f) + vec2(195/512.0f,448/512.0f) }, // bl
@@ -107,6 +113,7 @@ void Game::Init()
     m_pTileMapLevel2 = new TileMap(m_Meshes["Sprite"], m_pBasicShader, m_pTexture,2);
 
     m_pPlayer = new Player(m_Meshes["Sprite"], m_pBasicShader, m_pTexture, vec2(225, 250), m_pPlayerController); //Spawning offset on the x for debug purposes
+    m_pEnemy = new Enemy(m_Meshes["Sprite"], m_pBasicShader, m_pEnemyTexture, vec2(150, 250)); //Spawning offset on the x for debug purposes
 
 }
 
@@ -120,6 +127,7 @@ void Game::Update(float deltaTime)
     m_pImGuiManager->StartFrame(deltaTime);
 
     m_pPlayer->Update(deltaTime);
+    m_pEnemy->Update(deltaTime);
 
     CheckForCollisions();
 
@@ -137,6 +145,7 @@ void Game::Draw()
     m_pTileMapLevel2->Draw(CameraPos, ProjScale);
    
     m_pPlayer->Draw(CameraPos, ProjScale);
+    m_pEnemy->Draw(CameraPos, ProjScale);
 
     m_pImGuiManager->EndFrame();
 }
@@ -208,7 +217,5 @@ void Game::CheckForCollisions()
     playerPos.clear();
 
 
-
-    ImGui::Text("Jimmy: If you have time please try\n       moving my boxes around its super\n       primitive a the moment");
 
 }
