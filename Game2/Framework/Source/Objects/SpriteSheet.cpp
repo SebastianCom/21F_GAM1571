@@ -26,8 +26,8 @@ namespace fw
                 rapidjson::Value& sprite = spriteArray[i];
 
                 std::string spriteName = sprite["Name"].GetString();
-                fw::vec2 spriteScale = fw::vec2(float(sprite["W"].GetInt()), float(sprite["H"].GetInt())) / m_SheetWidth;
-                fw::vec2 spriteOffset = fw::vec2(float(sprite["X"].GetInt()), float(sprite["Y"].GetInt())) / m_SheetWidth;
+                fw::vec2 spriteScale = fw::vec2(float(sprite["W"].GetInt()), float(sprite["H"].GetInt())) / float(m_SheetWidth);
+                fw::vec2 spriteOffset = fw::vec2(float(sprite["X"].GetInt()), float(sprite["Y"].GetInt())) / float(m_SheetWidth);
 
                 SpriteInfo NewSprite = SpriteInfo(spriteName, spriteScale, spriteOffset);
 
@@ -52,8 +52,8 @@ namespace fw
                 rapidjson::Value& sprite = spriteArray[i];
 
                 std::string spriteName = sprite["Name"].GetString();
-                fw::vec2 spriteScale = fw::vec2(float(sprite["W"].GetInt()), float(sprite["H"].GetInt())) / m_SheetWidth;
-                fw::vec2 spriteOffset = fw::vec2(float(sprite["X"].GetInt()), float(sprite["Y"].GetInt())) / m_SheetWidth;
+                fw::vec2 spriteScale = fw::vec2(float(sprite["W"].GetInt()), float(sprite["H"].GetInt())) / float(m_SheetWidth);
+                fw::vec2 spriteOffset = fw::vec2(float(sprite["X"].GetInt()), float(sprite["Y"].GetInt())) / float(m_SheetWidth);
 
                 SpriteInfo NewSprite = SpriteInfo(spriteName, spriteScale, spriteOffset);
 

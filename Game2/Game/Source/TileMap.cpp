@@ -22,8 +22,8 @@ TileMap::TileMap(fw::Mesh* mesh, fw::ShaderProgram* shader, fw::Texture* texture
 
 	 for (int i = 0; i < MaxTiles; i++) 
 	 {
-		 float x = i % m_Width * (m_TileSizeX);
-		 float y = i / m_Width * (m_TileSizeY);
+		 float x = i % m_Width * float(m_TileSizeX);
+		 float y = i / m_Width * float(m_TileSizeY);
 		 m_WorldLayout.push_back(fw::vec2(x, y)); 
 	 }
 
@@ -114,7 +114,7 @@ void TileMap::SetLayout()
 		Brick, Empty, Empty,   Empty, Empty, Empty, Empty,    Empty, Empty, Brick,
 		Brick, Empty, Empty,   Empty, Empty, Empty, Empty,    Empty, Brick, Brick,
 		Brick, Empty, Empty,   Empty, Empty, Empty, Brick,	  Empty, Empty, Brick, //pushed after here
-		Brick, Empty, Empty,   Empty, Empty, Empty, Brick,    Empty, Empty, Brick,
+		Brick, Empty, Empty,   Empty, BoxBlue, Empty, Brick,    Empty, Empty, Brick,
 		Brick, Empty, BoxBlue, Brick, Empty, Empty, Empty,    Empty, Empty, Brick,
 		Brick, Empty, Empty,   Brick, Empty, Empty, Empty,    Empty, Empty, Brick,
 		Brick, Brick, Brick,   Brick, Brick, Brick, Brick,    Brick, Brick, Brick,

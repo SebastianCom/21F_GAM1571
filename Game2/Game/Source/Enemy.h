@@ -20,7 +20,7 @@ public:
 
     unsigned char GetDirection() { return m_EnemyDirection; }
 
-    void MoveTo(int index);
+    void MoveTo(int index, float deltaTime);
     bool IsAtLocation(int index);
     void StartPathFind();
 

@@ -32,9 +32,9 @@ void Enemy::Update(float deltaTime)
    
     if (PathFound)
     {
-        int temp = EnemyPathFinder->GetPath(EndGoal.x, EndGoal.y);
-        if (IsAtLocation(temp) == false)
-            MoveTo(temp);
+        int index = EnemyPathFinder->GetPath(int(EndGoal.x), int(EndGoal.y));
+        if (IsAtLocation(index) == false)
+            MoveTo(index, deltaTime);
         else
             StartPathFind();
     }
@@ -62,29 +62,36 @@ void Enemy::SetPosition(fw::vec2 pos)
     m_Position = pos;
 }
 
-void Enemy::MoveTo(int index)
+void Enemy::MoveTo(int index, float deltaTime)
 {
     float x =  index % pTileMap->GetTileMapWidth() * (pTileMap->GetTileSize().x);
     float y =  index / pTileMap->GetTileMapWidth() * (pTileMap->GetTileSize().y);
     fw::vec2 newPosition = fw::vec2(x, y);
     if(m_Position.x < newPosition.x)
-        m_Position.x += 50;
+        m_Position.x += m_Speed * deltaTime;
     else if (m_Position.x > newPosition.x)
-        m_Position.x -= 50;
+        m_Position.x -= m_Speed * deltaTime;
     else if (m_Position.y < newPosition.y)
-        m_Position.y += 50;
+        m_Position.y += m_Speed * deltaTime;
     else if (m_Position.y > newPosition.y)
-        m_Position.y -= 50;
+        m_Position.y -= m_Speed * deltaTime;
 }
 
 bool Enemy::IsAtLocation(int index)
 {
-    float x = index % pTileMap->GetTileMapWidth() * (pTileMap->GetTileSize().x);
-    float y = index / pTileMap->GetTileMapWidth() * (pTileMap->GetTileSize().y);
-    fw::vec2 newPosition = fw::vec2(x, y);
+    float x2 = index % pTileMap->GetTileMapWidth() * (pTileMap->GetTileSize().x);
+    float y2 = index / pTileMap->GetTileMapWidth() * (pTileMap->GetTileSize().y);
+    fw::vec2 newPosition = fw::vec2(x2, y2);
 
-    if (m_Position == newPosition)
+    float x1 = m_Position.x;
+    float y1 = m_Position.y;
+
+    double distance = sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)) );
+
+    //if (m_Position == newPosition)
+    if (distance <= .5f)
     {
+        m_Position = newPosition;
         return true;
     }
     else
@@ -93,5 +100,5 @@ bool Enemy::IsAtLocation(int index)
 
 void Enemy::StartPathFind()
 {
-    PathFound = EnemyPathFinder->FindPath((m_Position / pTileMap->GetTileSize()), EndGoal.x, EndGoal.y);
+    PathFound = EnemyPathFinder->FindPath((m_Position / pTileMap->GetTileSize()), int(EndGoal.x), int(EndGoal.y));
 }

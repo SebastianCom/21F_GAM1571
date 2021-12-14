@@ -9,7 +9,7 @@ PathFinder::PathFinder(TileMap* pTilemap)
 	m_MapWidth = pTilemap->GetTileMapWidth();
 	m_MapHeight = pTilemap->GetTileMapHeight();
 
-	m_Nodes.resize(m_MapWidth * m_MapHeight);
+	m_Nodes.resize(long long(m_MapWidth) * m_MapHeight);
 
 }
 
@@ -22,7 +22,7 @@ bool PathFinder::FindPath(vec2 startpos, int ex, int ey)
 {
     Reset();
 
-    int StartingIndex = startpos.y * m_MapWidth + startpos.x;
+    int StartingIndex = int(startpos.y * m_MapWidth + startpos.x);
     int DestIndex = ey * m_MapWidth + ex;
 
     m_Nodes[StartingIndex].cost = 0;
@@ -38,7 +38,7 @@ bool PathFinder::FindPath(vec2 startpos, int ex, int ey)
         {
             if (m_Nodes[m_OpenNodes[i]].finalCost < prevCost)
             {
-                prevCost = m_Nodes[m_OpenNodes[i]].finalCost;
+                prevCost = int( m_Nodes[m_OpenNodes[i]].finalCost);
                 currentNode = m_OpenNodes[i];
             }
         }    
@@ -63,7 +63,7 @@ bool PathFinder::FindPath(vec2 startpos, int ex, int ey)
                 m_OpenNodes.push_back(NeighbourIndex[i]);
             }
 
-            int newCost = (m_Nodes[currentNode].cost + 1);
+            float newCost = (m_Nodes[currentNode].cost + 1);
 
             if (newCost < m_Nodes[NeighbourIndex[i]].cost)
             {
@@ -141,8 +141,8 @@ std::vector<int> PathFinder::MakeListOfValidNeighbours(int tileIndex)
         //left
         if (i == 0)
         {
-            float Nindex = floor((tileIndex - 1) / m_MapWidth);
-            float Tindex = floor(tileIndex / m_MapWidth);
+            double Nindex = floor((tileIndex - 1) / m_MapWidth);
+            double Tindex = floor(tileIndex / m_MapWidth);
 
             int fullIndex = (tileIndex - 1);
             if (fullIndex == -1)
@@ -162,8 +162,8 @@ std::vector<int> PathFinder::MakeListOfValidNeighbours(int tileIndex)
         //Right
         if (i == 1)
         {
-            float Nindex = floor((tileIndex + 1) / m_MapWidth);
-            float Tindex = floor(tileIndex / m_MapWidth);
+            double Nindex = floor((tileIndex + 1) / m_MapWidth);
+            double Tindex = floor(tileIndex / m_MapWidth);
 
             int fullIndex = (tileIndex + 1);
             if (fullIndex == 100)
