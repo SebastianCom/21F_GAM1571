@@ -2,12 +2,13 @@
 #include "DataTypes.h"
 #include "GameObject.h"
 
-
+class TileMap;
+class PathFinder;
 
 class Enemy : public GameObject
 {
 public:
-    Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos);
+    Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, TileMap* pMap);
     virtual ~Enemy();
 
     virtual void Update(float deltaTime) override;
@@ -25,4 +26,6 @@ protected:
     float m_Speed;
     std::string m_Sprite;
     unsigned char m_EnemyDirection;
+    TileMap* pTileMap;
+    PathFinder* EnemyPathFinder;
 };

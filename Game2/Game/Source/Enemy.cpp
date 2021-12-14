@@ -1,21 +1,30 @@
 #include "Framework.h"
 #include "Enemy.h"
+#include "TileMap.h"
+#include "PathFinder.h"
 
 
-Enemy::Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos)
+Enemy::Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, TileMap* pMap)
     : GameObject( pMesh, pShader, pTexture, pos, 2)
- 
 {
-    m_EnemyScale = fw::vec2(5, 5);
+    m_EnemyScale = fw::vec2(4, 4);
     m_Speed = 50.0f;
     m_Sprite = m_Sprites["Enemy Blue"];
     m_Position = pos;
+    pTileMap = pMap;
+
+    EnemyPathFinder = new PathFinder(pTileMap);
+   
+    bool found = EnemyPathFinder->FindPath((m_Position / pTileMap->GetTileSize()), 8, 8);
+    if(found)
+    int temp = EnemyPathFinder->GetPath(8, 8);
+
 
 }
 
 Enemy::~Enemy()
 {
-
+    delete EnemyPathFinder;
 }
 
 void Enemy::Update(float deltaTime)

@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "TileMap.h"
+#include "PathFinder.h"
 #include "../Libraries/rapidjson/document.h"
 #include <functional>
 
@@ -59,6 +60,7 @@ Game::Game(fw::FWCore& fwCore)
     CameraPos = vec2(250, 250);
     ProjScale = vec2(1/25.0f, 1/25.0f);
     
+  
 }
 
 Game::~Game()
@@ -113,8 +115,9 @@ void Game::Init()
     m_pTileMapLevel2 = new TileMap(m_Meshes["Sprite"], m_pBasicShader, m_pTexture,2);
 
     m_pPlayer = new Player(m_Meshes["Sprite"], m_pBasicShader, m_pTexture, vec2(225, 250), m_pPlayerController); //Spawning offset on the x for debug purposes
-    m_pEnemy = new Enemy(m_Meshes["Sprite"], m_pBasicShader, m_pEnemyTexture, vec2(150, 250)); //Spawning offset on the x for debug purposes
+    m_pEnemy = new Enemy(m_Meshes["Sprite"], m_pBasicShader, m_pEnemyTexture, vec2(150, 250), m_pTileMapLevel2); //Spawning offset on the x for debug purposes
 
+    PathFinder* path = new PathFinder(m_pTileMapLevel2);
 }
 
 void Game::OnEvent(fw::Event* pEvent)

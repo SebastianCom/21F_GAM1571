@@ -20,7 +20,7 @@ TileMap::TileMap(fw::Mesh* mesh, fw::ShaderProgram* shader, fw::Texture* texture
 	 m_TileSizeY = int(m_Scale.y) * m_Height;
 
 
-	 for (int i = 0; i < MaxTiles; i++) //2D to World
+	 for (int i = 0; i < MaxTiles; i++) 
 	 {
 		 float x = i % m_Width * (m_TileSizeX);
 		 float y = i / m_Width * (m_TileSizeY);
@@ -55,6 +55,19 @@ void TileMap::Draw(fw::vec2 camPos, fw::vec2 projScale)
 
 
 //------------------------------My Functions-----------------------------------------------------
+
+bool TileMap::IsWalkableAtLocation(int x, int y)
+{
+
+	int index = y * m_pSpriteSheet->GetSheetWidth() + x;
+
+	if (m_pTileProperties[index].Walkable == true)
+	{
+		return false;
+	}
+	else
+	return true;
+}
 
 unsigned char TileMap::GetTile(int index)
 {

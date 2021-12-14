@@ -39,6 +39,9 @@ public:
 
 	int GetTileSize() { return m_TileSizeX; }
 	int GetTileMapWidth() { return m_Width; }
+	int GetTileMapHeight() { return m_Height; }
+
+	bool IsWalkableAtLocation(int x, int y);
 
 	unsigned char GetTile(int index);
 	TileProperties GetTileProperties(char tile);
