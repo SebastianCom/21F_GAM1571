@@ -13,24 +13,17 @@ TileMap::TileMap(fw::Mesh* mesh, fw::ShaderProgram* shader, fw::Texture* texture
 	 pTiles = new unsigned char [long long(m_Height) * m_Width]; //need 8 bytes and it would not allow me to cast to a pointed
 	 pReversedTiles = new unsigned char [long long(m_Height) * m_Width]; //need 8 bytes and it would not allow me to cast to a pointed
 	 SetLayout();
-	 m_2DLayout;
 	 m_WorldLayout;
 	 m_Scale = fw::vec2(5,5);
 	 m_pSpriteSheet = new fw::SpriteSheet();
-	 m_TileSize = int(m_Scale.x) * m_Height;
+	 m_TileSizeX = int(m_Scale.x) * m_Height;
+	 m_TileSizeY = int(m_Scale.y) * m_Height;
 
 
-	 for (int i = 0; i < MaxTiles; i++) //1D to 2D
-	 {
-		 float x = float(i % m_Width);
-		 float y = float(i / m_Width);
-
-		 m_2DLayout.push_back(fw::vec2(x,y));
-	 }
 	 for (int i = 0; i < MaxTiles; i++) //2D to World
 	 {
-		 float x = m_2DLayout[i].x * (m_TileSize);
-		 float y = m_2DLayout[i].y * (m_TileSize);
+		 float x = i % m_Width * (m_TileSizeX);
+		 float y = i / m_Width * (m_TileSizeY);
 		 m_WorldLayout.push_back(fw::vec2(x, y)); 
 	 }
 
@@ -53,7 +46,7 @@ void TileMap::Draw(fw::vec2 camPos, fw::vec2 projScale)
 	int sheetWidth = m_pSpriteSheet->GetSheetWidth();
 	for (int i = 0; i < MaxTiles; i++)
 	{	
-		m_pMesh->Draw(m_pShader, m_pTexture, m_Scale, m_WorldLayout[i], 0.0f, camPos, projScale, float(sheetWidth), GetUVScale(pTiles[i]), GetUVOffset(pTiles[i]));
+		m_pMesh->Draw(m_pShader, m_pTexture, m_Scale, m_WorldLayout[i], 0.0f, camPos, projScale, GetUVScale(pTiles[i]), GetUVOffset(pTiles[i]));
 	}
 	
 	//Reminder Coder
@@ -188,66 +181,22 @@ void TileMap::SetProperites()
 }
 
 
-fw::vec2 TileMap::GetUVScale(unsigned char pTiles)
+fw::vec2 TileMap::GetUVScale(unsigned char Tiles)
 {
 	fw::vec2 uvScale = fw::vec2(0, 0);
 
-	if (pTiles == Brick)
-	{
-		uvScale = m_pTileProperties[Brick].m_uvScale;
-	}
-	else if (pTiles == BoxRed)
-	{
-		uvScale = m_pTileProperties[BoxRed].m_uvScale;
-	}
-	else if (pTiles == BoxBlue)
-	{
-		uvScale = m_pTileProperties[BoxBlue].m_uvScale;
-	}
-	else if (pTiles == BoxGreen)
-	{
-		uvScale = m_pTileProperties[BoxGreen].m_uvScale;
-	}
-	else if (pTiles == Ground)
-	{
-		uvScale = m_pTileProperties[Ground].m_uvScale;
-	}
-	else if (pTiles == Empty)
-	{
-		uvScale = m_pTileProperties[Empty].m_uvScale;
-	}
+	uvScale = m_pTileProperties[Tiles].m_uvScale;
+
 	return uvScale;
 }
 
-fw::vec2 TileMap::GetUVOffset(unsigned char pTiles)
+fw::vec2 TileMap::GetUVOffset(unsigned char Tiles)
 {
 
 	fw::vec2 uvOffset = fw::vec2(0, 0);
 
-	if (pTiles == Brick)
-	{
-		uvOffset = m_pTileProperties[Brick].m_uvOffset;
-	}
-	else if (pTiles == BoxRed)
-	{
-		uvOffset = m_pTileProperties[BoxRed].m_uvOffset;
-	}
-	else if (pTiles == BoxBlue)
-	{
-		uvOffset = m_pTileProperties[BoxBlue].m_uvOffset;
-	}
-	else if (pTiles == BoxGreen)
-	{
-		uvOffset = m_pTileProperties[BoxGreen].m_uvOffset;
-	}
-	else if (pTiles == Ground)
-	{
-		uvOffset = m_pTileProperties[Ground].m_uvOffset;
-	}
-	else if (pTiles == Empty)
-	{
-		uvOffset = m_pTileProperties[Empty].m_uvOffset;
-	}
+	uvOffset = m_pTileProperties[Tiles].m_uvOffset;
+
 	return uvOffset;
 }
 

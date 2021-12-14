@@ -36,7 +36,7 @@ void Player::Draw(fw::vec2 camPos, fw::vec2 projScale)
     fw::vec2 uvOffset = m_pSpriteSheet->GetSpriteInfo(m_CurrentSprite).UVOffset;
     fw::vec2 uvScale = m_pSpriteSheet->GetSpriteInfo(m_CurrentSprite).UVScale;
    
-    m_pMesh->Draw(m_pShader, m_pTexture, m_PlayerScale, m_Position, 0.0f, camPos, projScale, float(sheetWidth), uvScale, uvOffset);
+    m_pMesh->Draw(m_pShader, m_pTexture, m_PlayerScale, m_Position, 0.0f, camPos, projScale, uvScale, uvOffset);
 }
 
 

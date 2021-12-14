@@ -34,10 +34,10 @@ public:
 
 	void Draw(fw::vec2 camPos, fw::vec2 projScale);
 
-	fw::vec2 GetUVScale(unsigned char pTiles);
-	fw::vec2 GetUVOffset(unsigned char pTiles);
+	fw::vec2 GetUVScale(unsigned char Tiles);
+	fw::vec2 GetUVOffset(unsigned char Tiles);
 
-	int GetTileSize() { return m_TileSize; }
+	int GetTileSize() { return m_TileSizeX; }
 	int GetTileMapWidth() { return m_Width; }
 
 	unsigned char GetTile(int index);
@@ -53,7 +53,6 @@ private:
 	const int MaxTiles = 100;
 	unsigned char* pTiles; 
 	unsigned char* pReversedTiles; 
-	std::vector<fw::vec2> m_2DLayout;
 	std::vector<fw::vec2> m_WorldLayout;
 	fw::vec2 m_Scale;
 	fw::SpriteSheet* m_pSpriteSheet;
@@ -62,7 +61,8 @@ private:
 	fw::Texture* m_pTexture;
 	TileProperties* m_pTileProperties;
 	int m_ElevationLevel;
-	int m_TileSize;
+	int m_TileSizeX;
+	int m_TileSizeY;
 
 	
 };

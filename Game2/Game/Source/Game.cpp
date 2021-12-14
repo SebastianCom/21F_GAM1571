@@ -5,11 +5,38 @@
 #include "Player.h"
 #include "TileMap.h"
 #include "../Libraries/rapidjson/document.h"
+#include <functional>
+
+//int Add(int a, int b)
+//{
+//    return a + b;
+//}
+//
+//int Sub(int a, int b)
+//{
+//    return a - b;
+//}
+
+
+typedef int (*MathOperator)(int a, int b);
+//typedef std::function<int(int, int)> MathOperator;
 
 //No warnings on rebuild 11/27 5:03pm
 Game::Game(fw::FWCore& fwCore)
     : m_FWCore( fwCore )
 {
+
+    //MathOperator op = Add;
+
+    //int a = op(2, 3);
+
+    //op = Sub;
+
+    //int b = op(7, 3);
+
+
+    //int bp = 1;
+
 
     // Init members.
     m_pImGuiManager = nullptr;

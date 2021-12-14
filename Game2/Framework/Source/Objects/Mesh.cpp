@@ -50,7 +50,7 @@ void Mesh::SetupAttribute(ShaderProgram* pShader, char* name, int size, GLenum t
 }
 
 void Mesh::Draw(ShaderProgram* pShader, Texture* pTexture, fw::vec2 scale, vec2 pos, float time, 
-                fw::vec2 camPos, fw::vec2 projScale, float sheetWidth, fw::vec2 uvScale, 
+                fw::vec2 camPos, fw::vec2 projScale, fw::vec2 uvScale, 
                 fw::vec2 uvOffset)
 {
     // Setup uniforms.
@@ -61,7 +61,6 @@ void Mesh::Draw(ShaderProgram* pShader, Texture* pTexture, fw::vec2 scale, vec2 
     SetupUniform( pShader, "u_Time", time );
     SetupUniform( pShader, "u_CameraPosition", camPos );
     SetupUniform( pShader, "u_ProjectionScale", projScale );
-    SetupUniform( pShader, "u_SpriteSheetWidth", sheetWidth );
     SetupUniform( pShader, "u_UVScale", uvScale );
     SetupUniform( pShader, "u_UVOffset", uvOffset );
 
