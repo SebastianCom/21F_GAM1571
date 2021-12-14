@@ -7,7 +7,7 @@
 Enemy::Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, TileMap* pMap)
     : GameObject( pMesh, pShader, pTexture, pos, 2)
 {
-    m_EnemyScale = fw::vec2(4, 4);
+    m_EnemyScale = fw::vec2(5, 5);
     m_Speed = 50.0f;
     m_Sprite = m_Sprites["Enemy Blue"];
     m_Position = pos;
@@ -73,7 +73,7 @@ void Enemy::MoveTo(int index)
         m_Position.x -= 50;
     else if (m_Position.y < newPosition.y)
         m_Position.y += 50;
-    else if (m_Position.y < newPosition.y)
+    else if (m_Position.y > newPosition.y)
         m_Position.y -= 50;
 }
 

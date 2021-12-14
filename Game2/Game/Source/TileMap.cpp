@@ -59,14 +59,16 @@ void TileMap::Draw(fw::vec2 camPos, fw::vec2 projScale)
 bool TileMap::IsWalkableAtLocation(int x, int y)
 {
 
-	int index = y * m_pSpriteSheet->GetSheetWidth() + x;
+	int index = y * m_Width + x;
 
-	if (m_pTileProperties[index].Walkable == true)
+	unsigned char CurrentTile = GetTile(index);
+
+	if (m_pTileProperties[CurrentTile].Walkable == true)
 	{
-		return false;
+		return true;
 	}
 	else
-	return true;
+	return false;
 }
 
 unsigned char TileMap::GetTile(int index)
@@ -111,8 +113,8 @@ void TileMap::SetLayout()
 		Brick, Empty, Empty,   Empty, Empty, Brick, Empty,    Empty, Empty, Brick,
 		Brick, Empty, Empty,   Empty, Empty, Empty, Empty,    Empty, Empty, Brick,
 		Brick, Empty, Empty,   Empty, Empty, Empty, Empty,    Empty, Brick, Brick,
-		Brick, Empty, Empty,   Empty, Empty, Empty, BoxGreen, Empty, Empty, Brick, //pushed after here
-		Brick, Empty, Empty,   Empty, Empty, Empty, Empty,    Empty, Empty, Brick,
+		Brick, Empty, Empty,   Empty, Empty, Empty, Brick,	  Empty, Empty, Brick, //pushed after here
+		Brick, Empty, Empty,   Empty, Empty, Empty, Brick,    Empty, Empty, Brick,
 		Brick, Empty, BoxBlue, Brick, Empty, Empty, Empty,    Empty, Empty, Brick,
 		Brick, Empty, Empty,   Brick, Empty, Empty, Empty,    Empty, Empty, Brick,
 		Brick, Brick, Brick,   Brick, Brick, Brick, Brick,    Brick, Brick, Brick,
