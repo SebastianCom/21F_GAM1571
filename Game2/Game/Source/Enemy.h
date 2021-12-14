@@ -20,6 +20,10 @@ public:
 
     unsigned char GetDirection() { return m_EnemyDirection; }
 
+    void MoveTo(int index);
+    bool IsAtLocation(int index);
+    void StartPathFind();
+
 protected:
 
     fw::vec2 m_EnemyScale;
@@ -28,4 +32,7 @@ protected:
     unsigned char m_EnemyDirection;
     TileMap* pTileMap;
     PathFinder* EnemyPathFinder;
+    int NextTileIndex;
+    bool PathFound;
+    fw::vec2 EndGoal;
 };

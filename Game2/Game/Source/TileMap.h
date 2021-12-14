@@ -37,7 +37,7 @@ public:
 	fw::vec2 GetUVScale(unsigned char Tiles);
 	fw::vec2 GetUVOffset(unsigned char Tiles);
 
-	int GetTileSize() { return m_TileSizeX; }
+	fw::vec2 GetTileSize() { return fw::vec2(m_TileSizeX,m_TileSizeY); }
 	int GetTileMapWidth() { return m_Width; }
 	int GetTileMapHeight() { return m_Height; }
 

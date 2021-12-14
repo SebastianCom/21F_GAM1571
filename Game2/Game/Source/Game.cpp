@@ -166,8 +166,8 @@ void Game::CheckForCollisions()
     
     for (int i = 0; i < playerPos.size(); i++)
     {
-        float x = playerPos[i].x / m_pTileMapLevel2->GetTileSize();
-        float y = playerPos[i].y / m_pTileMapLevel2->GetTileSize();
+        float x = playerPos[i].x / m_pTileMapLevel2->GetTileSize().x;
+        float y = playerPos[i].y / m_pTileMapLevel2->GetTileSize().y;
         int playerIndex = int(round(y) * m_pTileMapLevel2->GetTileMapWidth() + round(x)); //floor gets top right
         unsigned char CurrentTile = m_pTileMapLevel2->GetTile(playerIndex);
         walkable = m_pTileMapLevel2->GetTileProperties(CurrentTile).Walkable;

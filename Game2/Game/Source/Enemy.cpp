@@ -15,11 +15,11 @@ Enemy::Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture,
 
     EnemyPathFinder = new PathFinder(pTileMap);
    
-    bool found = EnemyPathFinder->FindPath((m_Position / pTileMap->GetTileSize()), 8, 8);
-    if(found)
-    int temp = EnemyPathFinder->GetPath(8, 8);
-
-
+    NextTileIndex = 0;
+    
+    EndGoal = fw::vec2(8, 8);
+    PathFound = false;
+    StartPathFind();
 }
 
 Enemy::~Enemy()
@@ -29,7 +29,15 @@ Enemy::~Enemy()
 
 void Enemy::Update(float deltaTime)
 {  
-
+   
+    if (PathFound)
+    {
+        int temp = EnemyPathFinder->GetPath(EndGoal.x, EndGoal.y);
+        if (IsAtLocation(temp) == false)
+            MoveTo(temp);
+        else
+            StartPathFind();
+    }
 }
 
 void Enemy::Draw(fw::vec2 camPos, fw::vec2 projScale)
@@ -52,4 +60,38 @@ fw::vec2 Enemy::GetPosition()
 void Enemy::SetPosition(fw::vec2 pos)
 {
     m_Position = pos;
+}
+
+void Enemy::MoveTo(int index)
+{
+    float x =  index % pTileMap->GetTileMapWidth() * (pTileMap->GetTileSize().x);
+    float y =  index / pTileMap->GetTileMapWidth() * (pTileMap->GetTileSize().y);
+    fw::vec2 newPosition = fw::vec2(x, y);
+    if(m_Position.x < newPosition.x)
+        m_Position.x += 50;
+    else if (m_Position.x > newPosition.x)
+        m_Position.x -= 50;
+    else if (m_Position.y < newPosition.y)
+        m_Position.y += 50;
+    else if (m_Position.y < newPosition.y)
+        m_Position.y -= 50;
+}
+
+bool Enemy::IsAtLocation(int index)
+{
+    float x = index % pTileMap->GetTileMapWidth() * (pTileMap->GetTileSize().x);
+    float y = index / pTileMap->GetTileMapWidth() * (pTileMap->GetTileSize().y);
+    fw::vec2 newPosition = fw::vec2(x, y);
+
+    if (m_Position == newPosition)
+    {
+        return true;
+    }
+    else
+        return false;
+}
+
+void Enemy::StartPathFind()
+{
+    PathFound = EnemyPathFinder->FindPath((m_Position / pTileMap->GetTileSize()), EndGoal.x, EndGoal.y);
 }

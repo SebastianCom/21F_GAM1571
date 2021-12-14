@@ -110,8 +110,10 @@ int PathFinder::GetPath(int ex, int ey)
         path[(path.size() - i) - 1] = temp;
     }
 
-
-    return path[0];
+    if (path.size() > 1)
+        return path[1];
+    else
+        return path[0];
 }
 
 
