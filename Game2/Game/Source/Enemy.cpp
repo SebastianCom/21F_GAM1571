@@ -202,3 +202,12 @@ void Enemy::RandomizeEndGoal()
     EndGoal.x = int(RandomFloat(1.0f, 9.0f));
     EndGoal.y = int(RandomFloat(1.0f, 9.0f));
 }
+
+void Enemy::ResetState()
+{
+    m_CurrentAIState = (AIStateFunction)&Enemy::AIState_Idle;
+    PathFound = false;
+    Atlocation = false;
+    IdleTimer = 1;
+    NextTileIndex = 0;
+}

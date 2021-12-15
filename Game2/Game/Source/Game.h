@@ -24,6 +24,8 @@ public:
 
     void CheckForCollisions();
 
+    void Reset();
+
 protected:
     fw::FWCore& m_FWCore;
 
@@ -48,5 +50,10 @@ protected:
     fw::vec2 ProjScale;
     
     fw::vec2 m_SafePosition;
+
+    //Reset variables
+    fw::vec2 PlayerStartingPos;
+    fw::vec2 EnemyStartingPos;
+    fw::vec2 Enemy2StartingPos;
 
 };

@@ -35,6 +35,8 @@ public:
     void AIState_Chasing(float deltaTime);
     void RandomizeEndGoal();
 
+    void ResetState();
+
 protected:
 
     fw::vec2 m_EnemyScale;

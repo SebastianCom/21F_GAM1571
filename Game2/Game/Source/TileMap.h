@@ -48,6 +48,8 @@ public:
 
 	void SwapTiles(char tile, char newtile);
 
+	void Reset();
+
 private:
 
 

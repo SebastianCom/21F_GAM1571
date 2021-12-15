@@ -88,6 +88,11 @@ void TileMap::SwapTiles(char tile, char newtile)
 	pTiles[newtile] = temp;
 }
 
+void TileMap::Reset()
+{
+	SetLayout();
+}
+
 
 
 

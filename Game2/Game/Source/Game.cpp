@@ -60,6 +60,10 @@ Game::Game(fw::FWCore& fwCore)
 
     CameraPos = vec2(250, 250);
     ProjScale = vec2(1/25.0f, 1/25.0f);
+
+   PlayerStartingPos = fw::vec2(0,0);
+   EnemyStartingPos = fw::vec2(0, 0);
+   Enemy2StartingPos = fw::vec2(0, 0);
     
   
 }
@@ -121,6 +125,11 @@ void Game::Init()
     m_pEnemy2 = new Enemy(m_Meshes["Sprite"], m_pBasicShader, m_pEnemyTexture, vec2(400, 400), m_pTileMapLevel2, m_pPlayer,1); //Spawning offset on the x for debug purposes
 
     PathFinder* path = new PathFinder(m_pTileMapLevel2);
+
+    //m_TileMapBackUp = m_pTileMapLevel2->GetMap();
+    PlayerStartingPos = m_pPlayer->GetPosition();
+    EnemyStartingPos = m_pEnemy->GetPosition();
+    Enemy2StartingPos = m_pEnemy2->GetPosition();
 }
 
 void Game::OnEvent(fw::Event* pEvent)
@@ -145,6 +154,11 @@ void Game::Draw()
 {
     glClearColor( 0.0f, 0.0f, 0.2f, 1.0f );
     glClear( GL_COLOR_BUFFER_BIT );
+    
+    if (ImGui::Button("Reset"))
+    {
+        Reset();
+    }
 
     m_pTileMapGround->Draw(CameraPos, ProjScale);
     m_pTileMapLevel2->Draw(CameraPos, ProjScale);
@@ -200,4 +214,14 @@ void Game::CheckForCollisions()
 
 
 
+}
+
+void Game::Reset()
+{
+    m_pTileMapLevel2->Reset();
+    m_pPlayer->SetPosition(PlayerStartingPos);
+    m_pEnemy->SetPosition(EnemyStartingPos);
+    m_pEnemy2->SetPosition(Enemy2StartingPos);
+    m_pEnemy->ResetState();
+    m_pEnemy2->ResetState();
 }
