@@ -3,6 +3,7 @@
 #include "GameObject.h"
 
 class PlayerController;
+class TileMap;
 
 enum Direction
 {
@@ -10,12 +11,13 @@ enum Direction
     Down,
     Left,
     Right,
+    NumDirections,
 };
 
 class Player : public GameObject
 {
 public:
-    Player(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, PlayerController* pController);
+    Player(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, PlayerController* pController, TileMap* pMap);
     virtual ~Player();
 
     virtual void Update(float deltaTime) override;
@@ -29,6 +31,9 @@ public:
 
     unsigned char GetDirection() { return m_PlayerDirection; }
 
+    void PullBlocks(int x, int y); // REMINDER: i want coords not world 
+    void PushBlocks(int x, int y);
+
 protected:
     PlayerController* m_pPlayerController;
     fw::vec2 m_PlayerScale;
@@ -36,4 +41,5 @@ protected:
     std::string m_CurrentSprite;
     float m_AnimTimer;
     unsigned char m_PlayerDirection;
+    TileMap* m_pTileMap;
 };

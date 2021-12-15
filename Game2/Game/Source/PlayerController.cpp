@@ -7,6 +7,8 @@ PlayerController::PlayerController()
     m_Left = false;
     m_Up = false;
     m_Down = false;
+    m_Push = false;
+    m_Pull = false;
 }
 
 PlayerController::~PlayerController()
@@ -38,6 +40,14 @@ void PlayerController::OnEvent(fw::Event* pEvent)
                 {
                     m_Right = true;
                 }
+                if (pInputEvent->GetID() == 'Q')
+                {
+                    m_Push = true;
+                }
+                if (pInputEvent->GetID() == 'E')
+                {
+                    m_Pull = true;
+                }
             }
 
             if( pInputEvent->GetInputState() == fw::InputState::Released )
@@ -57,6 +67,14 @@ void PlayerController::OnEvent(fw::Event* pEvent)
                 if( pInputEvent->GetID() == 'D' || pInputEvent->GetID() == VK_RIGHT )
                 {
                     m_Right = false;
+                }
+                if (pInputEvent->GetID() == 'Q')
+                {
+                    m_Push = false;
+                }
+                if (pInputEvent->GetID() == 'E')
+                {
+                    m_Pull = false;
                 }
             }
         }

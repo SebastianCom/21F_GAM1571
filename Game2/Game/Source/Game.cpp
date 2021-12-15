@@ -114,7 +114,7 @@ void Game::Init()
     m_pTileMapGround = new TileMap(m_Meshes["Sprite"], m_pBasicShader, m_pTexture,1);
     m_pTileMapLevel2 = new TileMap(m_Meshes["Sprite"], m_pBasicShader, m_pTexture,2);
 
-    m_pPlayer = new Player(m_Meshes["Sprite"], m_pBasicShader, m_pTexture, vec2(150, 300), m_pPlayerController); //Spawning offset on the x for debug purposes
+    m_pPlayer = new Player(m_Meshes["Sprite"], m_pBasicShader, m_pTexture, vec2(150, 300), m_pPlayerController, m_pTileMapLevel2); //Spawning offset on the x for debug purposes
     //m_pEnemy = new Enemy(m_Meshes["Sprite"], m_pBasicShader, m_pEnemyTexture, vec2(100, 250), m_pTileMapLevel2, m_pPlayer); //Spawning offset on the x for debug purposes
 
     PathFinder* path = new PathFinder(m_pTileMapLevel2);
@@ -171,37 +171,37 @@ void Game::CheckForCollisions()
         walkable = m_pTileMapLevel2->GetTileProperties(CurrentTile).Walkable;
         bool moveable = m_pTileMapLevel2->GetTileProperties(CurrentTile).Moveable;
 
-        if (moveable)//move check
-        {
-            if (m_pPlayer->GetDirection() == Right)
-            {
-                unsigned char newIndex = playerIndex + 1;
-                unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
-                if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
-                    m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
-            }
-            if (m_pPlayer->GetDirection() == Left)
-            {
-                unsigned char newIndex = playerIndex - 1;
-                unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
-                if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
-                    m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
-            }
-            if (m_pPlayer->GetDirection() == Up)
-            {
-                unsigned char newIndex = playerIndex + 10;
-                unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
-                if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
-                    m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
-            }
-            if (m_pPlayer->GetDirection() == Down)
-            {
-                unsigned char newIndex = playerIndex - 10;
-                unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
-                if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
-                    m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
-            }
-        }
+        //if (moveable)//move check
+        //{
+        //    if (m_pPlayer->GetDirection() == Right)
+        //    {
+        //        unsigned char newIndex = playerIndex + 1;
+        //        unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
+        //        if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
+        //            m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
+        //    }
+        //    if (m_pPlayer->GetDirection() == Left)
+        //    {
+        //        unsigned char newIndex = playerIndex - 1;
+        //        unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
+        //        if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
+        //            m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
+        //    }
+        //    if (m_pPlayer->GetDirection() == Up)
+        //    {
+        //        unsigned char newIndex = playerIndex + 10;
+        //        unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
+        //        if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
+        //            m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
+        //    }
+        //    if (m_pPlayer->GetDirection() == Down)
+        //    {
+        //        unsigned char newIndex = playerIndex - 10;
+        //        unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
+        //        if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
+        //            m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
+        //    }
+        //}
         if (!walkable)
         {
             break;

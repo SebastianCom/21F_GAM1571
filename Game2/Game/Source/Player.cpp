@@ -1,10 +1,12 @@
 #include "Framework.h"
 #include "Player.h"
 #include "PlayerController.h"
+#include "TileMap.h"
 
-Player::Player(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, PlayerController* pController)
+Player::Player(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, PlayerController* pController, TileMap* pMap)
     : GameObject( pMesh, pShader, pTexture, pos, 1)
     , m_pPlayerController( pController )
+    , m_pTileMap(pMap)
 {
     m_PlayerScale = fw::vec2(5, 5);
     m_Speed = 50.0f;
@@ -22,12 +24,22 @@ Player::~Player()
 void Player::Update(float deltaTime)
 {  
 
-
+    if (m_pPlayerController->IsPushHeld())
+    {
+        PushBlocks(round(m_Position.x / m_pTileMap->GetTileSize().x), round(m_Position.y / m_pTileMap->GetTileSize().x));
+    }
+    else if (m_pPlayerController->IsPullHeld())
+    {
+        PullBlocks(round(m_Position.x / m_pTileMap->GetTileSize().x), round(m_Position.y / m_pTileMap->GetTileSize().x));
+    }
 
     MoveTheFucker(deltaTime);
 
-    ImGui::SliderFloat( "X", &m_Position.x, 0, 450 );
-    ImGui::SliderFloat( "Y", &m_Position.y, 0, 450 );
+    float x = round(m_Position.x / m_pTileMap->GetTileSize().x);
+    float y = round(m_Position.y / m_pTileMap->GetTileSize().x);
+
+    ImGui::SliderFloat( "X", &x, 0, 10 );
+    ImGui::SliderFloat( "Y", &y, 0, 10 );
 }
 
 void Player::Draw(fw::vec2 camPos, fw::vec2 projScale)
@@ -41,8 +53,6 @@ void Player::Draw(fw::vec2 camPos, fw::vec2 projScale)
 
 
 //------------------------------ My Functions ------------------------------------------------------
-//I do this because it helps me if i seperate functions i made from the draw and update functions.
-//I get that for some i made the draw function but i still lie to divide my functions like this.
 
 void Player::MoveTheFucker(float deltaTime)
 {
@@ -164,4 +174,39 @@ fw::vec2 Player::GetPosition()
 void Player::SetPosition(fw::vec2 pos)
 {
     m_Position = pos;
+}
+
+void Player::PullBlocks(int x, int y)
+{
+
+}
+
+void Player::PushBlocks(int x, int y)
+{
+    for (int i = 0; i < NumDirections; i++) //up,down,left,right in that order
+    {
+        if (i == Up)
+        {
+            for (int i = y; y < m_pTileMap->GetTileMapHeight(); i ++)
+            {
+               char tile = m_pTileMap->GetTile((i * m_pTileMap->GetTileMapWidth()) + x);
+                if (m_pTileMap->GetTileProperties(tile).Moveable == true)
+                {
+                    int bp = 1;
+                }
+            }
+        }
+        if (i == Down)
+        {
+
+        }
+        if (i == Left)
+        {
+
+        }
+        if (i == Right)
+        {
+
+        }
+    }
 }
