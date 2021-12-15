@@ -1,10 +1,11 @@
 #include "Framework.h"
 #include "DataTypes.h"
 #include "GameObject.h"
+#include <random>
+#include <iostream>
 
 class TileMap;
 class PathFinder;
-
 
 
 class Enemy : public GameObject
@@ -31,6 +32,7 @@ public:
     void AIState_Idle(float deltaTime);
     void AIState_Searching(float deltaTime);
     void AIState_Chasing(float deltaTime);
+    void RandomizeEndGoal();
 
 protected:
 
@@ -45,4 +47,6 @@ protected:
     fw::vec2 EndGoal;
 
     AIStateFunction m_CurrentAIState;
+    float IdleTimer;
+    bool Atlocation;
 };

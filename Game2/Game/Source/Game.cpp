@@ -132,9 +132,7 @@ void Game::Update(float deltaTime)
     m_pPlayer->Update(deltaTime);
     m_pEnemy->Update(deltaTime);
 
-    CheckForCollisions();
-
-   
+    CheckForCollisions(); 
 
 
 }

@@ -3,6 +3,15 @@
 #include "TileMap.h"
 #include "PathFinder.h"
 
+std::random_device seed;
+std::mt19937 mersenneTwister(seed());
+
+float RandomFloat(float min, float max) //move to random cpp and h
+{
+    std::uniform_real_distribution<float> distribution(min, max);
+    return distribution(mersenneTwister);
+}
+
 
 Enemy::Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, TileMap* pMap)
     : GameObject( pMesh, pShader, pTexture, pos, 2)
@@ -17,11 +26,13 @@ Enemy::Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture,
    
     NextTileIndex = 0;
     
-    EndGoal = fw::vec2(8, 8);
+   
     PathFound = false;
     StartPathFind();
    
     m_CurrentAIState = (AIStateFunction)&Enemy::AIState_Idle;
+    IdleTimer = 2;
+    Atlocation = false;
 
 }
 
@@ -34,14 +45,6 @@ void Enemy::Update(float deltaTime)
 {  
     (this->*m_CurrentAIState)(deltaTime);
    
-    if (PathFound)
-    {
-        int index = EnemyPathFinder->GetPath(int(EndGoal.x), int(EndGoal.y));
-        if (IsAtLocation(index) == false)
-            MoveTo(index, deltaTime);
-        else
-            StartPathFind();
-    }
 }
 
 void Enemy::Draw(fw::vec2 camPos, fw::vec2 projScale)
@@ -102,6 +105,8 @@ bool Enemy::IsAtLocation(int index)
         return false;
 }
 
+
+
 void Enemy::StartPathFind()
 {
     PathFound = EnemyPathFinder->FindPath((m_Position / pTileMap->GetTileSize()), int(EndGoal.x), int(EndGoal.y));
@@ -109,13 +114,58 @@ void Enemy::StartPathFind()
 
 void Enemy::AIState_Idle(float deltaTime)
 {
-
+    if (IdleTimer > 0)
+    {
+        IdleTimer -= deltaTime;
+    }
+    else if (!Atlocation)
+    {
+        m_CurrentAIState = (AIStateFunction)&Enemy::AIState_Searching;
+        IdleTimer = 2;
+    }
+    else if (Atlocation)
+    {
+        Atlocation = false;
+        //m_CurrentAIState = (AIStateFunction)&Enemy::AIState_Chasing;
+        m_CurrentAIState = (AIStateFunction)&Enemy::AIState_Searching;
+        IdleTimer = 2;
+    }
 }
 
 void Enemy::AIState_Searching(float deltaTime)
 {
+    if (PathFound && Atlocation == false)
+    {
+        int index = EnemyPathFinder->GetPath(int(EndGoal.x), int(EndGoal.y));
+        if (IsAtLocation(index) == false)
+        {
+            MoveTo(index, deltaTime);
+            if (IsAtLocation(EndGoal.y * pTileMap->GetTileMapWidth() + EndGoal.x))
+                Atlocation = true;
+            else
+                Atlocation = false;
+        }
+        else
+            StartPathFind();
+    }
+    else if (!PathFound)
+    {
+        RandomizeEndGoal();
+        StartPathFind();
+    }
+    if (Atlocation)
+    {
+        m_CurrentAIState = (AIStateFunction)&Enemy::AIState_Idle;
+        PathFound = false;
+    }
 }
 
 void Enemy::AIState_Chasing(float deltaTime)
 {
+}
+
+void Enemy::RandomizeEndGoal()
+{
+    EndGoal.x = int(RandomFloat(1.0f, 9.0f));
+    EndGoal.y = int(RandomFloat(1.0f, 9.0f));
 }
