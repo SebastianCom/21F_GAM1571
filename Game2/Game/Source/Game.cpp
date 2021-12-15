@@ -154,12 +154,17 @@ void Game::Draw()
 void Game::CheckForCollisions()
 {
     //Known bug on moveable object if you hold one direction and tap another
-    //i had it using a middle point but it didnt look nice and did not colide on corners 
+    //i had to change this or else the player could be on 2 tiles at once caused a lot of issues with the box moving  
     std::vector<fw::vec2> playerPos;
-    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(-18, 0)); //TL //18 felt better than 20
-    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(18, 0));  //TR
-    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(-18, -20)); //BL
-    playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(18, -20)); //BR
+    if(m_pPlayer->GetDirection() == Up)
+        playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(0, 20));
+    else if(m_pPlayer->GetDirection() == Down)
+        playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(0, -20));
+    else if(m_pPlayer->GetDirection() == Right)
+        playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(18, 0)); 
+    else if (m_pPlayer->GetDirection() == Left)
+        playerPos.push_back(m_pPlayer->GetPosition() += fw::vec2(-18, 0)); 
+
     bool walkable = true;
     
     for (int i = 0; i < playerPos.size(); i++)
@@ -170,38 +175,6 @@ void Game::CheckForCollisions()
         unsigned char CurrentTile = m_pTileMapLevel2->GetTile(playerIndex);
         walkable = m_pTileMapLevel2->GetTileProperties(CurrentTile).Walkable;
         bool moveable = m_pTileMapLevel2->GetTileProperties(CurrentTile).Moveable;
-
-        //if (moveable)//move check
-        //{
-        //    if (m_pPlayer->GetDirection() == Right)
-        //    {
-        //        unsigned char newIndex = playerIndex + 1;
-        //        unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
-        //        if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
-        //            m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
-        //    }
-        //    if (m_pPlayer->GetDirection() == Left)
-        //    {
-        //        unsigned char newIndex = playerIndex - 1;
-        //        unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
-        //        if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
-        //            m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
-        //    }
-        //    if (m_pPlayer->GetDirection() == Up)
-        //    {
-        //        unsigned char newIndex = playerIndex + 10;
-        //        unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
-        //        if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
-        //            m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
-        //    }
-        //    if (m_pPlayer->GetDirection() == Down)
-        //    {
-        //        unsigned char newIndex = playerIndex - 10;
-        //        unsigned char newTile = m_pTileMapLevel2->GetTile(newIndex);
-        //        if (m_pTileMapLevel2->GetTileProperties(newTile).Walkable == true)
-        //            m_pTileMapLevel2->SwapTiles(playerIndex, newIndex);
-        //    }
-        //}
         if (!walkable)
         {
             break;

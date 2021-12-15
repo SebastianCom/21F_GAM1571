@@ -14,6 +14,7 @@ Player::Player(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTextur
     m_AnimTimer = 1.0f;
     m_Position = pos;
     m_PlayerDirection = Down;
+    KeyPressed = false;
 }
 
 Player::~Player()
@@ -24,15 +25,8 @@ Player::~Player()
 void Player::Update(float deltaTime)
 {  
 
-    if (m_pPlayerController->IsPushHeld())
-    {
-        PushBlocks(round(m_Position.x / m_pTileMap->GetTileSize().x), round(m_Position.y / m_pTileMap->GetTileSize().x));
-    }
-    else if (m_pPlayerController->IsPullHeld())
-    {
-        PullBlocks(round(m_Position.x / m_pTileMap->GetTileSize().x), round(m_Position.y / m_pTileMap->GetTileSize().x));
-    }
 
+    MoveTheBox();
     MoveTheFucker(deltaTime);
 
     float x = round(m_Position.x / m_pTileMap->GetTileSize().x);
@@ -166,6 +160,24 @@ void Player::MoveTheFucker(float deltaTime)
     }
 }
 
+void Player::MoveTheBox()
+{
+    if (m_pPlayerController->IsPushHeld() && !KeyPressed)
+    {
+        PushBlocks(round(m_Position.x / m_pTileMap->GetTileSize().x), round(m_Position.y / m_pTileMap->GetTileSize().x));
+        KeyPressed = true;
+    }
+    else if (m_pPlayerController->IsPullHeld() && !KeyPressed)
+    {
+        PullBlocks(round(m_Position.x / m_pTileMap->GetTileSize().x), round(m_Position.y / m_pTileMap->GetTileSize().x));
+        KeyPressed = true;
+    }
+    else if (!m_pPlayerController->IsPushHeld() && !m_pPlayerController->IsPullHeld())
+    {
+        KeyPressed = false;
+    }
+}
+
 fw::vec2 Player::GetPosition()
 {
     return m_Position;
@@ -178,7 +190,78 @@ void Player::SetPosition(fw::vec2 pos)
 
 void Player::PullBlocks(int x, int y)
 {
+    for (int i = 0; i < NumDirections; i++) //up,down,left,right in that order
+    {
+        if (i == Up)
+        {
+            for (int i = y; i < m_pTileMap->GetTileMapHeight(); i++)
+            {
+                char tile = m_pTileMap->GetTile((i * m_pTileMap->GetTileMapWidth()) + x);
+                if (m_pTileMap->GetTileProperties(tile).Moveable == true)
+                {
+                    if (i - 1 != y)
+                    {
+                        char CurrentTile = i * m_pTileMap->GetTileMapWidth() + x;
+                        char NextTile = (i - 1) * m_pTileMap->GetTileMapWidth() + x;
+                        m_pTileMap->SwapTiles(CurrentTile, NextTile);
+                    }
+                    break;
+                }
+            }
+        }
+        if (i == Down)
+        {
+            for (int i = y; i > 0; i--)
+            {
+                char tile = m_pTileMap->GetTile((i * m_pTileMap->GetTileMapWidth()) + x);
+                if (m_pTileMap->GetTileProperties(tile).Moveable == true)
+                {
+                    if (i + 1 != y)
+                    {
+                        char CurrentTile = i * m_pTileMap->GetTileMapWidth() + x;
+                        char NextTile = (i + 1) * m_pTileMap->GetTileMapWidth() + x;
+                        m_pTileMap->SwapTiles(CurrentTile, NextTile);
 
+                    }
+                    break;
+                }
+            }
+        }
+        if (i == Left)
+        {
+            for (int i = x; i > 0; i--)
+            {
+                char tile = m_pTileMap->GetTile((y * m_pTileMap->GetTileMapWidth()) + i);
+                if (m_pTileMap->GetTileProperties(tile).Moveable == true)
+                {
+                    if (i + 1 != x)
+                    {
+                        char CurrentTile = y * m_pTileMap->GetTileMapWidth() + i;
+                        char NextTile = y * m_pTileMap->GetTileMapWidth() + (i + 1);
+                        m_pTileMap->SwapTiles(CurrentTile, NextTile);
+                    }
+                    break;
+                }
+            }
+        }
+        if (i == Right)
+        {
+            for (int i = x; i < m_pTileMap->GetTileMapWidth(); i++)
+            {
+                char tile = m_pTileMap->GetTile((y * m_pTileMap->GetTileMapWidth()) + i);
+                if (m_pTileMap->GetTileProperties(tile).Moveable == true)
+                {
+                    if (i - 1 != x)
+                    {
+                        char CurrentTile = y * m_pTileMap->GetTileMapWidth() + i;
+                        char NextTile = y * m_pTileMap->GetTileMapWidth() + (i - 1);
+                        m_pTileMap->SwapTiles(CurrentTile, NextTile);
+                    }
+                    break;
+                }
+            }
+        }
+    }
 }
 
 void Player::PushBlocks(int x, int y)
@@ -187,26 +270,76 @@ void Player::PushBlocks(int x, int y)
     {
         if (i == Up)
         {
-            for (int i = y; y < m_pTileMap->GetTileMapHeight(); i ++)
+            for (int i = y; i < m_pTileMap->GetTileMapHeight(); i++)
             {
-               char tile = m_pTileMap->GetTile((i * m_pTileMap->GetTileMapWidth()) + x);
+                char tile = m_pTileMap->GetTile((i * m_pTileMap->GetTileMapWidth()) + x);
                 if (m_pTileMap->GetTileProperties(tile).Moveable == true)
                 {
-                    int bp = 1;
+                    char tile2 = m_pTileMap->GetTile(( (i+1) * m_pTileMap->GetTileMapWidth()) + x);
+                    if (m_pTileMap->GetTileProperties(tile2).Walkable)
+                    {
+                        char CurrentTile = i * m_pTileMap->GetTileMapWidth() + x;
+                        char NextTile = (i + 1) * m_pTileMap->GetTileMapWidth() + x;
+                        m_pTileMap->SwapTiles(CurrentTile, NextTile);
+                    }
+                    break;
                 }
             }
         }
         if (i == Down)
         {
+            for (int i = y; i > 0; i--)
+            {
+                char tile = m_pTileMap->GetTile((i * m_pTileMap->GetTileMapWidth()) + x);
+                if (m_pTileMap->GetTileProperties(tile).Moveable == true)
+                {
+                    char tile2 = m_pTileMap->GetTile(((i - 1) * m_pTileMap->GetTileMapWidth()) + x);
+                    if (m_pTileMap->GetTileProperties(tile2).Walkable)
+                    {
+                        char CurrentTile = i * m_pTileMap->GetTileMapWidth() + x;
+                        char NextTile = (i - 1) * m_pTileMap->GetTileMapWidth() + x;
+                        m_pTileMap->SwapTiles(CurrentTile, NextTile);
 
+                    }
+                    break;
+                }
+            }
         }
         if (i == Left)
         {
-
+            for (int i = x; i > 0; i--)
+            {
+                char tile = m_pTileMap->GetTile((y * m_pTileMap->GetTileMapWidth()) + i);
+                if (m_pTileMap->GetTileProperties(tile).Moveable == true)
+                {
+                    char tile2 = m_pTileMap->GetTile(( y * m_pTileMap->GetTileMapWidth()) + (i-1));
+                    if (m_pTileMap->GetTileProperties(tile2).Walkable)
+                    {
+                        char CurrentTile = y * m_pTileMap->GetTileMapWidth() + i;
+                        char NextTile = y * m_pTileMap->GetTileMapWidth() + (i - 1);
+                        m_pTileMap->SwapTiles(CurrentTile, NextTile);
+                    }
+                    break;
+                }
+            }
         }
         if (i == Right)
         {
-
+            for (int i = x; i < m_pTileMap->GetTileMapWidth(); i++)
+            {
+                char tile = m_pTileMap->GetTile((y * m_pTileMap->GetTileMapWidth()) + i);
+                if (m_pTileMap->GetTileProperties(tile).Moveable == true)
+                {
+                    char tile2 = m_pTileMap->GetTile((y * m_pTileMap->GetTileMapWidth()) + (i + 1));
+                    if (m_pTileMap->GetTileProperties(tile2).Walkable)
+                    {
+                        char CurrentTile = y * m_pTileMap->GetTileMapWidth() + i;
+                        char NextTile = y * m_pTileMap->GetTileMapWidth() + (i + 1);
+                        m_pTileMap->SwapTiles(CurrentTile, NextTile);
+                    }
+                    break;
+                }
+            }
         }
     }
 }

@@ -24,6 +24,7 @@ public:
     virtual void Draw(fw::vec2 camPos, fw::vec2 projScale) override;
 
     void MoveTheFucker(float deltaTime);
+    void MoveTheBox();
     
     fw::vec2 GetPosition();
     void SetPosition(fw::vec2 pos);
@@ -42,4 +43,5 @@ protected:
     float m_AnimTimer;
     unsigned char m_PlayerDirection;
     TileMap* m_pTileMap;
+    bool KeyPressed;
 };
