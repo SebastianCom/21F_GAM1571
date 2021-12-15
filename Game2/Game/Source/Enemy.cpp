@@ -14,12 +14,15 @@ float RandomFloat(float min, float max) //move to random cpp and h
 }
 
 
-Enemy::Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, TileMap* pMap, Player* pPlayer)
+Enemy::Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, TileMap* pMap, Player* pPlayer, int type)
     : GameObject( pMesh, pShader, pTexture, pos, 2)
 {
     m_EnemyScale = fw::vec2(5, 5);
     m_Speed = 50.0f;
-    m_Sprite = m_Sprites["Enemy Blue"];
+    if(type == 0)
+        m_Sprite = m_Sprites["Enemy Blue"];
+    if (type == 1)
+        m_Sprite = m_Sprites["Enemy Orange"];
     m_Position = pos;
     pTileMap = pMap;
     m_pPlayer = pPlayer;

@@ -12,7 +12,7 @@ class Player;
 class Enemy : public GameObject
 {
 public:
-    Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, TileMap* pMap, Player* pPlayer);
+    Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, TileMap* pMap, Player* pPlayer, int type);
     virtual ~Enemy();
 
     virtual void Update(float deltaTime) override;

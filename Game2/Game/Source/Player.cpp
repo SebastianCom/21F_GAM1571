@@ -188,6 +188,11 @@ void Player::SetPosition(fw::vec2 pos)
     m_Position = pos;
 }
 
+
+// JIMMY: i know these next 2 methods have a lot a repated code... i have tried to figure out a way to make them a function instead of repeating but there are
+// a good amount of minute chnages between each direction case. Maybe that is something we can go over next semester
+// i may not have been able to lower the repeated code however there should be no hard coded values other than 0 and 1 so thats something;
+
 void Player::PullBlocks(int x, int y)
 {
     for (int i = 0; i < NumDirections; i++) //up,down,left,right in that order

@@ -51,6 +51,7 @@ Game::Game(fw::FWCore& fwCore)
 
     m_pPlayer = nullptr;
     m_pEnemy = nullptr;
+    m_pEnemy2 = nullptr;
 
     m_pTileMapGround = nullptr;
     m_pTileMapLevel2 = nullptr;
@@ -67,6 +68,7 @@ Game::~Game()
 {
     delete m_pPlayer;
     delete m_pEnemy;
+    delete m_pEnemy2;
 
     delete m_pTileMapGround;
     delete m_pTileMapLevel2;
@@ -115,7 +117,8 @@ void Game::Init()
     m_pTileMapLevel2 = new TileMap(m_Meshes["Sprite"], m_pBasicShader, m_pTexture,2);
 
     m_pPlayer = new Player(m_Meshes["Sprite"], m_pBasicShader, m_pTexture, vec2(150, 300), m_pPlayerController, m_pTileMapLevel2); //Spawning offset on the x for debug purposes
-    //m_pEnemy = new Enemy(m_Meshes["Sprite"], m_pBasicShader, m_pEnemyTexture, vec2(100, 250), m_pTileMapLevel2, m_pPlayer); //Spawning offset on the x for debug purposes
+    m_pEnemy = new Enemy(m_Meshes["Sprite"], m_pBasicShader, m_pEnemyTexture, vec2(100, 250), m_pTileMapLevel2, m_pPlayer,0); //Spawning offset on the x for debug purposes
+    m_pEnemy2 = new Enemy(m_Meshes["Sprite"], m_pBasicShader, m_pEnemyTexture, vec2(400, 400), m_pTileMapLevel2, m_pPlayer,1); //Spawning offset on the x for debug purposes
 
     PathFinder* path = new PathFinder(m_pTileMapLevel2);
 }
@@ -130,7 +133,8 @@ void Game::Update(float deltaTime)
     m_pImGuiManager->StartFrame(deltaTime);
 
     m_pPlayer->Update(deltaTime);
-    //m_pEnemy->Update(deltaTime);
+    m_pEnemy->Update(deltaTime);
+    m_pEnemy2->Update(deltaTime);
 
     CheckForCollisions(); 
 
@@ -146,10 +150,14 @@ void Game::Draw()
     m_pTileMapLevel2->Draw(CameraPos, ProjScale);
    
     m_pPlayer->Draw(CameraPos, ProjScale);
-    //m_pEnemy->Draw(CameraPos, ProjScale);
+    m_pEnemy->Draw(CameraPos, ProjScale);
+    m_pEnemy2->Draw(CameraPos, ProjScale);
 
     m_pImGuiManager->EndFrame();
 }
+
+//-------------------------MY FUNCTIONS--------------------------------------------------------------------------
+
 
 void Game::CheckForCollisions()
 {

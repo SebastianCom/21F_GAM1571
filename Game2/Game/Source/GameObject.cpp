@@ -74,4 +74,5 @@ void GameObject::HardCodeNames()
     m_Sprites["Player Right3"] = "player_19";
 
     m_Sprites["Enemy Blue"] = "enemyBlue3";
+    m_Sprites["Enemy Orange"] = "enemyRed3";
 }

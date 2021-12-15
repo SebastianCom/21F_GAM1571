@@ -39,6 +39,7 @@ protected:
 
     Player* m_pPlayer;
     Enemy* m_pEnemy;
+    Enemy* m_pEnemy2;
 
     TileMap* m_pTileMapGround;
     TileMap* m_pTileMapLevel2;
