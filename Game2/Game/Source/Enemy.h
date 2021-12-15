@@ -5,6 +5,8 @@
 class TileMap;
 class PathFinder;
 
+
+
 class Enemy : public GameObject
 {
 public:
@@ -24,6 +26,12 @@ public:
     bool IsAtLocation(int index);
     void StartPathFind();
 
+    typedef void (Enemy::* AIStateFunction)(float deltaTime);
+    //Ai States attempt1
+    void AIState_Idle(float deltaTime);
+    void AIState_Searching(float deltaTime);
+    void AIState_Chasing(float deltaTime);
+
 protected:
 
     fw::vec2 m_EnemyScale;
@@ -35,4 +43,6 @@ protected:
     int NextTileIndex;
     bool PathFound;
     fw::vec2 EndGoal;
+
+    AIStateFunction m_CurrentAIState;
 };

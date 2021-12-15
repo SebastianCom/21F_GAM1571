@@ -20,6 +20,9 @@ Enemy::Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture,
     EndGoal = fw::vec2(8, 8);
     PathFound = false;
     StartPathFind();
+   
+    m_CurrentAIState = (AIStateFunction)&Enemy::AIState_Idle;
+
 }
 
 Enemy::~Enemy()
@@ -29,6 +32,7 @@ Enemy::~Enemy()
 
 void Enemy::Update(float deltaTime)
 {  
+    (this->*m_CurrentAIState)(deltaTime);
    
     if (PathFound)
     {
@@ -101,4 +105,17 @@ bool Enemy::IsAtLocation(int index)
 void Enemy::StartPathFind()
 {
     PathFound = EnemyPathFinder->FindPath((m_Position / pTileMap->GetTileSize()), int(EndGoal.x), int(EndGoal.y));
+}
+
+void Enemy::AIState_Idle(float deltaTime)
+{
+
+}
+
+void Enemy::AIState_Searching(float deltaTime)
+{
+}
+
+void Enemy::AIState_Chasing(float deltaTime)
+{
 }
