@@ -3,7 +3,10 @@
 #include "Framework.h"
 #include "DataTypes.h"
 
+
 class Game;
+class Component;
+
 
 class GameObject
 {
@@ -14,12 +17,17 @@ public:
     virtual void Update(float deltaTime);
     virtual void Draw(vec2 projScale, vec2 camPos);
 
-protected:
-    // Rendering data.
-    fw::Mesh* m_pMesh;
-    fw::ShaderProgram* m_pShader;
+    int CheckComponent(Component* comp);
 
-    // Transform data.
-    vec2 m_Scale;
-    vec2 m_Position;
+protected:
+
+    std::vector<Component*> m_pComponents;
+
+    //// Rendering data.
+    //fw::Mesh* m_pMesh;
+    //fw::ShaderProgram* m_pShader;
+
+    //// Transform data.
+    //vec2 m_Scale;
+    //vec2 m_Position;
 };
