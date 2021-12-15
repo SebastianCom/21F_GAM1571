@@ -6,12 +6,13 @@
 
 class TileMap;
 class PathFinder;
+class Player;
 
 
 class Enemy : public GameObject
 {
 public:
-    Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, TileMap* pMap);
+    Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, TileMap* pMap, Player* pPlayer);
     virtual ~Enemy();
 
     virtual void Update(float deltaTime) override;
@@ -45,6 +46,8 @@ protected:
     int NextTileIndex;
     bool PathFound;
     fw::vec2 EndGoal;
+
+    Player* m_pPlayer;
 
     AIStateFunction m_CurrentAIState;
     float IdleTimer;
