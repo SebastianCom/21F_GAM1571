@@ -29,8 +29,8 @@ void Player::Update(float deltaTime)
     MoveTheBox();
     MoveTheFucker(deltaTime);
 
-    float x = round(m_Position.x / m_pTileMap->GetTileSize().x);
-    float y = round(m_Position.y / m_pTileMap->GetTileSize().x);
+    float x = float(round(m_Position.x / m_pTileMap->GetTileSize().x));
+    float y = float(round(m_Position.y / m_pTileMap->GetTileSize().x));
 
     ImGui::SliderFloat( "X", &x, 0, 10 );
     ImGui::SliderFloat( "Y", &y, 0, 10 );
@@ -164,12 +164,12 @@ void Player::MoveTheBox()
 {
     if (m_pPlayerController->IsPushHeld() && !KeyPressed)
     {
-        PushBlocks(round(m_Position.x / m_pTileMap->GetTileSize().x), round(m_Position.y / m_pTileMap->GetTileSize().x));
+        PushBlocks(int(round(m_Position.x / m_pTileMap->GetTileSize().x)), int(round(m_Position.y / m_pTileMap->GetTileSize().x)));
         KeyPressed = true;
     }
     else if (m_pPlayerController->IsPullHeld() && !KeyPressed)
     {
-        PullBlocks(round(m_Position.x / m_pTileMap->GetTileSize().x), round(m_Position.y / m_pTileMap->GetTileSize().x));
+        PullBlocks(int(round(m_Position.x / m_pTileMap->GetTileSize().x)), int(round(m_Position.y / m_pTileMap->GetTileSize().x)));
         KeyPressed = true;
     }
     else if (!m_pPlayerController->IsPushHeld() && !m_pPlayerController->IsPullHeld())
