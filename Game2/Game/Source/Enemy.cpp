@@ -7,7 +7,7 @@
 std::random_device seed;
 std::mt19937 mersenneTwister(seed());
 
-float RandomFloat(float min, float max) //move to random cpp and h
+float RandomFloat(float min, float max) //our good old friend the goal randomization method
 {
     std::uniform_real_distribution<float> distribution(min, max);
     return distribution(mersenneTwister);
@@ -17,12 +17,13 @@ float RandomFloat(float min, float max) //move to random cpp and h
 Enemy::Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, TileMap* pMap, Player* pPlayer, int type)
     : GameObject( pMesh, pShader, pTexture, pos, 2)
 {
+    m_EnemyDirection = Down;
     m_EnemyScale = fw::vec2(5, 5);
     m_Speed = 50.0f;
     if(type == 0)
         m_Sprite = m_Sprites["Enemy Blue"];
     if (type == 1)
-        m_Sprite = m_Sprites["Enemy Orange"];
+        m_Sprite = m_Sprites["Enemy Orange"]; //json file said red, maybe i am slightly color blind but thats orange!
     m_Position = pos;
     pTileMap = pMap;
     m_pPlayer = pPlayer;
@@ -33,7 +34,6 @@ Enemy::Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture,
     
    
     PathFound = false;
-    StartPathFind();
    
     m_CurrentAIState = (AIStateFunction)&Enemy::AIState_Idle;
     IdleTimer = 1;
@@ -100,7 +100,6 @@ bool Enemy::IsAtLocation(int index)
 
     double distance = sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)) );
 
-    //if (m_Position == newPosition)
     if (distance <= .5f)
     {
         m_Position = newPosition;
@@ -132,7 +131,6 @@ void Enemy::AIState_Idle(float deltaTime)
     {
         Atlocation = false;
         m_CurrentAIState = (AIStateFunction)&Enemy::AIState_Chasing;
-        //m_CurrentAIState = (AIStateFunction)&Enemy::AIState_Searching;
         IdleTimer = 1;
     }
 }
@@ -216,4 +214,5 @@ void Enemy::ResetState()
     Atlocation = false;
     IdleTimer = 1;
     NextTileIndex = 0;
+    EndGoal = fw::vec2(0, 0);
 }

@@ -29,7 +29,7 @@ public:
     void StartPathFind();
 
     typedef void (Enemy::* AIStateFunction)(float deltaTime);
-    //Ai States attempt1
+    //Ai States attempt1 - it worked lol
     void AIState_Idle(float deltaTime);
     void AIState_Searching(float deltaTime);
     void AIState_Chasing(float deltaTime);
