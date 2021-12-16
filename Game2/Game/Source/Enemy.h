@@ -37,6 +37,8 @@ public:
 
     void ResetState();
 
+    void DisplayState(const char* state);
+
 protected:
 
     fw::vec2 m_EnemyScale;
@@ -54,4 +56,5 @@ protected:
     AIStateFunction m_CurrentAIState;
     float IdleTimer;
     bool Atlocation;
+    const char* CurrentStateName;
 };

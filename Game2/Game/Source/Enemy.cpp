@@ -4,6 +4,7 @@
 #include "PathFinder.h"
 #include "Player.h"
 
+
 std::random_device seed;
 std::mt19937 mersenneTwister(seed());
 
@@ -17,6 +18,7 @@ float RandomFloat(float min, float max) //our good old friend the goal randomiza
 Enemy::Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture, vec2 pos, TileMap* pMap, Player* pPlayer, int type)
     : GameObject( pMesh, pShader, pTexture, pos, 2)
 {
+    CurrentStateName = "null";
     m_EnemyDirection = Down;
     m_EnemyScale = fw::vec2(5, 5);
     m_Speed = 50.0f;
@@ -54,6 +56,7 @@ void Enemy::Update(float deltaTime)
 
 void Enemy::Draw(fw::vec2 camPos, fw::vec2 projScale)
 {
+    ImGui::Text(CurrentStateName);
     fw::vec2 uvOffset = m_pSpriteSheet->GetSpriteInfo(m_Sprite).UVOffset;
     fw::vec2 uvScale = m_pSpriteSheet->GetSpriteInfo(m_Sprite).UVScale;
     m_pMesh->Draw(m_pShader, m_pTexture, m_EnemyScale, m_Position, 0.0f, camPos, projScale, uvScale, uvOffset);
@@ -117,7 +120,8 @@ void Enemy::StartPathFind()
 }
 
 void Enemy::AIState_Idle(float deltaTime)
-{
+{  
+    DisplayState("Idle");
     if (IdleTimer > 0)
     {
         IdleTimer -= deltaTime;
@@ -137,6 +141,7 @@ void Enemy::AIState_Idle(float deltaTime)
 
 void Enemy::AIState_Searching(float deltaTime)
 {
+    DisplayState("Searching");
     if (PathFound && Atlocation == false)
     {
         int index = EnemyPathFinder->GetPath(int(EndGoal.x), int(EndGoal.y));
@@ -165,6 +170,7 @@ void Enemy::AIState_Searching(float deltaTime)
 
 void Enemy::AIState_Chasing(float deltaTime)
 {
+    DisplayState("Chasing");
     if (PathFound && Atlocation == false)
     {
         int index = EnemyPathFinder->GetPath(int(EndGoal.x), int(EndGoal.y));
@@ -216,3 +222,9 @@ void Enemy::ResetState()
     NextTileIndex = 0;
     EndGoal = fw::vec2(0, 0);
 }
+
+void Enemy::DisplayState(const char* state)
+{
+    CurrentStateName = state;
+}
+
