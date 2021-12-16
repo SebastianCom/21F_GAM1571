@@ -114,7 +114,6 @@ bool Enemy::IsAtLocation(int index)
 
 void Enemy::StartPathFind()
 {
-    EnemyPathFinder->Reset();
     PathFound = EnemyPathFinder->FindPath((m_Position / pTileMap->GetTileSize()), int(EndGoal.x), int(EndGoal.y));
 }
 
@@ -189,6 +188,12 @@ void Enemy::AIState_Chasing(float deltaTime)
         fw::vec2 Playerpos = fw::vec2(x, y);
         EndGoal = Playerpos;
         StartPathFind();
+        if (!PathFound)
+        {
+            m_CurrentAIState = (AIStateFunction)&Enemy::AIState_Idle;
+            PathFound = false;
+            Atlocation = false;
+        }
     }
     if (Atlocation)
     {
