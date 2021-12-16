@@ -173,7 +173,7 @@ void Enemy::AIState_Chasing(float deltaTime)
     DisplayState("Chasing");
     if (PathFound && Atlocation == false)
     {
-        int index = EnemyPathFinder->GetPath(int(EndGoal.x), int(EndGoal.y));
+        int index = EnemyPathFinder->GetPath(EndGoal.x, EndGoal.y);
         if (IsAtLocation(index) == false)
         {
             MoveTo(index, deltaTime);
