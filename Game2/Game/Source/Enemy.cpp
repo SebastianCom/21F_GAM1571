@@ -180,7 +180,7 @@ void Enemy::AIState_Searching(float deltaTime)
     }
 }
 
-void Enemy::AIState_Chasing(float deltaTime)
+void Enemy::AIState_Chasing(float deltaTime) //more like tracking lol but not worth chaning the name everywhere 
 {
     DisplayState("Chasing");
     if (PathFound && Atlocation == false)
