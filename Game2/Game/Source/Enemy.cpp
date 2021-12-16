@@ -187,8 +187,8 @@ void Enemy::AIState_Chasing(float deltaTime)
     }
     else if (!PathFound)
     {
-        int x = m_pPlayer->GetPosition().x / pTileMap->GetTileSize().x;
-        int y = m_pPlayer->GetPosition().y / pTileMap->GetTileSize().x;
+        int x = round(m_pPlayer->GetPosition().x / pTileMap->GetTileSize().x);
+        int y = round(m_pPlayer->GetPosition().y / pTileMap->GetTileSize().x);
         fw::vec2 Playerpos = fw::vec2(x, y);
         EndGoal = Playerpos;
         StartPathFind();
