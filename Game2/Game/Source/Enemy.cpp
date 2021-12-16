@@ -103,7 +103,7 @@ bool Enemy::IsAtLocation(int index)
 
     double distance = sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)) );
 
-    if (distance <= .5f)
+    if (distance <= .7f)
     {
         m_Position = newPosition;
         return true;
