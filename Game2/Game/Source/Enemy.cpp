@@ -194,8 +194,17 @@ void Enemy::AIState_Chasing(float deltaTime)
             else
                 Atlocation = false;
         }
-        else
+        else if (IsAtLocation((m_LastLocation.y / pTileMap->GetTileSize().x) * pTileMap->GetTileMapWidth() + (m_LastLocation.x / pTileMap->GetTileSize().y)))
+        {
+            m_CurrentAIState = (AIStateFunction)&Enemy::AIState_Idle;
+            PathFound = false;
+        }
+        else if (IsAtLocation(index))
+        {
             StartPathFind();
+            m_LastLocation = m_Position;
+            Atlocation = false;
+        }
     }
     else if (!PathFound)
     {
