@@ -61,7 +61,6 @@ void Enemy::Draw(fw::vec2 camPos, fw::vec2 projScale)
     fw::vec2 uvScale = m_pSpriteSheet->GetSpriteInfo(m_Sprite).UVScale;
     m_pMesh->Draw(m_pShader, m_pTexture, m_EnemyScale, m_Position, 0.0f, camPos, projScale, uvScale, uvOffset);
 
-    int bp = 1;
 }
 
 
