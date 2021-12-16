@@ -119,7 +119,7 @@ void Game::Update(float deltaTime)
 
     m_pPlayer->Update(deltaTime);
     m_pEnemy->Update(deltaTime);
-    m_pEnemy2->Update(deltaTime);
+   // m_pEnemy2->Update(deltaTime);
 
     CheckForCollisions(); 
 
@@ -141,7 +141,7 @@ void Game::Draw()
    
     m_pPlayer->Draw(CameraPos, ProjScale);
     m_pEnemy->Draw(CameraPos, ProjScale);
-    m_pEnemy2->Draw(CameraPos, ProjScale);
+   // m_pEnemy2->Draw(CameraPos, ProjScale);
 
     m_pImGuiManager->EndFrame();
 }

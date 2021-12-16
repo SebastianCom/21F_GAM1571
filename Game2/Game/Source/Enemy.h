@@ -42,6 +42,7 @@ public:
 protected:
 
     fw::vec2 m_EnemyScale;
+    fw::vec2 m_LastLocation;
     float m_Speed;
     std::string m_Sprite;
     unsigned char m_EnemyDirection;

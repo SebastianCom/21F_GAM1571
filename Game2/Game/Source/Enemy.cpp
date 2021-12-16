@@ -29,7 +29,7 @@ Enemy::Enemy(fw::Mesh* pMesh, fw::ShaderProgram* pShader, fw::Texture* pTexture,
     m_Position = pos;
     pTileMap = pMap;
     m_pPlayer = pPlayer;
-
+    m_LastLocation = fw::vec2(0, 0);
     EnemyPathFinder = new PathFinder(pTileMap);
    
     NextTileIndex = 0;
@@ -145,7 +145,7 @@ void Enemy::AIState_Searching(float deltaTime)
     DisplayState("Searching");
     if (PathFound && Atlocation == false)
     {
-        int index = EnemyPathFinder->GetPath(int(EndGoal.x), int(EndGoal.y));
+        int index = EnemyPathFinder->GetPath(EndGoal.x, EndGoal.y);
         if (IsAtLocation(index) == false)
         {
             MoveTo(index, deltaTime);
@@ -153,9 +153,20 @@ void Enemy::AIState_Searching(float deltaTime)
                 Atlocation = true;
             else
                 Atlocation = false;
+
+
         }
-        else
+        else if (IsAtLocation((m_LastLocation.y/ pTileMap->GetTileSize().x) * pTileMap->GetTileMapWidth() + (m_LastLocation.x/ pTileMap->GetTileSize().y)))
+        {
+            m_CurrentAIState = (AIStateFunction)&Enemy::AIState_Idle;
+            PathFound = false;
+        }
+        else if (IsAtLocation(index))
+        {
             StartPathFind();
+            m_LastLocation = m_Position;
+            Atlocation = false;
+        }
     }
     else if (!PathFound)
     {
