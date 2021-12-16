@@ -103,7 +103,7 @@ bool Enemy::IsAtLocation(int index)
 
     double distance = sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)) );
 
-    if (distance <= .5f)
+    if (distance <= .7f)
     {
         m_Position = newPosition;
         return true;
@@ -148,7 +148,7 @@ void Enemy::AIState_Searching(float deltaTime)
         if (IsAtLocation(index) == false)
         {
             MoveTo(index, deltaTime);
-            if (IsAtLocation(EndGoal.y * pTileMap->GetTileMapWidth() + EndGoal.x))
+            if (IsAtLocation(int(EndGoal.y * pTileMap->GetTileMapWidth() + EndGoal.x)))
                 Atlocation = true;
             else
                 Atlocation = false;
@@ -177,7 +177,7 @@ void Enemy::AIState_Chasing(float deltaTime)
         if (IsAtLocation(index) == false)
         {
             MoveTo(index, deltaTime);
-            if (IsAtLocation(EndGoal.y * pTileMap->GetTileMapWidth() + EndGoal.x))
+            if (IsAtLocation(int(EndGoal.y * pTileMap->GetTileMapWidth() + EndGoal.x)))
                 Atlocation = true;
             else
                 Atlocation = false;
@@ -187,8 +187,8 @@ void Enemy::AIState_Chasing(float deltaTime)
     }
     else if (!PathFound)
     {
-        int x = m_pPlayer->GetPosition().x / pTileMap->GetTileSize().x;
-        int y = m_pPlayer->GetPosition().y / pTileMap->GetTileSize().x;
+        float x = m_pPlayer->GetPosition().x / pTileMap->GetTileSize().x;
+        float y = m_pPlayer->GetPosition().y / pTileMap->GetTileSize().x;
         fw::vec2 Playerpos = fw::vec2(x, y);
         EndGoal = Playerpos;
         StartPathFind();
@@ -209,8 +209,8 @@ void Enemy::AIState_Chasing(float deltaTime)
 
 void Enemy::RandomizeEndGoal()
 {
-    EndGoal.x = int(RandomFloat(1.0f, 9.0f));
-    EndGoal.y = int(RandomFloat(1.0f, 9.0f));
+    EndGoal.x = round(RandomFloat(1.0f, 9.0f));
+    EndGoal.y = round(RandomFloat(1.0f, 9.0f));
 }
 
 void Enemy::ResetState()
