@@ -122,6 +122,7 @@ void PathFinder::Reset()
 {
     for (int i = 0; i < m_Nodes.size(); i++)
     {
+        m_OpenNodes.clear();
         m_Nodes[i].parentNodeIndex = -1;
         m_Nodes[i].cost = FLT_MAX;
         m_Nodes[i].finalCost = FLT_MAX;
@@ -215,7 +216,6 @@ std::vector<int> PathFinder::MakeListOfValidNeighbours(int tileIndex)
             }
         }
     }
-
     return NeighbourIndex;
 }
 

@@ -39,7 +39,7 @@ public:
     // Retrieve the final path.
     ///std::vector<int> GetPath(int ex, int ey);
     int GetPath(int ex, int ey);
-
+    void Reset();
     
 protected:
     
@@ -48,7 +48,7 @@ protected:
     int m_MapHeight;
     std::vector<int> m_OpenNodes;
     std::vector<PathNode> m_Nodes;
-    void Reset();
+   
     std::vector<int> MakeListOfValidNeighbours(int tileIndex);
 
 };

@@ -114,6 +114,7 @@ bool Enemy::IsAtLocation(int index)
 
 void Enemy::StartPathFind()
 {
+    EnemyPathFinder->Reset();
     PathFound = EnemyPathFinder->FindPath((m_Position / pTileMap->GetTileSize()), int(EndGoal.x), int(EndGoal.y));
 }
 
